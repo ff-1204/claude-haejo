@@ -1,0 +1,48 @@
+---
+name: roadmap-score
+description: 기획 플로우 5단계 하위 스킬: 시나리오에서 기능 묶음마다 비중 점수(필요한 사람 수 × 2 + 나온 시나리오 단계 수)를 scripts/score.js로 계산해 매핑 문서 1·2절 표를 쓴다. "어떤 기능이 제일 많이 필요해?"처럼 점수만 궁금할 때도 쓴다. 보통은 roadmap 상위 스킬이 부른다(기획 문서를 고치는 말은 roadmap이 받는다). 이 단계만 따로 돌릴 때는 /roadmap-score로 부른다.
+---
+
+# roadmap-score — 비중 점수
+
+공통 규칙: [../roadmap/references/rules.md](../roadmap/references/rules.md)
+
+점수는 **직접 세지 않고 항상 스크립트로** 낸다. 손으로 세면 페르소나를 더할 때마다 어긋난다.
+
+## 입력
+
+- `persona-scenarios.md` (없으면 "roadmap-scenarios가 먼저 필요하다"고 말하고 멈춘다)
+- 체크리스트: 묶음 번호의 이름을 찾기 위해
+- `persona-checklist-map.md` (없으면 [../roadmap-map/assets/persona-checklist-map.md](../roadmap-map/assets/persona-checklist-map.md)로 만든다)
+
+## 하는 일
+
+1. 스크립트를 돌린다.
+
+   ```bash
+   node ~/.claude/skills/roadmap-score/scripts/score.js <persona-scenarios.md> [옵션]
+   ```
+
+   | 옵션 | 기본값 | 언제 바꾸나 |
+   |---|---|---|
+   | `--depth N` | 2 | 묶음을 번호 앞 몇 마디로 볼지 (`F01-02`) |
+   | `--people-weight N` | 2 | 사람 수 가중치 |
+   | `--grades a,b,c` | 15,9,5 | 1·2·3등급 하한. 페르소나 수 P(`personas.md`의 `### NN` 줄 수)에 맞춘다: 대략 P×1.5, P×1, P×0.5 (30명 → 45·30·15는 너무 높으니 기본값 15,9,5를 상한으로, 6명 → 9,6,3) |
+   | `--prefix X,Y` | 모두 | 기획 체크리스트 번호만 셀 때 (예: `F`) |
+
+   - 한 단계 줄을 ` / `로 나눠 조각마다 자기 표시로 센다(🔜·❌ = 안 된 것, ✅ = 된 것). 표시 없는 조각은 줄의 표시가 한 종류뿐일 때 그것을 따른다.
+   - 머리의 "번호 없는 단계"(번호가 하나도 없거나 ❌ 조각에 번호가 없는 단계)와 "표시 없는 단계"는 0이어야 한다.
+   - 기획·구현 번호가 한 단계에 같이 있으면 두 번 세이지 않게 `--prefix`로 한쪽만 고른다.
+2. 결과 머리의 "번호 없는 단계"나 "표시 없는 단계"가 0이 아니면 roadmap-map이나 roadmap-scenarios가 덜 끝난 것이다. 그렇게 보고하고 표는 그대로 쓴다.
+3. 매핑 문서 **1절**(🔜)과 **2절**(✅)을 스크립트 표로 바꾼다. 표에 "이름" 칸을 더해 체크리스트에서 묶음 이름을 채운다. 쓴 옵션은 머리 `점수 =` 줄 뒤에 적는다.
+4. 지난 표가 있었으면, 점수가 바뀐 묶음을 "6. 바뀐 기록"에 `<묶음> 13 → 16`으로 적는다.
+
+## 출력
+
+`persona-checklist-map.md` 1·2절과 1절 아래 `> 점수: YYYY-MM-DD HH:MM (옵션)` 줄. 머리 `> 갱신:` 줄은 건드리지 않는다(roadmap-map 몫).
+
+## 한 줄 보고
+
+`④ roadmap-score: 🔜 묶음 N개 (1등급 a · 2등급 b) · 1위 <묶음 이름> <점수> · 바뀐 점수 k · persona-checklist-map.md`
+
+혼자 불렸으면 rules.md "하위 스킬을 혼자 불렀을 때" 줄을 붙인다(고친 것이 없으면 "바뀐 것 없음").

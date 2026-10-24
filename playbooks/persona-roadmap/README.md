@@ -8,7 +8,20 @@
 → 9 개발 반복(맡기기 → 검토 → 테스트) → 10 시나리오 갱신 → (5로 돌아감)
 ```
 
-템플릿은 [templates/](templates/), 점수 계산은 [tools/score.js](tools/score.js).
+이 과정은 스킬로 돌린다. 상위 스킬 [`roadmap`](../../skills/roadmap/)에게 "처음부터 기획해줘", "페르소나 하나 더 추가해줘", "M2 끝났어, 시나리오 갱신해줘"처럼 말하면 하위 스킬 일곱 개를 순서대로 부른다. 이 문서는 사람이 읽는 개요이고, 템플릿과 점수 스크립트는 각 하위 스킬 폴더에 있다.
+
+| 단계 | 하위 스킬 | 템플릿·도구 |
+|---|---|---|
+| 0 | [`roadmap-core`](../../skills/roadmap-core/) | (페르소나 템플릿의 머리) |
+| 1 | [`roadmap-personas`](../../skills/roadmap-personas/) | [personas.md](../../skills/roadmap-personas/assets/personas.md) |
+| 2, 10 | [`roadmap-scenarios`](../../skills/roadmap-scenarios/) | [persona-scenarios.md](../../skills/roadmap-scenarios/assets/persona-scenarios.md) |
+| 3, 4 | [`roadmap-map`](../../skills/roadmap-map/) | [checklist.md](../../skills/roadmap-map/assets/checklist.md), [persona-checklist-map.md](../../skills/roadmap-map/assets/persona-checklist-map.md) |
+| 5 | [`roadmap-score`](../../skills/roadmap-score/) | [score.js](../../skills/roadmap-score/scripts/score.js) |
+| 6 | [`roadmap-priority`](../../skills/roadmap-priority/) | |
+| 7, 8 | [`roadmap-milestones`](../../skills/roadmap-milestones/) | [roadmap.md](../../skills/roadmap-milestones/assets/roadmap.md) |
+| 9 | [`roadmap-teammate`](../../skills/roadmap-teammate/) | |
+
+스킬로 나눈 계획과 이유: [skills-plan.md](skills-plan.md)
 
 ## 진행 원칙
 
@@ -27,7 +40,7 @@
 
 이후 모든 문서는 이 번호와 범위를 기준으로 쓴다. 핵심 경험이 바뀌면 1부터 다시 본다.
 
-## 1. 페르소나 — [templates/personas.md](templates/personas.md)
+## 1. 페르소나 — `roadmap-personas`
 
 - 20~30명으로 시작한다. 이미 있던 페르소나는 앞 번호로 그대로 둔다.
 - 핵심 경험별로 묶는다(A. ①을 주로 하는 사람 …). 나이·상황·능력이 고르게 퍼지게 한다: 처음 해 보는 사람, 오래 한 사람, 어린 사람, 나이 든 사람, 접근성이 필요한 사람, 여럿이 쓰는 사람, 혼자 쓰는 사람, 만드는 사람, 쓰기만 하는 사람.
@@ -39,7 +52,7 @@
   5. **막힐 곳 → 필요한 것**: 체크리스트 번호(없으면 3단계에서 만든다)
 - 사용자가 페르소나를 추천하면 다음 번호로 더하고 7절의 "추가할 때"를 따른다.
 
-## 2. 시나리오 — [templates/scenarios.md](templates/scenarios.md)
+## 2. 시나리오 — `roadmap-scenarios`
 
 - 페르소나마다 **"하루 한 장면"**을 5~8단계로 쓴다. 그 사람이 실제로 할 순서대로 쓴다.
 - 단계마다 지금 되는지 표시한다.
@@ -48,13 +61,13 @@
   - ❌ 계획에 없음 → 맨 아래 "새 후보"에 모은다
 - 나중에 테스트 재료가 된다: 자동 여정 테스트, 사람이 해 보는 확인 목록, QA 회차의 케이스.
 
-## 3. 체크리스트에 적기 — [templates/checklist.md](templates/checklist.md)
+## 3. 체크리스트에 적기 — `roadmap-map`
 
 - 페르소나의 "필요한 것"과 시나리오의 ❌를 체크리스트 항목으로 만든다.
 - 체크리스트는 두 겹이 좋다: **기획**(무엇을, 왜) / **구현**(어떻게, 확인 방법). 작은 프로젝트는 하나로 합쳐도 된다.
 - 번호는 `F01-02-03`처럼 계층으로, 상태는 ✅ 확정·끝 / ⬜ 열림 / ⏸ 보류, 바뀐 것 🔄, 새것 🆕.
 
-## 4. 매핑 — [templates/persona-checklist-map.md](templates/persona-checklist-map.md)
+## 4. 매핑 — `roadmap-map`
 
 - 시나리오의 **모든 단계**를 체크리스트 번호에 잇는다. 번호가 없는 단계에는 `→ [번호]`를 붙인다.
 - 잇다가 없는 기능이 나오면 체크리스트에 새 항목을 만든다. 끝나면 "빈 단계 0"이어야 한다.
@@ -70,7 +83,7 @@
 - 묶음 단위(번호 앞 두 마디, 예: `F01-02`)로 센다.
 - 등급을 나눈다. 기본값은 1등급 ≥ 15, 2등급 ≥ 9, 3등급 ≥ 5, 4등급 나머지. 페르소나 수가 크게 다르면 조정한다.
 - 아직 안 된 것(🔜)과 이미 된 것(✅)을 따로 표로 만든다. ✅ 표는 "이미 된 기능이 몇 명을 받치는지"를 보여 줘서, 손대면 안 되는 바탕 기능이 보인다.
-- 계산은 `node tools/score.js <시나리오 파일>`로 한다(아래 "점수 도구").
+- 계산은 `roadmap-score`가 [score.js](../../skills/roadmap-score/scripts/score.js)로 한다. 옵션은 그 스킬에 있다.
 
 ## 6. 우선순위
 
@@ -87,7 +100,7 @@
 
 사용자에게 물을 것: 미루는 규칙을 쓸지, 난이도 기준이 맞는지(기본값을 추천으로).
 
-## 7. 마일스톤 — [templates/roadmap.md](templates/roadmap.md)
+## 7. 마일스톤 — `roadmap-milestones`
 
 - 6의 순서를 잘라 마일스톤 4~8개로 나눈다. **날짜 없이 순서만.**
 - 이름은 **사용자 경험 문장**으로 짓는다(예: "첫날이 즐겁다", "놀러 오세요", "누구나 편하게").
@@ -111,7 +124,7 @@
 
 ## 9. 개발 반복
 
-`dori-teammate` 스킬([../../skills/dori-teammate/](../../skills/dori-teammate/))로 진행한다.
+`roadmap-teammate` 스킬([../../skills/roadmap-teammate/](../../skills/roadmap-teammate/))로 진행한다.
 
 1. **시작 전 질문**: 모델, 알아서 할 범위, 시간을 선택 UI로 한 번에 묻는다.
 2. **세부 항목 하나 = 하위 세션 하나.** 브리프에 체크리스트 번호와 "끝났다고 보는 것"을 그대로 옮긴다.
@@ -124,21 +137,3 @@
 - 마일스톤이 끝나면 시나리오의 🔜를 ✅로 바꾸고 단계 끝에 "M1 날짜"를 붙인다.
 - 테스트에서 나온 새 문제는 체크리스트에 🆕로 적고 매핑한다.
 - 그다음 5로 돌아가 점수를 다시 계산하고, 순서가 바뀐 곳만 로드맵에 반영한다.
-
-## 점수 도구
-
-```bash
-node tools/score.js scenarios.md
-```
-
-시나리오 파일에서 페르소나(`### 01 이름 …`)와 번호 단계(`1. …`)를 읽어 묶음별 사람 수·단계 수·점수·등급 표를 마크다운으로 낸다.
-
-- 단계에 🔜가 있으면 "아직 안 된 것", ✅만 있으면 "이미 된 것"으로 센다. 한 줄에 둘 다 있으면 안 된 것으로 센다.
-- 체크리스트 번호는 `F01-02-03` 같은 형식(대문자 1~3자 + 숫자 마디)을 줄 어디서든 찾는다.
-
-| 옵션 | 기본값 | 뜻 |
-|---|---|---|
-| `--depth N` | 2 | 묶음으로 볼 번호 마디 수 (`F01-02`) |
-| `--people-weight N` | 2 | 사람 수에 곱하는 값 |
-| `--grades a,b,c` | 15,9,5 | 1·2·3등급 하한 |
-| `--prefix X,Y` | (모두) | 이 접두어 번호만 센다 (예: 기획 체크리스트만) |
