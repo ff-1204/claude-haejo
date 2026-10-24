@@ -87,7 +87,7 @@ roadmap (상위: 말 → 플로우 고르기 → 하위 스킬 순서대로 → 
 
 - ✅ S04-01 `playbooks/persona-roadmap/README.md`는 사람이 읽는 개요로 남기고, 템플릿·스크립트 링크를 스킬 폴더로 바꾼다.
 - ✅ S04-02 `templates/`, `tools/`는 S03-08·09로 옮긴 뒤 지운다.
-- ✅ S04-03 저장소 README 표와 설치 명령에 `roadmap*` 스킬 여덟 개를 더한다(`cp -r claude-config/skills/* ~/.claude/skills/`).
+- ✅ S04-03 저장소 README 표와 설치 명령에 `roadmap*` 스킬 여덟 개를 더한다(`cp -r claude-haejo/skills/* ~/.claude/skills/`).
 - ✅ S04-04 공통 `CLAUDE.md`의 기획 줄을 "`roadmap` 스킬을 쓴다"로 바꾼다.
 
 ## S05 확인

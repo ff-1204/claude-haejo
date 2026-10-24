@@ -1,6 +1,6 @@
-# claude-config
+# claude-haejo
 
-Claude Code 공통 설정과 스킬. 어느 기기에서든 같은 방식으로 일하게 하려고 둔다.
+"클로드, ~해줘." 한 마디로 기획부터 개발 반복까지 맡기는 Claude Code 공통 설정과 스킬. 어느 기기에서든 같은 방식으로 일하게 하려고 둔다.
 
 | 파일 | 내용 |
 |---|---|
@@ -12,15 +12,15 @@ Claude Code 공통 설정과 스킬. 어느 기기에서든 같은 방식으로 
 ## 설치
 
 ```bash
-git clone https://github.com/ff-1204/claude-config.git
+git clone https://github.com/ff-1204/claude-haejo.git
 mkdir -p ~/.claude/skills
-cp -r claude-config/skills/* ~/.claude/skills/
+cp -r claude-haejo/skills/* ~/.claude/skills/
 ```
 
 `CLAUDE.md`는 그 기기에 `~/.claude/CLAUDE.md`가 없으면 그대로 복사하고, 있으면 내용을 합친다.
 
 ```bash
-cp -n claude-config/CLAUDE.md ~/.claude/CLAUDE.md
+cp -n claude-haejo/CLAUDE.md ~/.claude/CLAUDE.md
 ```
 
 새 Claude Code 세션부터 쓸 수 있다.
