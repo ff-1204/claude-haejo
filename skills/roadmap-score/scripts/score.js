@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // 시나리오 파일에서 묶음별 비중 점수(사람 수 × 가중치 + 단계 수)를 계산해 마크다운 표로 낸다.
-// 사용법: node score.js scenarios.md [--depth 2] [--people-weight 2] [--grades 15,9,5] [--prefix F,I]
+// 사용법: node score.js scenarios.md [--depth 2] [--people-weight 2] [--grades a,b,c] [--prefix F,I]
+// --grades가 없으면 페르소나 수 P로 정한다: P×1.5, P, P×0.5 (상한 15,9,5)
 const fs = require('fs');
 
 function parseArgs(argv) {
-  const opts = { depth: 2, peopleWeight: 2, grades: [15, 9, 5], prefix: null, file: null };
+  const opts = { depth: 2, peopleWeight: 2, grades: null, prefix: null, file: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--depth') opts.depth = Number(argv[++i]);
@@ -14,14 +15,14 @@ function parseArgs(argv) {
     else if (!opts.file) opts.file = a;
   }
   if (!opts.file) {
-    console.error('사용법: node score.js <시나리오 파일> [--depth 2] [--people-weight 2] [--grades 15,9,5] [--prefix F,I]');
+    console.error('사용법: node score.js <시나리오 파일> [--depth 2] [--people-weight 2] [--grades a,b,c] [--prefix F,I]');
     process.exit(1);
   }
   return opts;
 }
 
-// "### 01 이름 — 장면" 같은 페르소나 제목
-const PERSONA = /^###\s+(\S+)\s+([^\s—–-]+)/;
+// "### 01 이름 — 장면" 같은 페르소나 제목 (번호로 시작하는 ### 제목만)
+const PERSONA = /^###\s+(\d{2,})\s+([^\s—–-]+)/;
 // "1. …" 번호 단계
 const STEP = /^\s*\d+\.\s+/;
 // F01-02-03, D05-12-01, I20-10 같은 체크리스트 번호
@@ -95,9 +96,15 @@ function rows(table, opts) {
 }
 
 const opts = parseArgs(process.argv.slice(2));
-const { pending, done, steps, unmapped, unmarked } = score(fs.readFileSync(opts.file, 'utf8'), opts);
+const text = fs.readFileSync(opts.file, 'utf8');
+const personas = text.split(/\r?\n/).filter(l => PERSONA.test(l)).length;
+if (!opts.grades) {
+  const p = Math.max(personas, 1);
+  opts.grades = [Math.min(15, Math.ceil(p * 1.5)), Math.min(9, p), Math.min(5, Math.max(1, Math.ceil(p * 0.5)))];
+}
+const { pending, done, steps, unmapped, unmarked } = score(text, opts);
 
-console.log(`> 단계 ${steps} · 번호 없는 단계 ${unmapped} · 표시 없는 단계 ${unmarked} · 점수 = 사람 수 × ${opts.peopleWeight} + 단계 수 · 등급 하한 ${opts.grades.join('/')}\n`);
+console.log(`> 페르소나 ${personas} · 단계 ${steps} · 번호 없는 단계 ${unmapped} · 표시 없는 단계 ${unmarked} · 점수 = 사람 수 × ${opts.peopleWeight} + 단계 수 · 등급 하한 ${opts.grades.join('/')}\n`);
 console.log('## 아직 안 된 것 (🔜)\n');
 console.log('| 순위 | 묶음 | 사람 | 단계 | 점수 | 등급 | 누구 |');
 console.log('|---|---|---|---|---|---|---|');
