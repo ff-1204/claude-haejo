@@ -44,9 +44,9 @@ function pieces(line, opts) {
   return segs.map(seg => {
     const own = marksIn(segs.length === 1 ? line : seg);
     const mark = own.length ? own[own.length - 1] : null;
-    const refs = [...seg.matchAll(REF)].map(m => m[1])
-      .filter(r => !opts.prefix || opts.prefix.some(x => r.startsWith(x)));
-    return { mark, refs };
+    const all = [...seg.matchAll(REF)].map(m => m[1]);
+    const refs = all.filter(r => !opts.prefix || opts.prefix.some(x => r.startsWith(x)));
+    return { mark, all, refs };
   });
 }
 
@@ -54,7 +54,7 @@ function score(text, opts) {
   const pending = new Map(); // 묶음 → { people:Set, steps }
   const done = new Map();
   let persona = null;
-  let steps = 0, unmapped = 0, unmarked = 0;
+  let steps = 0, unmapped = 0, unmarked = 0, otherOnly = 0;
   for (const line of text.split(/\r?\n/)) {
     const p = line.match(PERSONA);
     if (p) { persona = `${p[1]} ${p[2]}`; continue; }
@@ -63,9 +63,11 @@ function score(text, opts) {
     const segs = pieces(line, opts);
     if (segs.every(s => !s.mark)) { unmarked++; continue; }
     // 번호는 있는데 표시가 없는 조각이 있으면 그 단계도 알린다(그 조각 번호는 세지 않음)
-    if (segs.some(s => !s.mark && s.refs.length)) unmarked++;
-    const noRef = segs.every(s => s.refs.length === 0) || segs.some(s => s.mark === '❌' && s.refs.length === 0);
+    if (segs.some(s => !s.mark && s.all.length)) unmarked++;
+    // "번호 없음"은 --prefix로 거르기 전 번호로 판단한다. 걸러져서만 비는 단계는 "다른 절만 가진 단계"로 따로 센다.
+    const noRef = segs.every(s => s.all.length === 0) || segs.some(s => s.mark === '❌' && s.all.length === 0);
     if (noRef) unmapped++;
+    else if (opts.prefix && segs.every(s => s.refs.length === 0)) otherOnly++;
     // 한 단계는 묶음마다 표 하나에 한 번만 센다
     const seen = { pending: new Set(), done: new Set() };
     for (const s of segs) {
@@ -82,7 +84,7 @@ function score(text, opts) {
       }
     }
   }
-  return { pending, done, steps, unmapped, unmarked };
+  return { pending, done, steps, unmapped, unmarked, otherOnly };
 }
 
 function rows(table, opts) {
@@ -102,9 +104,9 @@ if (!opts.grades) {
   const p = Math.max(personas, 1);
   opts.grades = [Math.min(15, Math.ceil(p * 1.5)), Math.min(9, p), Math.min(5, Math.max(1, Math.ceil(p * 0.5)))];
 }
-const { pending, done, steps, unmapped, unmarked } = score(text, opts);
+const { pending, done, steps, unmapped, unmarked, otherOnly } = score(text, opts);
 
-console.log(`> 페르소나 ${personas} · 단계 ${steps} · 번호 없는 단계 ${unmapped} · 표시 없는 단계 ${unmarked} · 점수 = 사람 수 × ${opts.peopleWeight} + 단계 수 · 등급 하한 ${opts.grades.join('/')}\n`);
+console.log(`> 페르소나 ${personas} · 단계 ${steps} · 번호 없는 단계 ${unmapped} · 표시 없는 단계 ${unmarked}${opts.prefix ? ` · 다른 절만 가진 단계 ${otherOnly}` : ""} · 점수 = 사람 수 × ${opts.peopleWeight} + 단계 수 · 등급 하한 ${opts.grades.join('/')}\n`);
 console.log('## 아직 안 된 것 (🔜)\n');
 console.log('| 순위 | 묶음 | 사람 | 단계 | 점수 | 등급 | 누구 |');
 console.log('|---|---|---|---|---|---|---|');
