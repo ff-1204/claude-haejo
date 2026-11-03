@@ -33,7 +33,7 @@ cd claude-haejo
 ### 기획 흐름
 
 ```mermaid
-flowchart LR
+flowchart TD
   say["사용자 말"] -->|"처음부터"| core["core<br/>핵심 경험"]
   say -->|"페르소나 더하기"| personas
   say -->|"M2 진행해줘"| teammate
