@@ -98,6 +98,8 @@ Claude decides and reports everything else, but it always asks about these:
 
 From commit to tag, things become permanent records, become visible to others, and can lead to a release. So even when you say "handle it," it asks every time a skill runs. You pick one of three: **hand off up to the PR, ask before merging** (recommended) / hand off through merge, this run only / ask every time.
 
+On the same screen you also pick the `Co-Authored-By: Claude …` line (trailer) at the end of commits: **keep it** (recommended) / drop it and add one line like "Done with Claude" to the body / drop both.
+
 ## Install and update
 
 You'll need: [Claude Code](https://claude.com/claude-code), [Git](https://git-scm.com/), Node.js (for scoring), and the [GitHub CLI](https://cli.github.com/) `gh` (for opening PRs; without it, Claude stops at push).

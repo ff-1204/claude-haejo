@@ -96,6 +96,8 @@ sequenceDiagram
 
 커밋부터 태그까지는 기록으로 남고, 남에게 보이고, 배포로 이어질 수 있습니다. 그래서 "알아서 해줘"라고 해도 스킬을 쓸 때마다 묻습니다. 고르는 것은 셋입니다: **PR까지 맡기고 머지는 묻기**(추천) / 이번만 머지까지 맡기기 / 그때마다 묻기.
 
+같은 화면에서 커밋 끝의 `Co-Authored-By: Claude …` 줄(꼬리표)도 고릅니다: **남기기**(추천) / 빼고 본문에 "Claude로 진행함" 한 줄 / 둘 다 빼기.
+
 ## 설치·업데이트
 
 필요한 것: [Claude Code](https://claude.com/claude-code), [Git](https://git-scm.com/), Node.js(점수 계산), [GitHub CLI](https://cli.github.com/) `gh`(PR 만들기, 없으면 push까지만).

@@ -98,6 +98,8 @@ sequenceDiagram
 
 コミットからタグまでは記録に残り、人に見え、リリースにつながることがあります。だから「任せる」と言っても、スキルを使うたびに聞きます。選ぶのは3つです: **PRまで任せてマージは聞く**（おすすめ）/ 今回だけマージまで任せる / 毎回聞く。
 
+同じ画面で、コミット末尾の `Co-Authored-By: Claude …` 行（トレーラー）も選べます: **残す**（おすすめ）/ 外して本文に「Claude で進めた」と1行 / どちらも外す。
+
 ## インストール・アップデート
 
 必要なもの: [Claude Code](https://claude.com/claude-code)、[Git](https://git-scm.com/)、Node.js（点数計算）、[GitHub CLI](https://cli.github.com/) `gh`（PR作成。なければ push まで）。
