@@ -12,8 +12,6 @@
 
 スキル本体は韓国語で書かれていますが、スキルが作る文書や質問はあなたの言語で書かれます（[rules.md](skills/roadmap/references/rules.md) の「쓰는 법（書き方）」）。
 
-![このスキルがすること: 企画・開発を任せる・決めることだけ聞く（スライドは韓国語）](docs/slides/04.png)
-
 ## はじめに
 
 1. Claude Code にこう貼り付けてください。
@@ -67,8 +65,6 @@ flowchart TD
 
 ### サブセッションと PR
 
-![会社にたとえると: 親セッション＝チームリーダー、サブセッション＝メンバー、PR＝決裁書類、マージ＝決裁（スライドは韓国語）](docs/slides/07.png)
-
 ```mermaid
 sequenceDiagram
   participant U as あなた
@@ -92,8 +88,6 @@ sequenceDiagram
 - 親セッションはコードを読み直さず、PR で4つだけ見ます: 要約が埋まっているか、テストが通るか、任せた範囲内か、衝突がないか。
 - マージは squash で行います。PR ひとつが結果だけを書いたコミットひとつとして残ります。
 - あなたが決めるのは、始めるときの権限と、マージ直前の「はい」の2か所だけです。
-
-![報告をうのみにしない: 要約・テスト・範囲・衝突の4つを確認（スライドは韓国語）](docs/slides/09.png)
 
 ## 必ずあなたに聞くこと
 
@@ -140,7 +134,6 @@ git pull && ./install.sh # アップデート
 
 ## もっと知る（韓国語）
 
-- はじめての人向けの発表資料（13枚・韓国語）: [docs/presentation.md](docs/presentation.md)
 - 企画の流れと質問する場面: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
 - 作る文書5つと共通ルール: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
 - サブセッション・PR・マージ、テストの繰り返し、留守中の作業: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
