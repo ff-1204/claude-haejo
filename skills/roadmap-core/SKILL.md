@@ -1,6 +1,6 @@
 ---
 name: roadmap-core
-description: 기획 플로우 0단계 하위 스킬: 핵심 경험(사용자가 하는 일 3~6개, ①②③ 번호)과 범위(기기, 온라인 여부, 뺄 것)를 정해 personas.md 머리에 적는다. 보통은 roadmap 상위 스킬이 부른다(기획 문서를 고치는 말은 roadmap이 받는다). 이 단계만 따로 돌릴 때는 /roadmap-core로 부른다.
+description: 기획 플로우 0단계 하위 스킬. 핵심 경험(사용자가 하는 일 3~6개, ①②③ 번호)과 범위(기기, 온라인 여부, 뺄 것)를 정해 personas.md 머리에 적는다. 보통 roadmap이 부르고(기획 문서를 고치는 말은 roadmap이 받는다), 이 단계만 돌릴 때는 /roadmap-core.
 ---
 
 # roadmap-core — 핵심 경험과 범위

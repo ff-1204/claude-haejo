@@ -1,6 +1,6 @@
 ---
 name: roadmap-milestones
-description: 기획 플로우 7·8단계 하위 스킬: 우선순위(I00-00 순서)를 잘라 날짜 없는 마일스톤과 세부 항목(한 줄 = 구현 → 검토 → 반영 → 검증 한 번)으로 roadmap.md를 쓰고, 끝난 마일스톤을 ✅로 표시한다. 보통은 roadmap 상위 스킬이 부른다(기획 문서를 고치는 말은 roadmap이 받는다). 이 단계만 따로 돌릴 때는 /roadmap-milestones로 부른다.
+description: 기획 플로우 7·8단계 하위 스킬. 우선순위(I00-00 순서)를 잘라 날짜 없는 마일스톤과 세부 항목(한 줄 = 구현 → 검토 → 반영 → 검증 한 번)으로 roadmap.md를 쓰고, 끝난 마일스톤을 ✅로 표시한다. 보통 roadmap이 부르고(기획 문서를 고치는 말은 roadmap이 받는다), 이 단계만 돌릴 때는 /roadmap-milestones.
 ---
 
 # roadmap-milestones — 마일스톤과 세부 항목
