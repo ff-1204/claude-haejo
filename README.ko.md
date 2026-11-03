@@ -130,6 +130,7 @@ git pull && ./install.sh # 업데이트
 
 ## 더 알아보기
 
+- 처음 보는 사람용 발표자료(13장): [docs/presentation.html](docs/presentation.html) — 내려받아 브라우저로 열면 ←/→로 넘깁니다
 - 기획 플로우와 묻는 지점: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
 - 만드는 문서 5개와 공통 규칙: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
 - 하위 세션·PR·머지, 테스트 반복, 자리 비움: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)

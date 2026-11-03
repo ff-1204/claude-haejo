@@ -132,6 +132,7 @@ git pull && ./install.sh # アップデート
 
 ## もっと知る（韓国語）
 
+- はじめての人向けの発表資料（13枚・韓国語）: [docs/presentation.html](docs/presentation.html) — ダウンロードしてブラウザで開き、←/→でめくります
 - 企画の流れと質問する場面: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
 - 作る文書5つと共通ルール: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
 - サブセッション・PR・マージ、テストの繰り返し、留守中の作業: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)

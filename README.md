@@ -132,6 +132,7 @@ git pull && ./install.sh # update
 
 ## Learn more (in Korean)
 
+- Intro slides for newcomers (13 slides, Korean): [docs/presentation.html](docs/presentation.html) — download and open in a browser, use ←/→ to flip
 - Planning flow and where it asks you: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
 - The 5 documents it writes and shared rules: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
 - Sub-sessions, PRs, merging, test loops, working while you're away: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
