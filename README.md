@@ -10,6 +10,8 @@
 
 The skills themselves are written in Korean, but every document and question they produce is in your language (see "Writing" in [rules.md](skills/roadmap/references/rules.md)).
 
+![What it does: planning, delegating work, asking only what is yours to decide (slide in Korean)](docs/slides/04.png)
+
 ## Getting started
 
 1. Paste this into Claude Code:
@@ -63,6 +65,8 @@ flowchart TD
 
 ### Sub-sessions and PRs
 
+![As a company: parent session = team lead, sub-session = teammate, PR = approval form, merge = sign-off (slide in Korean)](docs/slides/07.png)
+
 ```mermaid
 sequenceDiagram
   participant U as You
@@ -86,6 +90,8 @@ sequenceDiagram
 - The parent session doesn't reread the code. It checks four things on the PR: is the summary complete, do the tests pass, is it within the assigned scope, are there no conflicts.
 - Merges are squashed: each PR lands as one commit that lists only the results.
 - You decide in just two places: permissions at the start, and "yes" right before a merge.
+
+![Four checks before merging: summary, tests, scope, conflicts (slide in Korean)](docs/slides/09.png)
 
 ## What it always asks you
 
