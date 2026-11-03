@@ -7,7 +7,7 @@
 | `CLAUDE.md` | 모든 프로젝트에 적용되는 작업 방식 (`~/.claude/CLAUDE.md`) |
 | `skills/roadmap/` + `skills/roadmap-*/` | 페르소나에서 마일스톤까지 기획하는 스킬. 상위 `roadmap`이 말을 듣고 하위 일곱 개(core, personas, scenarios, map, score, priority, milestones)를 순서대로 부른다 |
 | `playbooks/persona-roadmap/` | 위 과정을 사람이 읽는 개요와 스킬로 나눈 계획 |
-| `skills/roadmap-teammate/` | 작업을 팀원처럼 하위 세션에 맡기고, 끝나면 결과를 확인해 보고하는 스킬. 테스트 > 개선 > 커밋 반복 포함 |
+| `skills/roadmap-teammate/` | 작업을 팀원처럼 하위 세션에 맡기고, 끝나면 결과를 확인해 보고하는 스킬. 작업 하나 = 브랜치 하나 = PR 하나, 부모가 PR 요약과 확인 항목 4개를 보고 머지한다. 테스트 > 개선 > 커밋 반복 포함 |
 
 ## 설치
 
