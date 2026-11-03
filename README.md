@@ -13,15 +13,19 @@
 
 ```bash
 git clone https://github.com/ff-1204/claude-haejo.git
-mkdir -p ~/.claude/skills
-cp -r claude-haejo/skills/* ~/.claude/skills/
+cd claude-haejo
+./install.sh
 ```
 
-`CLAUDE.md`는 그 기기에 `~/.claude/CLAUDE.md`가 없으면 그대로 복사하고, 있으면 내용을 합친다.
+Windows PowerShell이면 `./install.sh` 대신:
 
-```bash
-cp -n claude-haejo/CLAUDE.md ~/.claude/CLAUDE.md
+```powershell
+powershell -ExecutionPolicy Bypass -File .\install.ps1
 ```
+
+- `skills/*`를 `~/.claude/skills/`에 복사한다. `*.local.md`(아래 개인 규칙)는 건드리지 않는다.
+- `CLAUDE.md`는 `~/.claude/CLAUDE.md`가 없을 때만 복사한다. 있고 다르면 덮지 않고 다른 줄만 보인다. 필요한 줄은 손으로 합친다.
+- `--dry-run`(PowerShell은 `-DryRun`)은 복사할 파일만 보인다.
 
 새 Claude Code 세션부터 쓸 수 있다.
 
@@ -34,4 +38,7 @@ cp -n claude-haejo/CLAUDE.md ~/.claude/CLAUDE.md
 
 ## 업데이트
 
-`~/.claude`에서 고친 것은 이 저장소에 복사해 커밋한다. 다른 기기에서는 `git pull` 뒤 다시 복사한다.
+- 다른 기기에서는 `git pull` 뒤 `./install.sh`(또는 `install.ps1`)를 다시 돌린다.
+- `./install.sh --check`(PowerShell은 `-Check`)는 복사하지 않고 저장소와 `~/.claude`가 다른 파일만 보인다. 모두 같으면 exit 0, 다르면 exit 1.
+- `~/.claude`에서 고친 것은 이 저장소에 복사해 커밋한다. `--check`로 빠뜨린 파일이 없는지 본다.
+- 저장소에서 지운 파일은 `~/.claude`에서 지우지 않고 "저장소에 없음"으로 알리기만 한다.
