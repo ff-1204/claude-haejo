@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>claude-haejo — 클로드, ~해줘.</title>
-<meta name="description" content="말 한마디로 기획부터 개발까지 맡기는 Claude Code 스킬 묶음">
+<meta name="description" content="개발을 몰라도, 말로 부탁하면 AI 팀이 계획부터 완성까지 해 드려요">
 <meta property="og:title" content="claude-haejo — 클로드, ~해줘.">
-<meta property="og:description" content="말 한마디로 기획부터 개발까지 맡기는 Claude Code 스킬 묶음">
+<meta property="og:description" content="개발을 몰라도, 말로 부탁하면 AI 팀이 계획부터 완성까지 해 드려요">
 <meta property="og:image" content="https://ff-1204.github.io/claude-haejo/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -173,6 +173,15 @@ footer a { color: var(--muted); }
   .step code { font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .typing .caret { animation: none; } }
+
+.hero .lead { color: var(--muted); font-size: clamp(16px, 2.2vw, 19px); line-height: 1.7; margin: 18px auto 0; max-width: 620px; }
+.btns { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+.btns a { text-decoration: none; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 15.5px; }
+.btns a.main { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.need { max-width: 720px; margin: 32px auto 0; text-align: left; background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--summer); border-radius: var(--r); padding: 16px 20px; }
+.need b { font-family: var(--display); font-size: 19px; }
+.need p { color: var(--muted); font-size: 15px; margin-top: 2px; }
+.cta .install { margin-top: 18px; }
 </style>
 </head>
 <body>
@@ -181,8 +190,9 @@ footer a { color: var(--muted); }
   <div class="wrap">
     <a class="brand" href="#top"><span data-pix="sprout" data-s="2"></span>claude-haejo</a>
     <nav>
-      <a class="hide-s" href="#team">팀처럼</a>
-      <a class="hide-s" href="#checks">확인</a>
+      <a class="hide-s" href="#how">어떻게</a>
+      <a class="hide-s" href="#safe">안심</a>
+      <a class="hide-s" href="#start">시작하기</a>
       <a href="https://github.com/ff-1204/claude-haejo#readme">EN</a>
       <a href="https://github.com/ff-1204/claude-haejo/blob/main/README.ja.md">JA</a>
       <a class="gh" href="https://github.com/ff-1204/claude-haejo">GitHub</a>
@@ -194,9 +204,10 @@ footer a { color: var(--muted); }
 
 <section class="hero">
   <div class="wrap">
-    <span class="chip"><i></i>Claude Code 스킬 묶음</span>
+    <span class="chip"><i></i>AI 개발 도우미 Claude Code에 더하는 기능</span>
     <h1>“클로드,<br><em>~해줘.</em>”</h1>
     <p class="typing" aria-live="polite"><b id="typed">처음부터 기획해줘</b><span class="caret"></span></p>
+    <p class="lead">만들고 싶은 앱이나 게임이 있는데 개발은 모르시나요?<br>말로 부탁하면, AI가 작은 팀을 꾸려 계획부터 완성까지 해 드려요.</p>
     <div class="flowerbed" aria-hidden="true">
       <span data-pix="tulip" data-s="5"></span>
       <span data-pix="daisy" data-s="6"></span>
@@ -205,36 +216,24 @@ footer a { color: var(--muted); }
       <span data-pix="tulip2" data-s="5"></span>
     </div>
     <div class="soil" aria-hidden="true"></div>
-
-    <div class="install" id="install">
-      <div class="tabs" role="tablist">
-        <button role="tab" aria-selected="true" data-tab="say">말로 하기</button>
-        <button role="tab" aria-selected="false" data-tab="cmd">명령어로</button>
-      </div>
-      <div class="panel" data-panel="say">
-        <div class="step say"><span class="n">1</span><code>https://github.com/ff-1204/claude-haejo 를 받아서 설치해줘</code><button class="copy">복사</button></div>
-        <div class="step"><span class="n">2</span><span class="note">새 Claude Code 세션을 열고, 프로젝트 폴더에서 <b>“처음부터 기획해줘”</b></span></div>
-      </div>
-      <div class="panel" data-panel="cmd" hidden>
-        <div class="step"><span class="n">1</span><code>git clone https://github.com/ff-1204/claude-haejo.git && cd claude-haejo</code><button class="copy">복사</button></div>
-        <div class="step"><span class="n">2</span><code>./install.sh</code><button class="copy">복사</button></div>
-      </div>
-      <p class="after">Claude Code 창에 붙여 넣으면 끝. <b>새 세션부터</b> 적용돼요.</p>
+    <div class="btns">
+      <a class="main" href="#how">어떻게 하는지 보기</a>
+      <a href="#start">바로 시작하기</a>
     </div>
   </div>
 </section>
 
 <section class="worries">
   <div class="wrap">
-    <p class="eyebrow">혼자 만들 때</p>
-    <h2 class="sec-title">이런 고민,<br>클로드가 대신 챙겨요.</h2>
+    <p class="eyebrow">이런 분께</p>
+    <h2 class="sec-title">코딩을 몰라도<br>괜찮아요.</h2>
     <div class="talk">
-      <div class="pair"><p class="bubble q">“무엇부터 만들어야 할지 모르겠어요…”</p><p class="bubble a">사람에서 순서를 정해요.</p></div>
-      <div class="pair"><p class="bubble q">“AI가 다 했다는데 믿어도 될까요…”</p><p class="bubble a">팀장이 네 가지를 직접 확인해요.</p></div>
-      <div class="pair"><p class="bubble q">“일이 많아지면 서로 꼬여요…”</p><p class="bubble a">일마다 팀원 한 명, 가지 하나.</p></div>
-      <div class="pair"><p class="bubble q">“커밋, PR… 뭔지 잘 몰라요.”</p><p class="bubble a">몰라도 돼요. 버튼만 고르세요.</p></div>
-      <div class="pair"><p class="bubble q">“자다가 깨면 어디까지 했는지 몰라요.”</p><p class="bubble a">아침에 정할 것만 모아 둬요.</p></div>
-      <div class="pair"><p class="bubble q">“휴대폰으로만 볼 때가 많아요.”</p><p class="bubble a">보고는 짧게, 선택지는 번호로.</p></div>
+      <div class="pair"><p class="bubble q">“아이디어는 있는데, 코딩은 하나도 몰라요.”</p><p class="bubble a">말로만 하세요. 나머지는 AI 팀이 해요.</p></div>
+      <div class="pair"><p class="bubble q">“AI가 ‘다 했어요’ 하는데 진짜인지 모르겠어요.”</p><p class="bubble a">팀장 AI가 한 번 더 검사해요.</p></div>
+      <div class="pair"><p class="bubble q">“뭐부터 만들어야 할지 막막해요.”</p><p class="bubble a">쓸 사람 입장에서 순서를 정해 드려요.</p></div>
+      <div class="pair"><p class="bubble q">“어려운 용어가 나오면 겁나요.”</p><p class="bubble a">버튼으로 ‘예’, ‘아니요’만 고르면 돼요.</p></div>
+      <div class="pair"><p class="bubble q">“밤새 맡겨 두고 자고 싶어요.”</p><p class="bubble a">아침에 정할 것만 모아 둘게요.</p></div>
+      <div class="pair"><p class="bubble q">“휴대폰으로만 확인할 때가 많아요.”</p><p class="bubble a">보고는 짧게, 고를 건 번호로 드려요.</p></div>
     </div>
   </div>
 </section>
@@ -242,79 +241,79 @@ footer a { color: var(--muted); }
 <section>
   <div class="wrap">
     <p class="eyebrow">하는 일</p>
-    <h2 class="sec-title">말은 한 줄, 일은 끝까지.</h2>
+    <h2 class="sec-title">부탁은 한 줄,<br>일은 끝까지.</h2>
     <div class="cards">
-      <div class="card"><div class="ico"><span data-pix="seed" data-s="4"></span></div><h3>기획</h3><span class="say">“처음부터 기획해줘”</span><p>가상의 사용자 다섯 명의 하루에서 필요한 기능을 뽑고, 개발 단계표(마일스톤)까지 문서로 만들어요.</p></div>
-      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>개발 맡기기</h3><span class="say">“M2 진행해줘”</span><p>일을 팀원(하위 세션)에게 하나씩 나눠 맡기고, 결과를 직접 확인한 뒤 보고해요.</p></div>
-      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>정할 것만 묻기</h3><span class="say">선택 버튼</span><p>과정은 클로드가 정해요. 취향·돈·되돌리기 어려운 일만 버튼으로 물어요.</p></div>
+      <div class="card"><div class="ico"><span data-pix="seed" data-s="4"></span></div><h3>계획 세우기</h3><span class="say">“처음부터 기획해줘”</span><p>이걸 쓸 사람 다섯 명을 상상하고 그 사람들의 하루를 그려 봐요. 그러면 꼭 필요한 기능과 만들 순서가 나와요.</p></div>
+      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>나눠서 만들기</h3><span class="say">“로드맵대로 개발해줘”</span><p>할 일을 잘게 나눠 AI 팀원 여럿에게 맡겨요. 동시에 일해도 서로 꼬이지 않아요.</p></div>
+      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>중요한 것만 묻기</h3><span class="say">선택 버튼</span><p>나머지는 AI가 알아서 정해요. 디자인 취향, 돈 드는 일, 되돌리기 어려운 일만 버튼으로 물어봐요.</p></div>
     </div>
   </div>
 </section>
 
-<section class="team" id="team">
+<section class="team" id="how">
   <div class="wrap">
-    <p class="eyebrow">팀처럼 일해요</p>
-    <h2 class="sec-title">회사로 비유하면 쉬워요.</h2>
-    <p class="sec-lead">사장님은 당신. 클로드가 팀을 꾸려 일하고, 결재만 올려요.</p>
+    <p class="eyebrow">어떻게 일하나요</p>
+    <h2 class="sec-title">작은 회사처럼 일해요.</h2>
+    <p class="sec-lead">당신은 사장님. AI가 팀장과 팀원이 되어 일하고, 사장님께는 결재만 올려요.</p>
     <div class="roles">
-      <div class="role"><small>부모 세션</small><h3>팀장</h3><p>일을 나눠 주고, 결과를 확인하고, 보고해요.</p></div>
-      <div class="role"><small>하위 세션</small><h3>팀원</h3><p>일 하나를 처음부터 끝까지 맡아요.</p></div>
-      <div class="role"><small>PR</small><h3>결재 서류</h3><p>“이렇게 바꿨는데 합쳐도 될까요?”</p></div>
-      <div class="role"><small>머지</small><h3>결재 승인</h3><p>바뀐 내용을 본 줄기(main)에 합쳐요.</p></div>
+      <div class="role"><small>당신</small><h3>사장님</h3><p>원하는 걸 말하고, 결재만 해요.</p></div>
+      <div class="role"><small>지금 대화하는 AI</small><h3>팀장</h3><p>일을 나눠 주고, 결과를 검사하고, 보고해요.</p></div>
+      <div class="role"><small>따로 일하는 AI 여럿</small><h3>팀원</h3><p>맡은 일 하나를 처음부터 끝까지 해요.</p></div>
+      <div class="role"><small>팀원이 올리는 것</small><h3>결재 서류</h3><p>“이렇게 만들었는데 반영할까요?”</p></div>
     </div>
     <ol class="path">
-      <li class="you"><p>“M2 진행해줘”<span>당신</span></p></li>
-      <li><p>권한을 버튼으로 묻기<span>팀장</span></p></li>
-      <li><p>일마다 팀원 한 명<span>팀장</span></p></li>
-      <li><p>자기 가지에서 만들고 테스트<span>팀원</span></p></li>
-      <li><p>결재 서류(PR) 올리기<span>팀원</span></p></li>
-      <li><p>네 가지 확인, 걸리면 다시<span>팀장</span></p></li>
-      <li><p>“머지할까요?”<span>팀장</span></p></li>
-      <li class="you"><p>“예” → 합치고 정리<span>당신</span></p></li>
+      <li class="you"><p>“로드맵대로 개발해줘”<span>사장님</span></p></li>
+      <li><p>어디까지 맡길지 버튼으로 묻기<span>팀장</span></p></li>
+      <li><p>할 일마다 팀원 한 명씩<span>팀장</span></p></li>
+      <li><p>각자 따로 만들고 시험해 보기<span>팀원</span></p></li>
+      <li><p>결재 서류 올리기<span>팀원</span></p></li>
+      <li><p>네 가지 검사, 부족하면 다시<span>팀장</span></p></li>
+      <li><p>“반영할까요?”<span>팀장</span></p></li>
+      <li class="you"><p>“예” → 완성본에 반영<span>사장님</span></p></li>
     </ol>
   </div>
 </section>
 
-<section id="checks">
+<section id="safe">
   <div class="wrap">
-    <p class="eyebrow">보고만 믿지 않아요</p>
-    <h2 class="sec-title">다 통과해야<br>“머지할까요?”가 와요.</h2>
+    <p class="eyebrow">안심하고 맡기세요</p>
+    <h2 class="sec-title">AI 말만 믿지 않아요.<br>검사를 다 통과해야 결재가 와요.</h2>
     <div class="checks-grid">
       <div class="four">
-        <div><span class="ok">✓ 통과</span><b>요약</b><p>바꾼 것·확인한 것·남은 것이 다 적혔나</p></div>
-        <div><span class="ok">✓ 통과</span><b>테스트</b><p>팀장이 직접 한 번 더 돌려 보나</p></div>
-        <div><span class="ok">✓ 통과</span><b>범위</b><p>맡긴 일 밖을 건드리지 않았나</p></div>
-        <div><span class="ok">✓ 통과</span><b>충돌</b><p>다른 일과 부딪히지 않나</p></div>
+        <div><span class="ok">✓ 통과</span><b>설명</b><p>무엇을 바꿨고 무엇이 남았는지 다 적었나</p></div>
+        <div><span class="ok">✓ 통과</span><b>시험</b><p>팀장이 직접 한 번 더 돌려 봤나</p></div>
+        <div><span class="ok">✓ 통과</span><b>범위</b><p>시키지 않은 곳을 건드리지 않았나</p></div>
+        <div><span class="ok">✓ 통과</span><b>충돌</b><p>다른 팀원의 작업과 부딪히지 않나</p></div>
       </div>
-      <div class="report" aria-label="머지할까요 보고 예시">
+      <div class="report" aria-label="결재 보고 예시">
         <div class="bar"><i></i><i></i><i></i></div>
-        <p><b>무엇</b>PR #9 — 머지 방식을 squash로</p>
-        <p><b>확인</b>요약 ✓ · 테스트 ✓ · 범위 ✓ · 충돌 없음</p>
-        <p><b>못 한 것</b>실제 사용은 새 세션에서</p>
-        <p><b>머지하면</b>이 PC에 설치</p>
+        <p><b>무엇</b>로그인 화면 만들기</p>
+        <p><b>검사</b>설명 ✓ · 시험 ✓ · 범위 ✓ · 충돌 없음</p>
+        <p><b>못 한 것</b>휴대폰에서 직접 눌러 보기</p>
+        <p><b>반영하면</b>사이트에 바로 보여요</p>
         <hr>
-        <ol><li class="pick">머지하고 정리 (추천)</li><li>머지만</li><li>아직 안 함</li></ol>
+        <ol><li class="pick">반영하고 정리 (추천)</li><li>반영만</li><li>아직 안 함</li></ol>
       </div>
     </div>
-    <p class="sec-lead">합칠 때는 결과만 적은 기록 하나로 깔끔하게 남겨요(squash).</p>
+    <p class="sec-lead">결재는 이렇게 짧게 와요. 사장님은 번호 하나만 고르면 돼요.</p>
   </div>
 </section>
 
 <section style="background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
   <div class="wrap">
-    <p class="eyebrow">기획 흐름</p>
+    <p class="eyebrow">계획 세우는 법</p>
     <h2 class="sec-title">씨앗에서 꽃까지, 일곱 걸음.</h2>
-    <p class="sec-lead">기능 목록이 아니라 사람에서 시작해요. 여러 사람에게 필요한 기능부터 만들어요.</p>
+    <p class="sec-lead">기능 목록부터 쓰지 않아요. ‘누가, 어떤 하루에 쓸까’에서 시작해요.</p>
     <div class="seasons">
-      <div class="season" style="--c: var(--seed)"><small>1</small><h3>핵심 경험</h3><p>사용자가 하는 일 3~6개</p></div>
-      <div class="season" style="--c: var(--spring)"><small>2</small><h3>페르소나</h3><p>가상의 사용자 5명</p></div>
-      <div class="season" style="--c: var(--spring)"><small>3</small><h3>하루 장면</h3><p>한 사람의 하루 5~8단계</p></div>
-      <div class="season" style="--c: var(--summer)"><small>4</small><h3>기능 잇기</h3><p>장면마다 필요한 기능</p></div>
-      <div class="season" style="--c: var(--summer)"><small>5</small><h3>점수</h3><p>많이 필요할수록 높게</p></div>
-      <div class="season" style="--c: var(--autumn)"><small>6</small><h3>개발 순서</h3><p>점수 순서를 다듬기</p></div>
-      <div class="season" style="--c: var(--winter)"><small>7</small><h3>마일스톤</h3><p>개발 단계 M1, M2…</p></div>
+      <div class="season" style="--c: var(--seed)"><small>1</small><h3>핵심 정하기</h3><p>사람들이 이걸로 할 일 3~6가지</p></div>
+      <div class="season" style="--c: var(--spring)"><small>2</small><h3>쓸 사람 상상</h3><p>가상의 사용자 다섯 명</p></div>
+      <div class="season" style="--c: var(--spring)"><small>3</small><h3>하루 그려 보기</h3><p>그 사람의 하루를 장면으로</p></div>
+      <div class="season" style="--c: var(--summer)"><small>4</small><h3>필요한 것 찾기</h3><p>장면마다 필요한 기능</p></div>
+      <div class="season" style="--c: var(--summer)"><small>5</small><h3>점수 매기기</h3><p>많은 사람에게 필요할수록 높게</p></div>
+      <div class="season" style="--c: var(--autumn)"><small>6</small><h3>순서 정하기</h3><p>점수 높은 것부터</p></div>
+      <div class="season" style="--c: var(--winter)"><small>7</small><h3>단계 나누기</h3><p>1단계, 2단계… 계획표 완성</p></div>
     </div>
-    <p class="formula">점수 = <code>필요한 사람 수 × 2 + 나온 장면 수</code> · 눈대중이 아니라 프로그램(<code>score.js</code>)이 세요.</p>
+    <p class="formula">점수는 AI가 눈대중하지 않고 계산기처럼 셉니다. 그래서 몇 번을 해도 같은 답이 나와요.</p>
   </div>
 </section>
 
@@ -323,11 +322,11 @@ footer a { color: var(--muted); }
     <p class="eyebrow">이렇게 말하세요</p>
     <h2 class="sec-title">명령어는 외우지 않아도 돼요.</h2>
     <div class="says">
-      <div><code>“처음부터 기획해줘”</code><span>핵심 경험을 확인받고, 페르소나부터 마일스톤까지 써요.</span></div>
-      <div><code>“페르소나 하나 더 추가해줘”</code><span>그 사람을 더하고, 뒤 문서에서 바뀐 곳만 고쳐요.</span></div>
-      <div><code>“M2 진행해줘”</code><span>남은 일을 팀원에게 나눠 맡기고, 확인 뒤 머지할지 물어요.</span></div>
-      <div><code>“자러 갈게”</code><span>떠나기 전 권한만 묻고 계속해요. 아침에 정할 것만 모아 둬요.</span></div>
-      <div><code>“로드맵 어디까지 왔어?”</code><span>끝난 수와 다음 할 일만 알려 줘요.</span></div>
+      <div><code>“처음부터 기획해줘”</code><span>무엇을 만들지 같이 정하고, 계획표까지 써 줘요.</span></div>
+      <div><code>“이런 사용자도 넣어줘: 주말에만 하는 직장인”</code><span>그 사람을 계획에 더하고, 달라지는 부분만 고쳐요.</span></div>
+      <div><code>“로드맵대로 개발해줘”</code><span>계획표에 남은 일을 팀원에게 나눠 맡기고, 끝나면 반영할지 물어요.</span></div>
+      <div><code>“자러 갈게”</code><span>떠나기 전에 한 번만 묻고 계속 일해요. 아침에 정할 것만 모아 둬요.</span></div>
+      <div><code>“로드맵 어디까지 왔어?”</code><span>끝난 일과 다음 할 일만 짧게 알려 줘요.</span></div>
     </div>
   </div>
 </section>
@@ -335,31 +334,45 @@ footer a { color: var(--muted); }
 <section style="padding-top: 24px;">
   <div class="wrap">
     <p class="eyebrow">꼭 묻는 것</p>
-    <h2 class="sec-title">기록으로 남는 일은<br>매번 당신에게 물어요.</h2>
-    <p class="sec-lead">“알아서 해줘”라고 해도, 시작할 때 버튼 하나로 어디까지 맡길지 골라요.</p>
+    <h2 class="sec-title">되돌리기 어려운 일은<br>꼭 사장님께 물어봐요.</h2>
+    <p class="sec-lead">“알아서 해줘”라고 해도, 처음 시작할 때 어디까지 맡길지 버튼 하나로 골라요.</p>
     <div class="words">
-      <div><b>커밋</b><p>바뀐 내용을 기록으로 남기기</p></div>
-      <div><b>push</b><p>그 기록을 GitHub에 올리기</p></div>
-      <div><b>PR</b><p>합쳐도 되는지 묻는 요청서</p></div>
-      <div><b>머지</b><p>본 줄기(main)에 합치기</p></div>
-      <div><b>태그</b><p>특정 시점의 이름표 (v1.0)</p></div>
+      <div><b>디자인·문구</b><p>보고 느끼는 건 사장님 취향대로</p></div>
+      <div><b>돈·계정</b><p>결제와 로그인은 사장님만</p></div>
+      <div><b>기록 남기기</b><p>만든 것을 저장해 두는 일</p></div>
+      <div><b>공개하기</b><p>인터넷 저장소에 올리는 일</p></div>
+      <div><b>반영하기</b><p>완성본에 합치는 일</p></div>
     </div>
-    <div class="options"><span class="rec">PR까지 맡기고 머지는 묻기 (추천)</span><span>이번만 머지까지</span><span>그때마다 묻기</span></div>
+    <div class="options"><span class="rec">결재 직전까지 맡기기 (추천)</span><span>이번만 반영까지</span><span>그때마다 묻기</span></div>
   </div>
 </section>
 
-<section class="cta">
+<section class="cta" id="start">
   <div class="wrap">
     <div class="flowerbed" aria-hidden="true" style="margin-bottom: 18px;">
       <span data-pix="daisy" data-s="4"></span><span data-pix="tulip" data-s="4"></span><span data-pix="lavender" data-s="4"></span>
     </div>
-    <h2>한 마디면 돼요.<br>나머지는 팀이 할게요.</h2>
-    <div class="install">
-      <div class="step say"><span class="n">1</span><code>https://github.com/ff-1204/claude-haejo 를 받아서 설치해줘</code><button class="copy">복사</button></div>
+    <h2>준비물은 하나,<br>말은 한 마디.</h2>
+    <div class="need"><b>준비물: Claude Code</b><p>Anthropic이 만든 AI 개발 도우미예요. 먼저 <a href="https://claude.com/claude-code">설치</a>해 주세요.</p></div>
+    <div class="install" id="install">
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="say">말로 하기</button>
+        <button role="tab" aria-selected="false" data-tab="cmd">개발자라면</button>
+      </div>
+      <div class="panel" data-panel="say">
+        <div class="step say"><span class="n">1</span><code>https://github.com/ff-1204/claude-haejo 를 받아서 설치해줘</code><button class="copy">복사</button></div>
+        <div class="step"><span class="n">2</span><span class="note">Claude Code에서 새 대화를 열어요.</span></div>
+        <div class="step"><span class="n">3</span><span class="note">만들 것을 담을 폴더에서 <b>“처음부터 기획해줘”</b></span></div>
+      </div>
+      <div class="panel" data-panel="cmd" hidden>
+        <div class="step"><span class="n">1</span><code>git clone https://github.com/ff-1204/claude-haejo.git && cd claude-haejo</code><button class="copy">복사</button></div>
+        <div class="step"><span class="n">2</span><code>./install.sh</code><button class="copy">복사</button></div>
+      </div>
+      <p class="after">1번 문장을 Claude Code 창에 붙여 넣으면 알아서 설치해요.</p>
     </div>
     <div class="links">
       <a class="main" href="https://github.com/ff-1204/claude-haejo">GitHub에서 보기</a>
-      <a href="https://github.com/ff-1204/claude-haejo/blob/main/README.ko.md">한국어 README</a>
+      <a href="https://github.com/ff-1204/claude-haejo/blob/main/README.ko.md">자세한 설명 (README)</a>
     </div>
   </div>
 </section>
@@ -368,8 +381,8 @@ footer a { color: var(--muted); }
 
 <footer>
   <div class="wrap">
-    <span>claude-haejo · Claude Code 스킬 묶음</span>
-    <span>업데이트는 “claude-haejo 업데이트해줘” · <a href="https://github.com/ff-1204/claude-haejo">github.com/ff-1204/claude-haejo</a></span>
+    <span>claude-haejo · 말로 맡기는 AI 개발 팀</span>
+    <span>새 버전은 “claude-haejo 업데이트해줘” · <a href="https://github.com/ff-1204/claude-haejo">github.com/ff-1204/claude-haejo</a></span>
   </div>
 </footer>
 
@@ -392,7 +405,7 @@ footer a { color: var(--muted); }
   });
 
   // 첫 화면의 말 바꾸기
-  var says = ['처음부터 기획해줘', 'M2 진행해줘', '페르소나 하나 더 추가해줘', '자러 갈게', '로드맵 어디까지 왔어?'];
+  var says = ['처음부터 기획해줘', '로드맵대로 개발해줘', '이런 사용자도 넣어줘', '자러 갈게', '로드맵 어디까지 왔어?'];
   var el = document.getElementById('typed'), i = 0, n = says[0].length, del = false;
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     (function tick() {
