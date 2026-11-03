@@ -84,6 +84,7 @@ sequenceDiagram
 
 - Each sub-session works on its own branch (a line of work split off from the main line), so many tasks can run at once without stepping on each other.
 - The parent session doesn't reread the code. It checks four things on the PR: is the summary complete, do the tests pass, is it within the assigned scope, are there no conflicts.
+- Merges are squashed: each PR lands as one commit that lists only the results.
 - You decide in just two places: permissions at the start, and "yes" right before a merge.
 
 ## What it always asks you
