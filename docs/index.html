@@ -11,6 +11,10 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="ko" href="https://ff-1204.github.io/claude-haejo/">
+<link rel="alternate" hreflang="en" href="https://ff-1204.github.io/claude-haejo/en/">
+<link rel="alternate" hreflang="ja" href="https://ff-1204.github.io/claude-haejo/ja/">
+<link rel="alternate" hreflang="x-default" href="https://ff-1204.github.io/claude-haejo/en/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -182,6 +186,8 @@ footer a { color: var(--muted); }
 .need b { font-family: var(--display); font-size: 19px; }
 .need p { color: var(--muted); font-size: 15px; margin-top: 2px; }
 .cta .install { margin-top: 18px; }
+nav a.lang { font-family: var(--mono); font-size: 13px; padding: 6px 8px; }
+nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
 </style>
 </head>
 <body>
@@ -193,8 +199,9 @@ footer a { color: var(--muted); }
       <a class="hide-s" href="#how">어떻게</a>
       <a class="hide-s" href="#safe">안심</a>
       <a class="hide-s" href="#start">시작하기</a>
-      <a href="https://github.com/ff-1204/claude-haejo#readme">EN</a>
-      <a href="https://github.com/ff-1204/claude-haejo/blob/main/README.ja.md">JA</a>
+      <a class="lang on" href="./" hreflang="ko" aria-current="page">KO</a>
+      <a class="lang" href="en/" hreflang="en">EN</a>
+      <a class="lang" href="ja/" hreflang="ja">JA</a>
       <a class="gh" href="https://github.com/ff-1204/claude-haejo">GitHub</a>
     </nav>
   </div>

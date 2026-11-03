@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>claude-haejo — “Claude, do this for me.”</title>
+<meta name="description" content="No coding needed. Just ask, and an AI team takes it from plan to finished product.">
+<meta property="og:title" content="claude-haejo — “Claude, do this for me.”">
+<meta property="og:description" content="No coding needed. Just ask, and an AI team takes it from plan to finished product.">
+<meta property="og:image" content="https://ff-1204.github.io/claude-haejo/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="alternate" hreflang="ko" href="https://ff-1204.github.io/claude-haejo/">
+<link rel="alternate" hreflang="en" href="https://ff-1204.github.io/claude-haejo/en/">
+<link rel="alternate" hreflang="ja" href="https://ff-1204.github.io/claude-haejo/ja/">
+<link rel="alternate" hreflang="x-default" href="https://ff-1204.github.io/claude-haejo/en/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Jua&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #eef0e8; --panel: #f8f9f4; --sunk: #e4e8de; --ink: #1f2a22; --muted: #5a675c; --line: #d2d9cc;
+  --accent: #5b8a6e; --accent-ink: #f6fbf7; --good: #3f7f4a; --warn: #a8652a;
+  --spring: #e39ab3; --summer: #64a653; --autumn: #cc8636; --winter: #86abc3; --rest: #a993c9; --seed: #8a6a44;
+  --display: "Gowun Batang", "Nanum Myeongjo", serif;
+  --logo: "Jua", "Gowun Batang", sans-serif;
+  --body: "IBM Plex Sans KR", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r: 14px; --wrap: 1080px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #131814; --panel: #1b221d; --sunk: #232c25; --ink: #e4eae1; --muted: #98a59a; --line: #2e3831; --accent: #8fc4a3; --accent-ink: #10241a; --good: #79c287; --warn: #e0a066; --seed: #c49a6a; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.65; word-break: keep-all; -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+.wrap { max-width: var(--wrap); margin: 0 auto; padding: 0 20px; }
+section { padding: 88px 0; }
+.eyebrow { font-family: var(--body); font-weight: 600; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.sec-title { font-size: clamp(28px, 4.4vw, 44px); line-height: 1.3; }
+.sec-lead { color: var(--muted); margin-top: 12px; font-size: 17px; max-width: 640px; }
+.pix { image-rendering: pixelated; shape-rendering: crispEdges; display: block; }
+
+/* 머리 */
+header { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+header .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.brand { display: flex; align-items: center; gap: 10px; font-family: var(--logo); font-size: 22px; color: var(--ink); text-decoration: none; }
+nav { display: flex; gap: 6px; align-items: center; }
+nav a { font-size: 14px; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 999px; }
+nav a:hover { background: var(--sunk); color: var(--ink); }
+nav a.gh { background: var(--ink); color: var(--bg); }
+
+/* 첫 화면 */
+.hero { padding: 72px 0 56px; text-align: center; position: relative; overflow: hidden; }
+.chip { display: inline-flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 12.5px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; }
+.chip i { width: 8px; height: 8px; background: var(--summer); display: inline-block; }
+.hero h1 { font-size: clamp(48px, 11vw, 120px); line-height: 1.12; margin: 28px 0 8px; letter-spacing: -.02em; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.typing { font-family: var(--body); font-size: clamp(16px, 2.6vw, 22px); color: var(--muted); min-height: 1.6em; }
+.typing b { color: var(--ink); font-weight: 500; }
+.typing .caret { display: inline-block; width: .55em; height: 1.05em; background: var(--accent); vertical-align: -.15em; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.flowerbed { display: flex; justify-content: center; align-items: flex-end; gap: clamp(8px, 2.4vw, 28px); margin: 36px auto 0; }
+.flowerbed .soil { height: 12px; background: repeating-linear-gradient(90deg, var(--seed) 0 12px, color-mix(in srgb, var(--seed) 80%, #000) 12px 24px); max-width: 560px; margin: 0 auto; }
+
+/* 설치 */
+.install { max-width: 720px; margin: 44px auto 0; text-align: left; }
+.tabs { display: flex; justify-content: center; gap: 6px; margin-bottom: 14px; }
+.tabs button { font: 600 14px var(--body); border: 1px solid var(--line); background: var(--panel); color: var(--muted); border-radius: 999px; padding: 7px 16px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.step { display: flex; align-items: center; gap: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 12px 12px 14px; margin-bottom: 10px; }
+.step .n { flex: none; width: 26px; height: 26px; display: grid; place-items: center; background: var(--ink); color: var(--bg); font: 600 13px var(--mono); }
+.step code { flex: 1; font-family: var(--mono); font-size: 14.5px; overflow-x: auto; white-space: nowrap; color: var(--ink); }
+.step code::before { content: "› "; color: var(--accent); }
+.step.say code::before { content: ""; }
+.step .note { flex: 1; font-size: 15px; color: var(--muted); }
+.copy { flex: none; font: 500 13px var(--body); color: var(--muted); background: var(--sunk); border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+.copy.done { background: var(--accent); color: var(--accent-ink); }
+.after { text-align: center; color: var(--muted); font-size: 15px; margin-top: 14px; }
+.after b { color: var(--ink); }
+.panel[hidden] { display: none; }
+
+/* 고민 → 대답 */
+.worries { background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.talk { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 22px 28px; margin-top: 40px; }
+.pair { display: flex; flex-direction: column; gap: 8px; }
+.bubble { max-width: 88%; padding: 12px 16px; border-radius: 18px; font-size: 15.5px; line-height: 1.5; }
+.bubble.q { background: var(--sunk); color: var(--muted); border-bottom-left-radius: 4px; align-self: flex-start; }
+.bubble.a { background: var(--accent); color: var(--accent-ink); border-bottom-right-radius: 4px; align-self: flex-end; font-weight: 600; }
+
+/* 하는 일 */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 18px; margin-top: 40px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 26px 24px; display: flex; flex-direction: column; gap: 12px; }
+.card h3 { font-size: 24px; }
+.card p { color: var(--muted); }
+.card .say { font-family: var(--body); font-weight: 600; font-size: 14px; color: var(--ink); background: var(--sunk); border-radius: 8px; padding: 6px 10px; align-self: flex-start; }
+.card .ico { height: 64px; display: flex; align-items: flex-end; }
+
+/* 팀 */
+.team { background: #1f2a22; color: #e4eae1; }
+.team .sec-lead { color: #a8b5aa; }
+.team .eyebrow { color: #8fc4a3; }
+.roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 14px; margin-top: 40px; }
+.role { background: #2a372d; border-radius: var(--r); padding: 22px; }
+.role small { font-family: var(--mono); font-size: 12.5px; color: #e3b07a; letter-spacing: .06em; }
+.role h3 { font-size: 30px; color: #f6fbf7; margin: 4px 0 6px; }
+.role p { color: #a8b5aa; font-size: 15px; }
+.path { list-style: none; padding: 0; margin: 48px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 12px; counter-reset: s; }
+.path li { counter-increment: s; background: #2a372d; border-radius: var(--r); padding: 16px 18px; display: flex; gap: 12px; align-items: flex-start; font-size: 15.5px; }
+.path li::before { content: counter(s); flex: none; width: 28px; height: 28px; display: grid; place-items: center; font: 600 13px var(--mono); background: #8fc4a3; color: #10241a; }
+.path li.you { background: #cc8636; color: #1f2a22; font-weight: 600; }
+.path li.you::before { background: #1f2a22; color: #f6d9b8; }
+.path li span { display: block; font: 12.5px var(--mono); opacity: .75; }
+
+/* 확인 */
+.checks-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 36px; align-items: center; margin-top: 40px; }
+@media (max-width: 820px) { .checks-grid { grid-template-columns: minmax(0, 1fr); } }
+.four { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.four div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; }
+.four b { font-family: var(--display); font-size: 20px; display: block; margin-bottom: 4px; }
+.four p { color: var(--muted); font-size: 14.5px; }
+.four .ok { color: var(--good); font-family: var(--mono); font-size: 12.5px; }
+.report { background: #1f2a22; color: #e4eae1; border-radius: 22px; padding: 22px 22px 18px; box-shadow: 0 24px 60px rgba(31, 42, 34, .22); font-size: 15px; }
+.report .bar { display: flex; gap: 6px; margin-bottom: 16px; }
+.report .bar i { width: 10px; height: 10px; background: #3a473d; }
+.report .bar i:first-child { background: #e39ab3; } .report .bar i:nth-child(2) { background: #cc8636; } .report .bar i:nth-child(3) { background: #64a653; }
+.report p { margin-bottom: 8px; }
+.report b { color: #e3b07a; margin-right: 6px; }
+.report hr { border: none; border-top: 1px solid #3a473d; margin: 14px 0; }
+.report ol { margin: 0; padding-left: 20px; color: #c8d4ca; }
+.report .pick { color: #8fc4a3; font-weight: 600; }
+
+/* 기획 흐름 */
+.seasons { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 136px), 1fr)); gap: 10px; margin-top: 40px; }
+.season { border-radius: var(--r); padding: 16px 14px 18px; background: var(--panel); border: 1px solid var(--line); border-top: 8px solid var(--c); }
+.season small { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.season h3 { font-size: 19px; margin: 2px 0 4px; }
+.season p { font-size: 14px; color: var(--muted); }
+.formula { margin-top: 18px; background: var(--sunk); border-radius: var(--r); padding: 16px 20px; font-size: 16px; }
+.formula code { font-family: var(--mono); background: var(--panel); padding: 2px 8px; border-radius: 6px; }
+
+/* 말하기 표 */
+.says { margin-top: 36px; border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; background: var(--panel); }
+.says div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: 16px; padding: 14px 20px; border-top: 1px solid var(--line); }
+.says div:first-child { border-top: none; }
+.says code { font-family: var(--body); font-weight: 600; font-size: 15.5px; color: var(--ink); }
+.says span { color: var(--muted); font-size: 15px; }
+@media (max-width: 600px) { .says div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+
+/* 묻는 것 */
+.words { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 12px; margin-top: 36px; }
+.words div { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; }
+.words b { font-family: var(--display); font-size: 20px; }
+.words p { color: var(--muted); font-size: 14.5px; margin-top: 2px; }
+.options { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+.options span { border: 1px solid var(--line); background: var(--panel); border-radius: 999px; padding: 7px 14px; font-size: 14.5px; color: var(--muted); }
+.options span.rec { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+
+/* 마무리 */
+.cta { text-align: center; padding: 96px 0 72px; }
+.cta h2 { font-size: clamp(34px, 6vw, 60px); line-height: 1.25; }
+.cta .install { margin-top: 32px; }
+.links { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.links a { text-decoration: none; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 9px 18px; font-size: 15px; }
+.links a.main { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+footer { border-top: 1px solid var(--line); padding: 28px 0 40px; color: var(--muted); font-size: 14px; }
+footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+footer a { color: var(--muted); }
+@media (max-width: 600px) {
+  section { padding: 64px 0; }
+  nav a.hide-s { display: none; }
+  .step code { font-size: 13px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .typing .caret { animation: none; } }
+
+.hero .lead { color: var(--muted); font-size: clamp(16px, 2.2vw, 19px); line-height: 1.7; margin: 18px auto 0; max-width: 620px; }
+.btns { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 36px; }
+.btns a { text-decoration: none; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 999px; padding: 11px 22px; font-weight: 600; font-size: 15.5px; }
+.btns a.main { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.need { max-width: 720px; margin: 32px auto 0; text-align: left; background: var(--panel); border: 1px solid var(--line); border-left: 6px solid var(--summer); border-radius: var(--r); padding: 16px 20px; }
+.need b { font-family: var(--display); font-size: 19px; }
+.need p { color: var(--muted); font-size: 15px; margin-top: 2px; }
+.cta .install { margin-top: 18px; }
+nav a.lang { font-family: var(--mono); font-size: 13px; padding: 6px 8px; }
+nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="brand" href="#top"><span data-pix="sprout" data-s="2"></span>claude-haejo</a>
+    <nav>
+      <a class="hide-s" href="#how">How</a>
+      <a class="hide-s" href="#safe">Trust</a>
+      <a class="hide-s" href="#start">Start</a>
+      <a class="lang" href="../" hreflang="ko">KO</a>
+      <a class="lang on" href="./" hreflang="en" aria-current="page">EN</a>
+      <a class="lang" href="../ja/" hreflang="ja">JA</a>
+      <a class="gh" href="https://github.com/ff-1204/claude-haejo">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <span class="chip"><i></i>An add-on for Claude Code, the AI coding assistant</span>
+    <h1>“Claude,<br><em>do this.</em>”</h1>
+    <p class="typing" aria-live="polite"><b id="typed">Plan this from scratch</b><span class="caret"></span></p>
+    <p class="lead">Have an app or game in mind, but don’t know how to code?<br>Just ask. The AI forms a small team and takes it from plan to finished product.</p>
+    <div class="flowerbed" aria-hidden="true">
+      <span data-pix="tulip" data-s="5"></span>
+      <span data-pix="daisy" data-s="6"></span>
+      <span data-pix="sprout" data-s="5"></span>
+      <span data-pix="lavender" data-s="6"></span>
+      <span data-pix="tulip2" data-s="5"></span>
+    </div>
+    <div class="soil" aria-hidden="true"></div>
+    <div class="btns">
+      <a class="main" href="#how">See how it works</a>
+      <a href="#start">Get started</a>
+    </div>
+  </div>
+</section>
+
+<section class="worries">
+  <div class="wrap">
+    <p class="eyebrow">Who it’s for</p>
+    <h2 class="sec-title">You don’t need<br>to know how to code.</h2>
+    <div class="talk">
+      <div class="pair"><p class="bubble q">“I have ideas, but I can’t code at all.”</p><p class="bubble a">Just say it. The AI team does the rest.</p></div>
+      <div class="pair"><p class="bubble q">“The AI says ‘done’, but is it really?”</p><p class="bubble a">A lead AI checks it again.</p></div>
+      <div class="pair"><p class="bubble q">“I don’t know where to start.”</p><p class="bubble a">It orders the work around the people who’ll use it.</p></div>
+      <div class="pair"><p class="bubble q">“Technical jargon scares me.”</p><p class="bubble a">You just tap “yes” or “no”.</p></div>
+      <div class="pair"><p class="bubble q">“I want to leave it running overnight.”</p><p class="bubble a">In the morning, only your decisions are waiting.</p></div>
+      <div class="pair"><p class="bubble q">“I mostly check from my phone.”</p><p class="bubble a">Short reports, numbered choices.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">What it does</p>
+    <h2 class="sec-title">One line from you,<br>done all the way.</h2>
+    <div class="cards">
+      <div class="card"><div class="ico"><span data-pix="seed" data-s="4"></span></div><h3>Plan</h3><span class="say">“Plan this from scratch”</span><p>It imagines five people who’d use it and sketches their day. The must-have features and their order fall out of that.</p></div>
+      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>Build in parallel</h3><span class="say">“Build it by the roadmap”</span><p>The work is split into small pieces for several AI teammates. They work at once without tripping over each other.</p></div>
+      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>Asks only what matters</h3><span class="say">Choice buttons</span><p>The AI decides the rest. Only taste, money, and things that are hard to undo come to you as buttons.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="team" id="how">
+  <div class="wrap">
+    <p class="eyebrow">How it works</p>
+    <h2 class="sec-title">It works like a small company.</h2>
+    <p class="sec-lead">You’re the boss. The AI plays team lead and teammates, and only brings you sign-offs.</p>
+    <div class="roles">
+      <div class="role"><small>You</small><h3>The boss</h3><p>Say what you want, then just sign off.</p></div>
+      <div class="role"><small>The AI you’re chatting with</small><h3>Team lead</h3><p>Hands out work, checks the results, reports back.</p></div>
+      <div class="role"><small>Several AIs working separately</small><h3>Teammates</h3><p>Each takes one task from start to finish.</p></div>
+      <div class="role"><small>What teammates hand in</small><h3>Sign-off request</h3><p>“Here’s what I built. Shall we add it?”</p></div>
+    </div>
+    <ol class="path">
+      <li class="you"><p>“Build it by the roadmap”<span>Boss</span></p></li>
+      <li><p>Asks how much to hand off<span>Lead</span></p></li>
+      <li><p>One teammate per task<span>Lead</span></p></li>
+      <li><p>Each builds and tests separately<span>Teammate</span></p></li>
+      <li><p>Hands in a sign-off request<span>Teammate</span></p></li>
+      <li><p>Four checks, redo if anything fails<span>Lead</span></p></li>
+      <li><p>“Shall we add it?”<span>Lead</span></p></li>
+      <li class="you"><p>“Yes” → added to the real thing<span>Boss</span></p></li>
+    </ol>
+  </div>
+</section>
+
+<section id="safe">
+  <div class="wrap">
+    <p class="eyebrow">Hand it off with confidence</p>
+    <h2 class="sec-title">It doesn’t just take the AI’s word.<br>You only get asked after every check passes.</h2>
+    <div class="checks-grid">
+      <div class="four">
+        <div><span class="ok">✓ Pass</span><b>Summary</b><p>Did it write down what changed and what’s left?</p></div>
+        <div><span class="ok">✓ Pass</span><b>Tests</b><p>Did the lead run it once more itself?</p></div>
+        <div><span class="ok">✓ Pass</span><b>Scope</b><p>Did it stay out of things nobody asked for?</p></div>
+        <div><span class="ok">✓ Pass</span><b>Conflicts</b><p>Does it clash with another teammate’s work?</p></div>
+      </div>
+      <div class="report" aria-label="Sample sign-off report">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <p><b>What</b>Build the login screen</p>
+        <p><b>Checks</b>Summary ✓ · Tests ✓ · Scope ✓ · No conflicts</p>
+        <p><b>Not done</b>Tapping through it on a real phone</p>
+        <p><b>If added</b>It shows up on the site right away</p>
+        <hr>
+        <ol><li class="pick">Add it and tidy up (recommended)</li><li>Just add it</li><li>Not yet</li></ol>
+      </div>
+    </div>
+    <p class="sec-lead">Sign-offs arrive this short. You just pick a number.</p>
+  </div>
+</section>
+
+<section style="background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="wrap">
+    <p class="eyebrow">How it plans</p>
+    <h2 class="sec-title">From seed to flower, in seven steps.</h2>
+    <p class="sec-lead">It doesn’t start with a feature list. It starts with “who uses this, on what kind of day?”</p>
+    <div class="seasons">
+      <div class="season" style="--c: var(--seed)"><small>1</small><h3>The core</h3><p>3–6 things people will do with it</p></div>
+      <div class="season" style="--c: var(--spring)"><small>2</small><h3>Imagine users</h3><p>Five made-up people</p></div>
+      <div class="season" style="--c: var(--spring)"><small>3</small><h3>Sketch a day</h3><p>Their day, scene by scene</p></div>
+      <div class="season" style="--c: var(--summer)"><small>4</small><h3>Find the needs</h3><p>Features each scene needs</p></div>
+      <div class="season" style="--c: var(--summer)"><small>5</small><h3>Score them</h3><p>Higher when more people need it</p></div>
+      <div class="season" style="--c: var(--autumn)"><small>6</small><h3>Set the order</h3><p>Highest score first</p></div>
+      <div class="season" style="--c: var(--winter)"><small>7</small><h3>Split into stages</h3><p>Stage 1, stage 2… the roadmap</p></div>
+    </div>
+    <p class="formula">Scores aren’t eyeballed by the AI. A script counts them, so you get the same answer every time.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="eyebrow">Things to say</p>
+    <h2 class="sec-title">No commands to memorize.</h2>
+    <div class="says">
+      <div><code>“Plan this from scratch”</code><span>Decides with you what to build, then writes the roadmap.</span></div>
+      <div><code>“Add this kind of user: an office worker who only plays on weekends”</code><span>Adds them to the plan and only updates what changes.</span></div>
+      <div><code>“Build it by the roadmap”</code><span>Hands the remaining work to teammates and asks before adding it.</span></div>
+      <div><code>“I’m going to bed”</code><span>Asks once before you leave, then keeps working. Your decisions wait for the morning.</span></div>
+      <div><code>“How far along is the roadmap?”</code><span>Briefly tells you what’s done and what’s next.</span></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top: 24px;">
+  <div class="wrap">
+    <p class="eyebrow">Always asks</p>
+    <h2 class="sec-title">Anything hard to undo<br>always comes to you.</h2>
+    <p class="sec-lead">Even if you say “handle it,” you pick how much to hand off with one button at the start.</p>
+    <div class="words">
+      <div><b>Design & wording</b><p>What people see is your call</p></div>
+      <div><b>Money & accounts</b><p>Payments and logins are yours alone</p></div>
+      <div><b>Saving a record</b><p>Keeping a copy of what was built</p></div>
+      <div><b>Publishing</b><p>Uploading it to an online repository</p></div>
+      <div><b>Adding it in</b><p>Merging it into the real thing</p></div>
+    </div>
+    <div class="options"><span class="rec">Up to the sign-off (recommended)</span><span>Including adding it, this time only</span><span>Ask me every time</span></div>
+  </div>
+</section>
+
+<section class="cta" id="start">
+  <div class="wrap">
+    <div class="flowerbed" aria-hidden="true" style="margin-bottom: 18px;">
+      <span data-pix="daisy" data-s="4"></span><span data-pix="tulip" data-s="4"></span><span data-pix="lavender" data-s="4"></span>
+    </div>
+    <h2>One thing to have,<br>one thing to say.</h2>
+    <div class="need"><b>You’ll need: Claude Code</b><p>Anthropic’s AI coding assistant. <a href="https://claude.com/claude-code">Install it</a> first.</p></div>
+    <div class="install" id="install">
+      <div class="tabs" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="say">Just say it</button>
+        <button role="tab" aria-selected="false" data-tab="cmd">For developers</button>
+      </div>
+      <div class="panel" data-panel="say">
+        <div class="step say"><span class="n">1</span><code>Download https://github.com/ff-1204/claude-haejo and install it</code><button class="copy">Copy</button></div>
+        <div class="step"><span class="n">2</span><span class="note">Open a new conversation in Claude Code.</span></div>
+        <div class="step"><span class="n">3</span><span class="note">In the folder for your project, say <b>“Plan this from scratch”</b></span></div>
+      </div>
+      <div class="panel" data-panel="cmd" hidden>
+        <div class="step"><span class="n">1</span><code>git clone https://github.com/ff-1204/claude-haejo.git && cd claude-haejo</code><button class="copy">Copy</button></div>
+        <div class="step"><span class="n">2</span><code>./install.sh</code><button class="copy">Copy</button></div>
+      </div>
+      <p class="after">Paste line 1 into Claude Code and it installs itself.</p>
+    </div>
+    <div class="links">
+      <a class="main" href="https://github.com/ff-1204/claude-haejo">View on GitHub</a>
+      <a href="https://github.com/ff-1204/claude-haejo#readme">Full guide (README)</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>claude-haejo · an AI dev team you direct in plain words</span>
+    <span>To update: “Update claude-haejo” · <a href="https://github.com/ff-1204/claude-haejo">github.com/ff-1204/claude-haejo</a></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // 도트 그림: 글자 한 칸 = 한 도트, 크기는 원본의 정수배(data-s)
+  var C = { r: '#e39ab3', R: '#c96f8f', o: '#cc8636', w: '#f8f9f4', y: '#e9c23f', p: '#a993c9', P: '#7f6aa8', g: '#64a653', G: '#3f7f4a', s: '#8a6a44', S: '#6d5234' };
+  var ART = {
+    tulip: ['..r..r..r...', '..rrrrrrr...', '..rRrrrRr...', '..rrrrrrr...', '...rrrrr....', '.....g......', '.g...g......', '.gg..g...g..', '..gg.g..gg..', '...ggggggg..', '.....gg.....', '.....g......', '.....g......'],
+    tulip2: ['..o..o..o...', '..ooooooo...', '..ooooooo...', '...ooooo....', '.....g......', '.....g...g..', '.g...g..gg..', '.gg..g.gg...', '..ggggg.....', '.....g......', '.....g......'],
+    daisy: ['....w..w....', '.w..wwww..w.', '..wwwyywww..', '.wwwyyyywww.', '..wwwyywww..', '.w..wwww..w.', '....w..w....', '.....g......', '...g.g......', '...ggg..g...', '.....g.gg...', '.....gg.....', '.....g......', '.....g......'],
+    lavender: ['....p.......', '...pPp......', '....pp......', '...pPp......', '....pp..p...', '...pPp.pPp..', '....g...pp..', '....g..pPp..', '....g...g...', '....g..g....', '....gGg.....', '.....g......', '.....g......'],
+    sprout: ['............', '..gg....gg..', '.gggg..gggg.', '..gGg..gGg..', '....g..g....', '.....gg.....', '.....gg.....', '..ssssssss..', '.sSssssSsss.'],
+    seed: ['............', '............', '............', '............', '.....SS.....', '....SssS....', '....ssss....', '.....SS.....', '..ssssssss..', '.sSssssSsss.']
+  };
+  document.querySelectorAll('[data-pix]').forEach(function (el) {
+    var rows = ART[el.dataset.pix], s = +el.dataset.s || 4, w = rows[0].length, h = rows.length, out = '';
+    rows.forEach(function (row, y) { for (var x = 0; x < w; x++) { var c = C[row[x]]; if (c) out += '<rect x="' + x + '" y="' + y + '" width="1" height="1" fill="' + c + '"/>'; } });
+    el.innerHTML = '<svg class="pix" width="' + w * s + '" height="' + h * s + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true">' + out + '</svg>';
+  });
+
+  // 첫 화면의 말 바꾸기
+  var says = ['Plan this from scratch', 'Build it by the roadmap', 'Add this kind of user', 'I’m going to bed', 'How far along is the roadmap?'];
+  var el = document.getElementById('typed'), i = 0, n = says[0].length, del = false;
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    (function tick() {
+      var t = says[i];
+      if (!del && n < t.length) n++;
+      else if (!del) { del = true; return setTimeout(tick, 1600); }
+      else if (n > 0) n--;
+      else { del = false; i = (i + 1) % says.length; }
+      el.textContent = says[i].slice(0, n);
+      setTimeout(tick, del ? 35 : 90);
+    })();
+  }
+
+  // 설치 탭
+  document.querySelectorAll('[data-tab]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('[data-tab]').forEach(function (x) { x.setAttribute('aria-selected', x === b); });
+      document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== b.dataset.tab; });
+    });
+  });
+
+  // 복사
+  document.querySelectorAll('.copy').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var text = b.parentNode.querySelector('code').textContent;
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () {
+        b.textContent = 'Copied'; b.classList.add('done');
+        setTimeout(function () { b.textContent = 'Copy'; b.classList.remove('done'); }, 1500);
+      }, function () { b.textContent = 'Please copy it by hand'; });
+    });
+  });
+})();
+</script>
+</body>
+</html>

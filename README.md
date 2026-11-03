@@ -4,7 +4,7 @@
 
 **"Claude, do this for me."** A set of Claude Code skills that takes you from planning to shipping with plain requests.
 
-🌱 Website (Korean): **https://ff-1204.github.io/claude-haejo/**
+🌱 Website: **https://ff-1204.github.io/claude-haejo/en/**
 
 - **Planning**: "Plan this from scratch" → writes everything from personas (imagined users) to milestones (development stages).
 - **Delegating work**: "Work on M2" → splits the work across sub-sessions (separate Claude conversations) like teammates, then checks the results and reports back.
