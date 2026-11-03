@@ -98,7 +98,8 @@ function rows(table, opts) {
 }
 
 const opts = parseArgs(process.argv.slice(2));
-const text = fs.readFileSync(opts.file, 'utf8');
+// BOM으로 시작하면(PowerShell 5.1 Out-File 등) 첫 줄 페르소나 제목을 놓치므로 뗀다
+const text = fs.readFileSync(opts.file, 'utf8').replace(/^﻿/, '');
 const personas = text.split(/\r?\n/).filter(l => PERSONA.test(l)).length;
 if (!opts.grades) {
   const p = Math.max(personas, 1);
