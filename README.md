@@ -99,7 +99,7 @@ Claude decides and reports everything else, but it always asks about these:
 - **PR** (a request to merge changes) · **merge** (folding a PR into the main line, `main`)
 - **Tag** (a name pinned to a point in history, e.g. `v1.0`)
 
-From commit to tag, things become permanent records, become visible to others, and can lead to a release. So even when you say "handle it," it asks every time a skill runs. You pick one of three: **hand off up to the PR, ask before merging** (recommended) / hand off through merge, this run only / ask every time.
+From commit to tag, things become permanent records, become visible to others, and can lead to a release. So even when you say "handle it," it asks every time a skill runs. Tags are added only when you ask for one ("tag it"). You pick one of three: **hand off up to the PR, ask before merging** (recommended) / hand off through merge, this run only / ask every time.
 
 On the same screen you also pick the `Co-Authored-By: Claude …` line (trailer) at the end of commits: **keep it** (recommended) / drop it and add one line like "Done with Claude" to the body / drop both.
 
