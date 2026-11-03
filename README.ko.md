@@ -10,8 +10,6 @@
 - **개발 맡기기**: "M2 진행해줘" → 일을 하위 세션(따로 도는 Claude 대화)에 팀원처럼 나눠 맡기고, 결과를 확인해 보고합니다.
 - **정할 것만 묻기**: 과정은 Claude가 정하고, 취향·돈·되돌리기 어려운 일만 선택 버튼으로 묻습니다.
 
-![이 스킬이 하는 세 가지: 기획, 개발 맡기기, 정할 것만 묻기](docs/slides/04.png)
-
 ## 시작하기
 
 1. Claude Code 창에 이렇게 붙여 넣으세요.
@@ -65,8 +63,6 @@ flowchart TD
 
 ### 하위 세션과 PR
 
-![회사로 비유하면: 부모 세션은 팀장, 하위 세션은 팀원, PR은 결재 서류, 머지는 결재 승인](docs/slides/07.png)
-
 ```mermaid
 sequenceDiagram
   participant U as 사용자
@@ -90,8 +86,6 @@ sequenceDiagram
 - 부모 세션은 코드를 다시 읽지 않고 PR에서 네 가지만 봅니다: 요약이 다 찼나, 테스트가 통과하나, 맡긴 범위 안인가, 충돌이 없나.
 - 머지는 squash로 합니다. PR 하나가 결과만 적은 커밋 하나로 남습니다.
 - 사용자가 정하는 곳은 시작할 때 권한, 머지 직전 "예" 두 곳뿐입니다.
-
-![팀원 보고만 믿지 않습니다: 요약, 테스트, 범위, 충돌 네 가지 확인](docs/slides/09.png)
 
 ## 사용자에게 꼭 묻는 것
 
@@ -138,7 +132,6 @@ git pull && ./install.sh # 업데이트
 
 ## 더 알아보기
 
-- 처음 보는 사람용 발표자료(13장): [docs/presentation.md](docs/presentation.md)
 - 기획 플로우와 묻는 지점: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
 - 만드는 문서 5개와 공통 규칙: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
 - 하위 세션·PR·머지, 테스트 반복, 자리 비움: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
