@@ -138,4 +138,3 @@ git pull && ./install.sh # update
 - The 5 documents it writes and shared rules: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
 - Sub-sessions, PRs, merging, test loops, working while you're away: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
 - Writing private rules that must not be published (`*.local.md`): [projects.md](skills/roadmap-teammate/references/projects.md)
-- The whole process, written for people: [playbooks/persona-roadmap/README.md](playbooks/persona-roadmap/README.md)

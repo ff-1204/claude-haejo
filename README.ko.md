@@ -136,4 +136,3 @@ git pull && ./install.sh # 업데이트
 - 만드는 문서 5개와 공통 규칙: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
 - 하위 세션·PR·머지, 테스트 반복, 자리 비움: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
 - 공개하면 안 되는 개인 규칙(`*.local.md`) 쓰는 법: [projects.md](skills/roadmap-teammate/references/projects.md)
-- 과정 전체를 사람이 읽기 좋게: [playbooks/persona-roadmap/README.md](playbooks/persona-roadmap/README.md)

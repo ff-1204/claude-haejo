@@ -138,4 +138,3 @@ git pull && ./install.sh # アップデート
 - 作る文書5つと共通ルール: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
 - サブセッション・PR・マージ、テストの繰り返し、留守中の作業: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
 - 公開してはいけない個人ルール（`*.local.md`）の書き方: [projects.md](skills/roadmap-teammate/references/projects.md)
-- 全体の流れを人向けに: [playbooks/persona-roadmap/README.md](playbooks/persona-roadmap/README.md)
