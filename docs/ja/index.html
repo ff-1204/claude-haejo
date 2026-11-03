@@ -54,6 +54,8 @@ nav { display: flex; gap: 6px; align-items: center; }
 nav a { font-size: 14px; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 999px; }
 nav a:hover { background: var(--sunk); color: var(--ink); }
 nav a.gh { background: var(--ink); color: var(--bg); }
+a.star span { color: #e9c23f; }
+a.star .stars { margin-left: 6px; padding-left: 7px; border-left: 1px solid currentColor; font-weight: 600; opacity: .85; }
 
 /* 첫 화면 */
 .hero { padding: 72px 0 56px; text-align: center; position: relative; overflow: hidden; }
@@ -202,7 +204,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
       <a class="lang" href="../" hreflang="ko">KO</a>
       <a class="lang" href="../en/" hreflang="en">EN</a>
       <a class="lang on" href="./" hreflang="ja" aria-current="page">JA</a>
-      <a class="gh" href="https://github.com/ff-1204/claude-haejo">GitHub</a>
+      <a class="gh star" href="https://github.com/ff-1204/claude-haejo" title="GitHub でスターを付ける"><span aria-hidden="true">★</span> Star<b class="stars" hidden></b></a>
     </nav>
   </div>
 </header>
@@ -378,7 +380,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
       <p class="after">1番の文を Claude Code に貼り付ければ、自分でインストールします。</p>
     </div>
     <div class="links">
-      <a class="main" href="https://github.com/ff-1204/claude-haejo">GitHub で見る</a>
+      <a class="main star" href="https://github.com/ff-1204/claude-haejo"><span aria-hidden="true">★</span> GitHub でスターを付ける<b class="stars" hidden></b></a>
       <a href="https://github.com/ff-1204/claude-haejo/blob/main/README.ja.md">くわしい説明（README）</a>
     </div>
   </div>
@@ -433,6 +435,12 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
       document.querySelectorAll('[data-panel]').forEach(function (p) { p.hidden = p.dataset.panel !== b.dataset.tab; });
     });
   });
+
+  // GitHub 스타 수 (실패하면 숫자 없이 단추만)
+  fetch("https://api.github.com/repos/ff-1204/claude-haejo").then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (!d || typeof d.stargazers_count !== "number") return;
+    document.querySelectorAll(".stars").forEach(function (b) { b.textContent = d.stargazers_count; b.hidden = false; });
+  }).catch(function () {});
 
   // 복사
   document.querySelectorAll('.copy').forEach(function (b) {
