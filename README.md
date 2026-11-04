@@ -29,6 +29,7 @@ The skills themselves are written in Korean, but every document and question the
 - **Parallel work without collisions.** One task = one sub-session = one branch = one PR.
 - **Doesn't just take a report's word for it.** The parent session checks four things on each PR (summary, tests, scope, conflicts) before asking you to merge.
 - **Phone-friendly.** Reports are short, and choices are numbered.
+- **Results first, in plain words.** Answers and reports lead with the result in a friendly, conversational tone; records like commit messages stay short and clean. If you set your own tone, it follows that.
 
 ## Things to say
 
