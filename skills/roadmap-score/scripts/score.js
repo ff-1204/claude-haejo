@@ -4,14 +4,41 @@
 // --grades가 없으면 페르소나 수 P로 정한다: P×1.5, P, P×0.5 (상한 15,9,5)
 const fs = require('fs');
 
+function fail(msg) {
+  console.error(`오류: ${msg}`);
+  process.exit(1);
+}
+
+// 옵션 값을 꺼낸다. 값이 없거나 다음 옵션이면 멈춘다(조용히 틀린 표를 내지 않게).
+function valueOf(argv, i, name) {
+  const v = argv[i];
+  if (v === undefined || v.startsWith('--')) fail(`${name} 뒤에 값이 없어요`);
+  return v;
+}
+
+function positiveInt(v, name) {
+  const n = Number(v);
+  if (!Number.isInteger(n) || n < 1) fail(`${name}는 1 이상의 정수여야 해요 (받은 값: ${v})`);
+  return n;
+}
+
 function parseArgs(argv) {
   const opts = { depth: 2, peopleWeight: 2, grades: null, prefix: null, file: null };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--depth') opts.depth = Number(argv[++i]);
-    else if (a === '--people-weight') opts.peopleWeight = Number(argv[++i]);
-    else if (a === '--grades') opts.grades = argv[++i].split(',').map(Number);
-    else if (a === '--prefix') opts.prefix = argv[++i].split(',');
+    if (a === '--depth') opts.depth = positiveInt(valueOf(argv, ++i, a), a);
+    else if (a === '--people-weight') opts.peopleWeight = positiveInt(valueOf(argv, ++i, a), a);
+    else if (a === '--grades') {
+      const g = valueOf(argv, ++i, a).split(',').map(Number);
+      if (g.length !== 3 || g.some(n => !Number.isFinite(n))) fail('--grades는 숫자 3개여야 해요 (예: 8,5,3)');
+      opts.grades = g;
+    }
+    else if (a === '--prefix') {
+      const p = valueOf(argv, ++i, a).split(',').map(s => s.trim()).filter(Boolean);
+      if (!p.length) fail('--prefix 값이 비어 있어요');
+      opts.prefix = p;
+    }
+    else if (a.startsWith('--')) fail(`모르는 옵션이에요: ${a}`);
     else if (!opts.file) opts.file = a;
   }
   if (!opts.file) {

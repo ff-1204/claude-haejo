@@ -44,5 +44,24 @@ for (const c of cases) {
     console.log(`통과: ${c.name}`);
   }
 }
+// 잘못된 옵션은 표를 내지 않고 exit 1로 멈춰야 한다
+const badCases = [
+  { name: '--depth 값 없음', args: ['--depth'] },
+  { name: '--depth 0', args: ['--depth', '0'] },
+  { name: '--people-weight 글자', args: ['--people-weight', 'abc'] },
+  { name: '--grades 2개', args: ['--grades', '8,5'] },
+  { name: '--prefix 값 없음', args: ['--prefix', '--depth', '2'] },
+  { name: '모르는 옵션', args: ['--deep', '2'] },
+];
+for (const c of badCases) {
+  const r = spawnSync(process.execPath, [script, input, ...c.args], { encoding: 'utf8' });
+  if (r.status === 1 && !(r.stdout || '').trim() && (r.stderr || '').includes('오류')) {
+    console.log(`통과: ${c.name}`);
+  } else {
+    failed++;
+    console.log(`실패: ${c.name} (exit ${r.status}, 표를 내면 안 됨)`);
+  }
+}
+
 fs.rmSync(bomInput, { force: true });
 process.exit(failed ? 1 : 0);
