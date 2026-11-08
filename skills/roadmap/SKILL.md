@@ -76,7 +76,7 @@ description: 페르소나에서 마일스톤까지 기획하고 그 로드맵대
    - 기본 브랜치에서 전체 검증을 한 번 한다(프로젝트 규칙의 전체 테스트, 여정 테스트). PR마다는 관련 테스트만 돌렸으니 여기가 전체 테스트 자리다. 깨진 것은 고침 PR로, 흔들리는 테스트는 "조건 기다리기"로 고친다(roadmap-teammate `references/wrap-up.md` "마무리" 3). roadmap-teammate의 테스트 반복이 켜져 있으면 그 회차로 대신한다.
    - 갱신 플로우를 돈다(milestones 끝 표시 → scenarios 갱신 → score → priority).
    - 태그는 사용자가 달아 달라고 할 때만, 머지 뒤 기본 브랜치에 단다(rules.md "묻기").
-   - 다음 마일스톤으로 넘어갈지는 roadmap-teammate 0절에서 정한 범위를 따른다(0절 '개발 범위'). 넘어가면 그 마일스톤 일은 새 하위 세션으로 시작한다(roadmap-teammate 1절).
+   - 다음 마일스톤으로 넘어갈지는 roadmap-teammate 0절에서 정한 '개발 범위'를 따른다. 넘어가면 그 마일스톤 일은 새 하위 세션으로 시작한다(roadmap-teammate 1절).
 
 ## 5. 보고
 
