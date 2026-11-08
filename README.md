@@ -26,7 +26,7 @@ The skills themselves are written in Korean, but every document and question the
 - **Decides what to build first, based on people.** It pulls the features each persona needs from a day in their life and orders them by how many people need them.
 - **Scores you can trust.** Priority scores are counted by a script (`score.js`), not eyeballed by Claude.
 - **Picks up where it left off.** Every document carries an updated-at timestamp, so the next session sees which document is stale and resumes there.
-- **Parallel work without collisions.** One task = one sub-session = one branch = one PR.
+- **Parallel work without collisions.** One task = one branch = one PR, with one sub-session per milestone.
 - **Doesn't just take a report's word for it.** The parent session checks four things on each PR (summary, tests, scope, conflicts) before asking you to merge.
 - **Phone-friendly.** Reports are short, and choices are numbered.
 - **Results first, in plain words.** Answers and reports lead with the result in a friendly, conversational tone; records like commit messages stay short and clean. If you set your own tone, it follows that.
@@ -37,7 +37,7 @@ The skills themselves are written in Korean, but every document and question the
 |---|---|
 | "Plan this from scratch" | Confirms the core experience with you, then writes 5 personas → scenarios → scores → priorities → milestones |
 | "Add one more persona: an office worker who only plays on weekends" | Adds that person and their scenario, and updates only what changes in the later documents |
-| "Work on M2" | Hands each remaining item to its own sub-session = one PR (a request to merge changes), checks it, then asks whether to merge |
+| "Work on M2" | Hands the remaining items, one after another, to a single M2 sub-session (one PR — a request to merge changes — per item), checks each, then asks whether to merge. Moving on to M3 starts a new session |
 | "I'm going to bed" | Asks for permissions before you leave and keeps going. When you're back, it shows you everything that needs a decision |
 | "Where are we on the roadmap?" | Shows, per milestone, how many items are done and what's next. Changes nothing |
 
