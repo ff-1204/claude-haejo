@@ -9,6 +9,9 @@ claude-haejo 설치·점검 (Windows PowerShell 5.1 이상). install.sh와 같�
 #>
 param([switch]$Check, [switch]$DryRun, [string]$HomeDir = $HOME)
 $ErrorActionPreference = 'Stop'
+# 한글 결과가 Git Bash·Claude 쪽에서 깨지지 않게 UTF-8로 낸다
+[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
+$OutputEncoding = [Console]::OutputEncoding
 
 $repo = $PSScriptRoot
 $dest = Join-Path $HomeDir '.claude'
