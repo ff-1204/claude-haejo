@@ -1,0 +1,76 @@
+# 스킬 시험: 스크립트 시험, 문서 참조 검사, 설치 스크립트를 Windows·macOS·Linux에서 돌린다
+name: test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'skills/**'
+      - 'tests/**'
+      - 'install.sh'
+      - 'install.ps1'
+      - 'CLAUDE.md'
+      - 'README*.md'
+      - '.github/workflows/test.yml'
+  pull_request:
+    paths:
+      - 'skills/**'
+      - 'tests/**'
+      - 'install.sh'
+      - 'install.ps1'
+      - 'CLAUDE.md'
+      - 'README*.md'
+      - '.github/workflows/test.yml'
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: score.js 시험
+        run: node skills/roadmap-score/tests/run.js
+      - name: status.js 시험
+        run: node skills/roadmap/tests/run.js
+      - name: 문서 참조 검사
+        run: node tests/check-refs.js
+
+      - name: install.sh 설치 뒤 --check
+        shell: bash
+        run: |
+          export HOME="$RUNNER_TEMP/home-sh"
+          mkdir -p "$HOME"
+          bash install.sh
+          bash install.sh --check
+
+      # install.ps1은 Windows용이다(macOS·Linux는 install.sh)
+      - name: install.ps1 설치 뒤 -Check (PowerShell 7)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $h = Join-Path $env:RUNNER_TEMP 'home-pwsh'
+          New-Item -ItemType Directory -Force $h | Out-Null
+          ./install.ps1 -HomeDir $h
+          ./install.ps1 -HomeDir $h -Check
+
+      - name: install.ps1 설치 뒤 -Check (Windows PowerShell 5.1)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $h = Join-Path $env:RUNNER_TEMP 'home-ps51'
+          New-Item -ItemType Directory -Force $h | Out-Null
+          powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h -Check
+          if ($LASTEXITCODE -ne 0) { exit 1 }
