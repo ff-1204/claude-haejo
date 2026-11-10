@@ -54,13 +54,14 @@ function sectionTime(text, n, name) {
   return null;
 }
 
+const PLAN_DOCS = ['personas.md', 'persona-scenarios.md', 'persona-checklist-map.md', 'roadmap.md'];
+
 function findChecklist(dir, personas, given) {
   if (given) return path.resolve(given);
   const docs = (personas || '').match(/^> 문서: (.*)$/m);
   if (docs) {
     const names = docs[1].split(' · ').map((s) => s.trim());
-    const known = ['personas.md', 'persona-scenarios.md', 'persona-checklist-map.md', 'roadmap.md'];
-    const cl = names.find((n) => n.endsWith('.md') && !known.includes(n) && !n.includes('<'));
+    const cl = names.find((n) => n.endsWith('.md') && !PLAN_DOCS.includes(n) && !n.includes('<'));
     if (cl) {
       // 기획 폴더 → 위 폴더들(저장소 루트까지) 차례로 찾는다
       for (let d = dir; ; d = path.dirname(d)) {
@@ -69,7 +70,8 @@ function findChecklist(dir, personas, given) {
       }
     }
   }
-  const hit = fs.readdirSync(dir).find((n) => /checklist.*\.md$|^체크리스트.*\.md$/i.test(n));
+  // 기획 문서 네 개는 빼고 찾는다(persona-checklist-map.md도 "checklist"가 들어 있어 체크리스트로 잡히면 안 된다)
+  const hit = fs.readdirSync(dir).find((n) => !PLAN_DOCS.includes(n) && /checklist.*\.md$|^체크리스트.*\.md$/i.test(n));
   return hit ? path.join(dir, hit) : null;
 }
 
@@ -80,7 +82,20 @@ function orderTime(checklist, prefix) {
   return pick ? { prefix: pick[1], time: pick[2] } : { prefix: prefix || null, time: null };
 }
 
+// 한 단계 줄의 조각별 표시. roadmap-score/scripts/score.js의 pieces()와 같은 규칙이다(그쪽을 바꾸면 여기도 같이):
+// " / "로 나눈 조각마다 든 표시를 MARKS 순서로 모아 마지막 것을 그 조각의 표시로 본다.
+// 조각이 하나뿐이면 줄 전체의 표시를 본다. 그래서 " / " 없이 ✅와 🔜가 같이 있는 줄은 ✅ 한 표시다.
+const MARKS = ['🔜', '✅', '❌'];
+function pieceMarks(line) {
+  const segs = line.split(' / ');
+  return segs.map((seg) => {
+    const own = MARKS.filter((m) => (segs.length === 1 ? line : seg).includes(m));
+    return own.length ? own[own.length - 1] : null;
+  });
+}
+
 // 시나리오 단계 수: 첫 페르소나 제목 뒤의 "1. …" 줄만
+// 일부만 = " / "로 나눈 조각에 ✅와 다른 표시(🔜·❌)가 섞인 단계 (rules.md "번호와 표시")
 function scenarioCounts(text) {
   const c = { all: 0, done: 0, planned: 0, partial: 0, none: 0, unmarked: 0 };
   if (!text) return null;
@@ -90,7 +105,8 @@ function scenarioCounts(text) {
     if (/^## /.test(line)) { started = /^## [A-Z]\. /.test(line) ? started : false; continue; }
     if (!started || !/^\s*\d+\.\s+/.test(line)) continue;
     c.all++;
-    const ok = line.includes('✅'), plan = line.includes('🔜'), no = line.includes('❌');
+    const marks = pieceMarks(line);
+    const ok = marks.includes('✅'), plan = marks.includes('🔜'), no = marks.includes('❌');
     if (ok && (plan || no)) c.partial++;
     else if (ok) c.done++;
     else if (plan) c.planned++;
