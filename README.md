@@ -87,6 +87,7 @@ sequenceDiagram
 
 - Each sub-session works on its own branch (a line of work split off from the main line), so many tasks can run at once without stepping on each other.
 - The parent session doesn't reread the code. It checks four things on the PR: is the summary complete, do the tests pass, is it within the assigned scope, are there no conflicts.
+- Risky PRs (shared storage or network code, format or version changes, login, payment or secrets, new tests with no CI) also get one review by a separate agent that sees only the diff and the task, not the sub-session's report.
 - Merges are squashed: each PR lands as one commit that lists only the results. Commit titles start with a type, like `feat: add login screen` (feat, fix, docs, …).
 - In code work you usually decide in two places: permissions at the start, and "yes" right before a merge (plus what to do with the sub-session afterwards). Anything that comes down to taste is asked separately.
 

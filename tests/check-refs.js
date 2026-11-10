@@ -3,6 +3,7 @@
 //   1) 마크다운 링크 ](경로) → 그 파일이 있나
 //   2) "roadmap-<이름> N절", "SKILL.md N절", 맨 "N절" → 그 SKILL.md에 "## N." 제목이 있나
 //   3) "<파일>.md \"<이름>\"" → 그 파일에 그 이름이 든 제목(#)이 있나
+//   4) 권한 규칙의 자세한 문장이 roadmap-teammate 0절 밖에 되풀이되지 않나
 // 틀린 곳이 있으면 목록을 내고 exit 1. 사용: node tests/check-refs.js
 'use strict';
 const fs = require('fs');
@@ -90,6 +91,19 @@ for (const file of files) {
       const target = findMd(name, file);
       if (!target) { problems.push(`${where} 파일 없음: ${name}`); continue; }
       if (!headings(target).some((h) => h.includes(title))) problems.push(`${where} 제목 없음: ${name} "${title}"`);
+    }
+  });
+}
+
+// 4) 권한 규칙의 원본은 roadmap-teammate 0절 한 곳. 자세한 예외 문장이 다른 문서에 되풀이되면 잡는다
+//    (다른 문서는 핵심만 두고 0절을 가리킨다).
+const permOrigin = path.join(skillsDir, 'roadmap-teammate', 'SKILL.md');
+const permDetails = ['브리프에 없는 권한만', '먼저 달거나 권하지', '직접 연 새 세션', '아직 푸시하지 마'];
+for (const file of files) {
+  if (file === permOrigin) continue;
+  read(file).split('\n').forEach((line, i) => {
+    for (const s of permDetails) {
+      if (line.includes(s)) problems.push(`${rel(file)}:${i + 1} 권한 규칙 되풀이: "${s}" → roadmap-teammate 0절을 가리킬 것`);
     }
   });
 }
