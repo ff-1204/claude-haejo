@@ -87,6 +87,9 @@ sequenceDiagram
 
 - Each sub-session works on its own branch (a line of work split off from the main line), so many tasks can run at once without stepping on each other.
 - The parent session doesn't reread the code. It checks four things on the PR: is the summary complete, do the tests pass, is it within the assigned scope, are there no conflicts.
+- For tests it reads the CI result. With no CI, the parent doesn't rerun the tests; it reads the command, exit code and result lines the sub-session left (a bare "tests passed" doesn't count). Only risky PRs get one run by the parent.
+- Minor review notes (naming, comments, polish) go into a "Later" section of the PR description and the PR is merged; they're fixed together in one batch later.
+- If you like, a sub-session can be created ahead of time for each milestone and wait for a "start" message (standby sessions, off by default). This helps when you can't open new sessions from your phone.
 - Risky PRs (shared storage or network code, format or version changes, login, payment or secrets, new tests with no CI) also get one review by a separate agent that sees only the diff and the task, not the sub-session's report.
 - Merges are squashed: each PR lands as one commit that lists only the results. Commit titles start with a type, like `feat: add login screen` (feat, fix, docs, …).
 - In code work you usually decide in two places: permissions at the start, and "yes" right before a merge (plus what to do with the sub-session afterwards). Anything that comes down to taste is asked separately.
