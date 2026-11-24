@@ -92,7 +92,7 @@ sequenceDiagram
 - If you like, a sub-session can be created ahead of time for each milestone and wait for a "start" message (standby sessions, off by default). This helps when you can't open new sessions from your phone.
 - Risky PRs (shared storage or network code, format or version changes, login, payment or secrets, new tests with no CI) also get one review by a separate agent that sees only the diff and the task, not the sub-session's report.
 - Merges are squashed: each PR lands as one commit that lists only the results. Commit titles start with a type, like `feat: add login screen` (feat, fix, docs, …).
-- In code work you usually decide in two places: permissions at the start, and "yes" right before a merge (plus what to do with the sub-session afterwards). Anything that comes down to taste is asked separately.
+- In code work you usually decide in two places: permissions at the start, and "yes" right before a merge. Anything that comes down to taste is asked separately.
 
 ## What it always asks you
 
@@ -106,7 +106,7 @@ Claude decides and reports everything else, but it always asks about these:
 
 From commit to tag, things become permanent records, become visible to others, and can lead to a release. So even when you say "handle it," it asks once at the start of each session, then keeps using that answer for the rest of the session. Tags are added only when you ask for one ("tag it"). You pick one of three: **hand off up to the PR, ask before merging** (recommended) / hand off through merge, this run only / ask every time.
 
-On the same screen you also pick the `Co-Authored-By: Claude …` line (trailer) at the end of commits: **keep it** (recommended) / drop it and add one line like "Done with Claude" to the body / drop both.
+That permission is the only thing asked at the start (plus a time limit on the same screen for open-ended work like repeated testing). Everything else, such as models, what happens to sub-sessions after a merge (archived by default) and the `Co-Authored-By: Claude …` line (trailer) at the end of commits (kept by default), uses a default that's shown in one line of the start report. To change one, just say so and it sticks from then on.
 
 ## Install and update
 
