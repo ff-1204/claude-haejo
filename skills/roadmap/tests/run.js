@@ -122,7 +122,8 @@ else {
     const root = copyPlan();
     for (const [name, fn] of Object.entries(edits)) {
       const f = path.join(root, 'plan', name);
-      writeU(f, fn(readU(f)));
+      // Windows checkout은 CRLF라 줄 지우기 정규식(.은 \r을 못 넘음)이 헛돈다. LF로 바꾼 뒤 고친다
+      writeU(f, fn(readU(f).replace(/\r\n/g, '\n')));
     }
     return run(['plan', '--no-git', ...extra], root);
   };
