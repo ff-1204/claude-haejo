@@ -1,6 +1,6 @@
 ﻿<#
 claude-haejo 설치·점검 (Windows PowerShell 5.1 이상). install.sh와 같은 동작이다.
-  .\install.ps1             skills\*를 ~\.claude\skills\에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 다른 줄만 보인다.
+  .\install.ps1             skills\*를 ~\.claude\skills\에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 다른 줄만 보인다. 버전은 ~\.claude\claude-haejo.json에 남긴다.
   .\install.ps1 -Check      복사하지 않고 다른 파일만 보인다. 다르면 exit 1.
   .\install.ps1 -DryRun     복사할 파일만 보이고 복사하지 않는다.
   -HomeDir <폴더>           ~ 대신 쓸 폴더 (시험용)
@@ -75,6 +75,39 @@ if (-not (Test-Path -LiteralPath $t)) {
       ForEach-Object { if ($_.SideIndicator -eq '<=') { "- $($_.InputObject)" } else { "+ $($_.InputObject)" } }
   }
 }
+
+# 설치한 버전을 ~\.claude\claude-haejo.json에 남긴다 (skills\ 밖이라 -Check 비교에 걸리지 않는다).
+# 새 버전 안내(skills/roadmap/scripts/check-update.js)가 읽는다. git이나 태그가 없으면 version은 null.
+function Write-Version {
+  # git 오류(태그 없음 등)가 설치를 멈추지 않게 이 함수 안에서는 오류를 넘긴다 (PowerShell 5.1은 2>$null도 오류로 본다)
+  $ErrorActionPreference = 'SilentlyContinue'
+  $tag = $null; $commit = $null; $ahead = $null
+  if (Get-Command git -ErrorAction SilentlyContinue) {
+    try {
+      $c = (& git -C $repo rev-parse --short HEAD 2>$null | Out-String).Trim()
+      if ($LASTEXITCODE -eq 0 -and $c) { $commit = $c }
+      $d = (& git -C $repo describe --tags --abbrev=0 2>$null | Out-String).Trim()
+      if ($LASTEXITCODE -eq 0 -and $d -cmatch '^v\d+\.\d+\.\d+$') {
+        $tag = $d
+        $n = (& git -C $repo rev-list --count "$tag..HEAD" 2>$null | Out-String).Trim()
+        if ($LASTEXITCODE -eq 0 -and $n -match '^\d+$') { $ahead = [int]$n }
+      }
+    } catch { }
+  }
+  $info = [ordered]@{
+    version     = $tag
+    commit      = $commit
+    ahead       = $ahead
+    repo        = $repo
+    installedAt = (Get-Date).ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ss'Z'")
+  }
+  New-Item -ItemType Directory -Force -Path $dest | Out-Null
+  # BOM 없는 UTF-8 (PowerShell 5.1의 Set-Content -Encoding UTF8은 BOM을 붙인다)
+  [IO.File]::WriteAllText((Join-Path $dest 'claude-haejo.json'), ($info | ConvertTo-Json) + "`n", [Text.UTF8Encoding]::new($false))
+  if ($tag) { Write-Output "버전 기록: $tag (~/.claude/claude-haejo.json)" }
+  else { Write-Output '버전 기록: 태그를 못 읽어 version 없이 적었다 (~/.claude/claude-haejo.json)' }
+}
+if (-not $Check -and -not $DryRun) { Write-Version }
 
 if ($Check) {
   if ($script:diffs -gt 0) { Write-Output "다른 파일 $($script:diffs)개"; exit 1 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # claude-haejo 설치·점검 (Git Bash, macOS, Linux). 사용법: ./install.sh [--check | --dry-run]
-#   (옵션 없음)  skills/*를 ~/.claude/skills/에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 diff만 보인다.
+#   (옵션 없음)  skills/*를 ~/.claude/skills/에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 diff만 보인다. 버전은 ~/.claude/claude-haejo.json에 남긴다.
 #   --check      복사하지 않고 다른 파일만 보인다. 다르면 exit 1.
 #   --dry-run    복사할 파일만 보이고 복사하지 않는다.
 # *.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. ~/.claude에만 있는 파일은 지우지 않는다.
@@ -58,6 +58,40 @@ elif ! same CLAUDE.md "$t"; then
     diff -u -L "~/.claude/CLAUDE.md" -L "저장소 CLAUDE.md" <(tr -d '\r' < "$t") <(tr -d '\r' < CLAUDE.md) || true
   fi
 fi
+
+# 설치한 버전을 ~/.claude/claude-haejo.json에 남긴다 (skills/ 밖이라 --check 비교에 걸리지 않는다).
+# 새 버전 안내(skills/roadmap/scripts/check-update.js)가 읽는다. git이나 태그가 없으면 version은 null.
+json_str() { # 문자열이면 JSON 따옴표로, 비었으면 null
+  if [ -z "$1" ]; then printf 'null'; return; fi
+  local s="${1//\\/\\\\}"
+  printf '"%s"' "${s//\"/\\\"}"
+}
+write_version() {
+  local tag="" commit="" ahead="" where
+  if command -v git >/dev/null 2>&1; then
+    commit="$(git -C "$repo" rev-parse --short HEAD 2>/dev/null || true)"
+    tag="$(git -C "$repo" describe --tags --abbrev=0 2>/dev/null || true)"
+    if [[ "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+      ahead="$(git -C "$repo" rev-list --count "$tag..HEAD" 2>/dev/null || true)"
+    else
+      tag=""
+    fi
+  fi
+  where="$(pwd -W 2>/dev/null || pwd)" # Git Bash면 Windows 경로(D:/…)로 적는다
+  mkdir -p "$dest"
+  {
+    printf '{\n'
+    printf '  "version": %s,\n' "$(json_str "$tag")"
+    printf '  "commit": %s,\n' "$(json_str "$commit")"
+    printf '  "ahead": %s,\n' "${ahead:-null}"
+    printf '  "repo": %s,\n' "$(json_str "$where")"
+    printf '  "installedAt": "%s"\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    printf '}\n'
+  } > "$dest/claude-haejo.json"
+  if [ -n "$tag" ]; then echo "버전 기록: $tag (~/.claude/claude-haejo.json)"
+  else echo "버전 기록: 태그를 못 읽어 version 없이 적었다 (~/.claude/claude-haejo.json)"; fi
+}
+if [ "$mode" = install ]; then write_version; fi
 
 case $mode in
   check)

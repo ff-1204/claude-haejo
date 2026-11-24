@@ -43,16 +43,22 @@ jobs:
         run: node skills/roadmap-score/tests/run.js
       - name: status.js 시험
         run: node skills/roadmap/tests/run.js
+      - name: check-update.js 시험
+        run: node skills/roadmap/tests/check-update.js
       - name: 문서 참조 검사
         run: node tests/check-refs.js
 
+      # checkout은 태그를 받지 않아 version이 null일 수 있다. 기록 파일이 생겼는지만 본다
       - name: install.sh 설치 뒤 --check
         shell: bash
         run: |
           export HOME="$RUNNER_TEMP/home-sh"
           mkdir -p "$HOME"
           bash install.sh
+          test -f "$HOME/.claude/claude-haejo.json"
+          node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" "$HOME/.claude/claude-haejo.json"
           bash install.sh --check
+          node skills/roadmap/scripts/check-update.js --home "$HOME" --remote "$RUNNER_TEMP/no-such-repo"
 
       # install.ps1은 Windows용이다(macOS·Linux는 install.sh)
       - name: install.ps1 설치 뒤 -Check (PowerShell 7)
@@ -62,6 +68,10 @@ jobs:
           $h = Join-Path $env:RUNNER_TEMP 'home-pwsh'
           New-Item -ItemType Directory -Force $h | Out-Null
           ./install.ps1 -HomeDir $h
+          $j = Join-Path $h '.claude/claude-haejo.json'
+          if (-not (Test-Path $j)) { throw 'claude-haejo.json 없음' }
+          node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" $j
+          if ($LASTEXITCODE -ne 0) { exit 1 }
           ./install.ps1 -HomeDir $h -Check
 
       - name: install.ps1 설치 뒤 -Check (Windows PowerShell 5.1)
@@ -71,6 +81,11 @@ jobs:
           $h = Join-Path $env:RUNNER_TEMP 'home-ps51'
           New-Item -ItemType Directory -Force $h | Out-Null
           powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          $j = Join-Path $h '.claude\claude-haejo.json'
+          if (-not (Test-Path $j)) { throw 'claude-haejo.json 없음' }
+          # BOM 없는 UTF-8이어야 한다(JSON.parse는 BOM이 있으면 실패)
+          node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" $j
           if ($LASTEXITCODE -ne 0) { exit 1 }
           powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h -Check
           if ($LASTEXITCODE -ne 0) { exit 1 }
