@@ -199,6 +199,87 @@ footer a { color: var(--muted); }
 .cta .install { margin-top: 18px; }
 nav a.lang { font-family: var(--mono); font-size: 13px; padding: 6px 8px; }
 nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.walk { display: grid; gap: 44px; margin-top: 44px; }
+.frame { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.frame .n { font: 600 14px var(--mono); color: var(--accent); }
+.frame h3 { font-size: 26px; margin: 4px 0 8px; line-height: 1.3; }
+.frame .d { color: var(--muted); font-size: 16.5px; }
+.screen { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+.screen .cap { font: 12.5px var(--mono); color: var(--muted); margin-bottom: 12px; }
+.me { margin-left: auto; width: fit-content; max-width: 88%; background: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 10px 15px; border-radius: 16px 16px 4px 16px; }
+.ai { width: fit-content; max-width: 92%; background: var(--sunk); padding: 10px 15px; border-radius: 16px 16px 16px 4px; margin-top: 10px; font-size: 15.5px; }
+.ask-q { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+.opt { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 9px 13px; margin-top: 7px; font-size: 15px; }
+.opt.pick { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); font-weight: 600; }
+.opt small { display: block; color: var(--muted); font-weight: 400; font-size: 13px; }
+.ba { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.phone { border: 2px solid var(--ink); border-radius: 16px; padding: 10px 11px 14px; background: var(--bg); min-height: 190px; }
+.phone small { display: block; font: 12px var(--mono); color: var(--muted); margin-bottom: 8px; }
+.phone .ln { height: 10px; border-radius: 5px; background: var(--line); margin-top: 8px; }
+.phone .ln.s { width: 58%; }
+.phone .fd { height: 24px; border: 1.5px solid var(--muted); border-radius: 7px; margin-top: 8px; font-size: 11.5px; color: var(--muted); padding: 2px 7px; }
+.phone .bt { min-height: 30px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); margin-top: 10px; display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.mk { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--autumn); color: #1f2a22; font: 600 11px var(--mono); margin-right: 5px; vertical-align: 1px; }
+.screen .report { margin: 0; }
+.ticks { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 6px; font-size: 15.5px; }
+.ticks li::before { content: "✓"; color: var(--good); font-weight: 600; margin-right: 8px; }
+.starts { margin-top: 36px; display: grid; gap: 12px; }
+.start { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 8px 20px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 15px 18px; }
+.start b { font-size: 17px; }
+.start small { display: block; color: var(--muted); font-size: 14.5px; margin-top: 2px; }
+.steps7 { display: flex; flex-wrap: wrap; gap: 5px; }
+.steps7 i { font-style: normal; font-size: 12.5px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.steps7 i.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.ex { margin-top: 18px; background: var(--bg); border: 1px dashed var(--line); border-radius: var(--r); padding: 16px 18px; }
+.ex .cap { font: 12.5px var(--mono); color: var(--muted); margin-bottom: 10px; }
+.ex ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.ex li { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; font-size: 15.5px; }
+.ex li span { color: var(--muted); font-size: 13.5px; padding-top: 2px; }
+@media (max-width: 760px) { .frame { grid-template-columns: minmax(0, 1fr); gap: 14px; } .frame .txt { order: -1; } .start { grid-template-columns: minmax(0, 1fr); } .walk { gap: 36px; } }
+.hero-ex { max-width: 520px; margin: 30px auto 0; text-align: left; }
+.flow { list-style: none; padding: 0; margin: 40px 0 0; max-width: 740px; counter-reset: f; }
+.flow li { counter-increment: f; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; padding-left: 46px; padding-bottom: 14px; }
+.flow li::before { content: counter(f); position: absolute; left: 0; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 600 13px var(--mono); line-height: 30px; text-align: center; }
+.flow li::after { content: ""; position: absolute; left: 14px; top: 46px; bottom: -12px; width: 2px; background: var(--line); }
+.flow li:last-child { padding-bottom: 0; }
+.flow li:last-child::after { display: none; }
+.flow .st { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px 12px 12px; display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 14px; align-items: center; }
+.flow .pic { width: 84px; height: 62px; display: block; border-radius: 9px; background: var(--bg); border: 1px solid var(--line); }
+.flow .pic .ln { stroke: var(--muted); stroke-width: 3; stroke-linecap: round; fill: none; opacity: .55; }
+.flow .pic .bx { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.flow .pic .ac { fill: var(--accent); }
+.flow .pic .as { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.flow .pic .wh { stroke: var(--accent-ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+@media (max-width: 420px) { .flow .st { grid-template-columns: 64px minmax(0, 1fr); gap: 10px; } .flow .pic { width: 64px; height: 48px; } }
+.flow .st b { display: block; font-size: 18px; }
+.flow .st span { color: var(--muted); font-size: 14.5px; }
+.flow li.you .st { border-color: var(--autumn); box-shadow: inset 0 0 0 1px var(--autumn); }
+.flow em { font-style: normal; font-size: 14px; font-weight: 600; background: var(--sunk); border-radius: 999px; padding: 5px 13px; white-space: nowrap; }
+.flow-note { display: flex; flex-wrap: wrap; gap: 8px 22px; color: var(--muted); font-size: 14.5px; margin-top: 20px; }
+.flow-note i { font-style: normal; display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; }
+@media (max-width: 600px) { .flow li { grid-template-columns: minmax(0, 1fr); } .flow em { justify-self: start; } }
+.cans { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; margin-top: 40px; }
+.can { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 14px; align-content: start; }
+.can h3 { font-size: 21px; line-height: 1.35; }
+.can .d { color: var(--muted); font-size: 15.5px; margin-top: 4px; }
+.mini { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14.5px; }
+.mini .cap { font: 12px var(--mono); color: var(--muted); margin-bottom: 8px; }
+.mini table { width: 100%; border-collapse: collapse; }
+.mini td { padding: 5px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.mini tr:first-child td { border-top: none; }
+.mini td:first-child { color: var(--muted); width: 62px; white-space: nowrap; }
+.mini .ba { gap: 8px; }
+.mini .phone { min-height: 0; padding: 8px 9px 10px; border-width: 1.5px; border-radius: 12px; }
+.mini .phone .fd { height: 20px; font-size: 11px; }
+.mini .phone .bt { min-height: 24px; font-size: 11.5px; margin-top: 8px; }
+.mini ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 5px; }
+.mini .ok::before { content: "✓"; color: var(--good); font-weight: 600; margin-right: 7px; }
+.mini .todo::before { content: "○"; color: var(--muted); margin-right: 7px; }
+.meter { display: grid; grid-template-columns: 54px minmax(0, 1fr) 34px; gap: 8px; align-items: center; margin-top: 6px; font-size: 13.5px; }
+.meter:first-of-type { margin-top: 0; }
+.meter b { height: 10px; border-radius: 5px; background: var(--line); display: block; overflow: hidden; }
+.meter b i { display: block; height: 100%; background: var(--accent); }
+.meter span { color: var(--muted); text-align: right; }
 </style>
 </head>
 <body>
@@ -207,8 +288,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
   <div class="wrap">
     <a class="brand" href="#top"><span data-pix="sprout" data-s="2"></span>claude-haejo</a>
     <nav>
-      <a class="hide-s" href="#how">しくみ</a>
-      <a class="hide-s" href="#safe">安心</a>
+      <a class="hide-s" href="#how">例</a>
       <a class="hide-s" href="#start">はじめる</a>
       <a class="lang" href="../" hreflang="ko">KO</a>
       <a class="lang" href="../en/" hreflang="en">EN</a>
@@ -226,146 +306,174 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <h1>Claude、<br><em>〜して。</em></h1>
     <p class="typing" aria-live="polite"><b id="typed">最初から企画して</b><span class="caret"></span></p>
     <p class="lead">作りたいアプリやゲームがあるのに、開発はわからない？<br>言葉で頼めば、合った段階から最後までやり切ります。</p>
-    <div class="flowerbed" aria-hidden="true">
-      <span data-pix="tulip" data-s="5"></span>
-      <span data-pix="daisy" data-s="6"></span>
-      <span data-pix="sprout" data-s="5"></span>
-      <span data-pix="lavender" data-s="6"></span>
-      <span data-pix="tulip2" data-s="5"></span>
+    <div class="screen hero-ex" aria-label="会話の例">
+      <p class="cap">例</p>
+      <p class="me">ログイン画面を入れて</p>
+      <p class="ai">作る前に、まず試案を見せます。</p>
+      <p class="ai">できました。テスト12件に合格、試案どおりです。</p>
     </div>
-    <div class="soil" aria-hidden="true"></div>
     <div class="btns">
-      <a class="main" href="#how">しくみを見る</a>
-      <a href="#start">すぐはじめる</a>
+      <a class="main" href="#start">はじめる</a>
+      <a href="#how">例を見る</a>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <p class="eyebrow">30秒でわかる例</p>
+    <h2 class="sec-title">「ログイン画面を入れて」<br>このひと言は、こう進みます。</h2>
+    <div class="walk">
+
+      <div class="frame">
+        <div class="screen" aria-label="画面の例：話しかける">
+          <p class="cap">画面の例</p>
+          <p class="me">ログイン画面を入れて</p>
+          <p class="ai">試案から始めます。その前に、ひとつだけ決めてください。</p>
+        </div>
+        <div class="txt"><span class="n">1</span><h3>言葉で言うだけ</h3><p class="d">コマンドはありません。やりたいことを普段の言葉で書けば、どの段階から始めるかを決めます。</p></div>
+      </div>
+
+      <div class="frame">
+        <div class="screen" aria-label="画面の例：最初の質問">
+          <p class="cap">画面の例</p>
+          <p class="ask-q">今回はどこまで行いますか？</p>
+          <div class="opt pick">ファイルだけ直す（おすすめ）<small>作るだけで、記録や公開はしません</small></div>
+          <div class="opt">記録を残すまで</div>
+          <div class="opt">公開するまで</div>
+          <div class="opt">反映するまで</div>
+        </div>
+        <div class="txt"><span class="n">2</span><h3>最初に一度だけ聞きます</h3><p class="d">取り消しにくいことをどこまで行うか、ボタンで選びます。選ばなかったことは行わず、そのあとは聞き直しません。</p></div>
+      </div>
+
+      <div class="frame">
+        <div class="screen" aria-label="画面の例：試案">
+          <p class="cap">画面の例</p>
+          <div class="ba">
+            <div class="phone"><small>いま</small><div class="ln"></div><div class="ln s"></div><div class="ln"></div><div class="ln s"></div></div>
+            <div class="phone"><small>こう変わります</small><div class="fd"><span class="mk">1</span>メール</div><div class="fd"><span class="mk">2</span>パスワード</div><div class="bt"><span class="mk">3</span>ログイン</div></div>
+          </div>
+          <p class="me" style="margin-top: 14px;">これで</p>
+        </div>
+        <div class="txt"><span class="n">3</span><h3>作る前に試案を見せます</h3><p class="d">試案は、これから作る画面を先に描いたものです。どう変わるかを先に見て、気に入らなければ言葉で直します。「これで」と言うまでは作りません。</p></div>
+      </div>
+
+      <div class="frame" id="safe">
+        <div class="screen" aria-label="画面の例：最後の報告">
+          <p class="cap">画面の例</p>
+          <div class="report">
+            <div class="bar"><i></i><i></i><i></i></div>
+            <p><b>何を</b>ログイン画面を作る</p>
+            <p><b>テスト</b>12件すべて合格</p>
+            <p><b>試案との比較</b>① できた · ② できた · ③ ボタンを下へ移動</p>
+            <p><b>未確認</b>スマホで実際に触ってみる</p>
+            <hr>
+            <ol><li class="pick">次の機能を作る（おすすめ）</li><li>記録を残す</li><li>完成版に反映する</li></ol>
+          </div>
+        </div>
+        <div class="txt"><span class="n">4</span><h3>作って、確かめた結果を見せます</h3><p class="d">「できました」のひと言では終わりません。</p>
+          <ul class="ticks"><li>テストを動かした結果をそのまま書きます</li><li>試案の項目ごとに、できたかを比べます</li><li>危ない変更は別の AI がもう一度見直します</li><li>できなかったことも隠さず書きます</li></ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section style="padding-top: 0;">
+  <div class="wrap">
+    <p class="eyebrow">全体の流れ</p>
+    <h2 class="sec-title">7つの段階のうち、<br>必要なところから始めます。</h2>
+    <p class="sec-lead">いつも最初からは始めません。横に書いてある言葉を言うと、その段階から始めます。</p>
+    <ol class="flow">
+      <li><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><rect class="ac" x="24" y="16" width="48" height="24" rx="12"/><path class="ac" d="M62 36l10 10-14-6z"/><path class="wh" d="M36 28h24"/></svg><div><b>お願い</b><span>言葉を聞いて、どの段階から始めるかを決めます</span></div></div></li>
+      <li><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><circle class="ac" cx="18" cy="17" r="5"/><path class="as" d="M30 17h38"/><circle class="bx" cx="18" cy="31" r="5"/><path class="ln" d="M30 31h30"/><circle class="bx" cx="18" cy="45" r="5"/><path class="ln" d="M30 45h22"/></svg><div><b>計画</b><span>使う人を想像して、作る順番を決めます</span></div></div><em>「最初から企画して」</em></li>
+      <li class="you"><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><rect class="bx" x="9" y="11" width="26" height="40" rx="5"/><path class="ln" d="M15 22h14M15 31h9"/><path class="as" d="M39 31h6m-3-3l3 3-3 3"/><rect class="bx" x="49" y="11" width="26" height="40" rx="5"/><path class="ln" d="M55 21h14M55 29h14"/><rect class="ac" x="54" y="37" width="16" height="8" rx="3"/></svg><div><b>試案</b><span>作る画面を先に見て、直します</span></div></div><em>「この機能を入れて」</em></li>
+      <li class="you"><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><rect class="bx" x="22" y="11" width="30" height="40" rx="5"/><path class="ln" d="M29 22h16M29 30h16"/><circle class="ac" cx="54" cy="40" r="12"/><path class="wh" d="M48 40l4 4 8-9"/></svg><div><b>確定</b><span>「これで」と言うと、その試案が基準になります</span></div></div></li>
+      <li><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><rect class="bx" x="12" y="10" width="60" height="42" rx="5"/><rect class="ac" x="18" y="16" width="48" height="8" rx="3"/><rect class="ac" x="18" y="29" width="22" height="17" rx="3"/><rect class="bx" x="45" y="29" width="21" height="17" rx="3" stroke-dasharray="3 3"/></svg><div><b>作る</b><span>確定した試案のとおりに作ります</span></div></div><em>「このバグを直して」</em></li>
+      <li><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><path class="as" d="M13 17l4 4 7-8"/><path class="ln" d="M32 17h38"/><path class="as" d="M13 31l4 4 7-8"/><path class="ln" d="M32 31h30"/><path class="as" d="M13 45l4 4 7-8"/><path class="ln" d="M32 45h34"/></svg><div><b>テスト</b><span>動かして試案と比べます。足りなければ作る段階へ戻ります</span></div></div><em>「テストを回して」</em></li>
+      <li class="you"><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><path class="bx" d="M16 34v12a4 4 0 0 0 4 4h44a4 4 0 0 0 4-4V34"/><path class="as" d="M42 10v26m-9-9l9 9 9-9"/></svg><div><b>反映</b><span>最初に選んだ分だけ保存して反映します</span></div></div><em>「反映して」</em></li>
+    </ol>
+    <p class="flow-note"><span><i style="border: 2px solid var(--autumn);"></i>自分で決める段階</span><span><i style="background: var(--sunk);"></i>この言葉ならここから</span></p>
+  </div>
+</section>
+
+<section style="background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="wrap">
+    <p class="eyebrow">言えること</p>
+    <h2 class="sec-title">こう言うと、<br>こうなります。</h2>
+    <div class="cans">
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>「最初から企画して」</h3><p class="d">使う人を想像して、何から作るかの計画表を書きます。</p></div>
+        <div class="mini"><p class="cap">結果の例：ランニング記録アプリ</p>
+          <table>
+            <tr><td>使う人</td><td>週末だけ走る会社員 ほか4人</td></tr>
+            <tr><td>第1段階</td><td>過去の記録を見る · 目標を決める</td></tr>
+            <tr><td>第2段階</td><td>友だちと記録を比べる</td></tr>
+            <tr><td>第3段階</td><td>走った道を地図に表示</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>「この機能を入れて」</h3><p class="d">作る前に試案を見せ、「これで」と言われたら作ります。</p></div>
+        <div class="mini"><p class="cap">結果の例：ログイン画面</p>
+          <div class="ba">
+            <div class="phone"><small>いま</small><div class="ln"></div><div class="ln s"></div><div class="ln"></div></div>
+            <div class="phone"><small>変更後</small><div class="fd">メール</div><div class="fd">パスワード</div><div class="bt">ログイン</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>「このバグを直して」</h3><p class="d">試案なしですぐ直し、テストの結果を伝えます。</p></div>
+        <div class="mini"><p class="cap">結果の例</p>
+          <ul><li class="ok">保存ボタンが押せなかった不具合を修正</li><li class="ok">テスト12件すべて合格</li><li class="todo">未確認：スマホで実際に触ってみる</li></ul>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>「ロードマップどおり開発して」</h3><p class="d">計画表に残った仕事を順に作ってテストします。</p></div>
+        <div class="mini"><p class="cap">結果の例：第1段階</p>
+          <ul><li class="ok">過去の記録を見る</li><li class="ok">目標を決める</li><li class="todo">記録を消す（次の番）</li></ul>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>「寝るね」</h3><p class="d">離れる前に一度だけ聞いて作業を続けます。決めることはまとめておきます。</p></div>
+        <div class="mini"><p class="cap">結果の例：朝に見る画面</p>
+          <ul><li class="ok">終わった仕事 4件</li><li class="todo">決めること 1：最初の画面の文言を選ぶ</li><li class="todo">決めること 2：完成版に反映するか</li></ul>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>「ロードマップはどこまで進んだ？」</h3><p class="d">終わったことと次にすることだけを短く伝えます。何も変更しません。</p></div>
+        <div class="mini"><p class="cap">結果の例</p>
+          <div class="meter">第1段階<b><i style="width: 100%"></i></b><span>5/5</span></div>
+          <div class="meter">第2段階<b><i style="width: 40%"></i></b><span>2/5</span></div>
+          <div class="meter">第3段階<b><i style="width: 0%"></i></b><span>0/4</span></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <section class="worries">
   <div class="wrap">
-    <p class="eyebrow">こんな方に</p>
-    <h2 class="sec-title">コードを知らなくても<br>大丈夫。</h2>
+    <p class="eyebrow">心配なら</p>
+    <h2 class="sec-title">よくある3つの質問。</h2>
     <div class="talk">
-      <div class="pair"><p class="bubble q">「アイデアはあるけど、コードはまったくわからない」</p><p class="bubble a">言葉で言うだけ。あとは AI がやります。</p></div>
-      <div class="pair"><p class="bubble q">「AI が『できました』と言うけど、本当かわからない」</p><p class="bubble a">テストの結果を残し、危ない変更は別の AI がもう一度見ます。</p></div>
-      <div class="pair"><p class="bubble q">「何から作ればいいのかわからない」</p><p class="bubble a">使う人の目線で順番を決めます。</p></div>
-      <div class="pair"><p class="bubble q">「難しい用語が出てくると怖い」</p><p class="bubble a">ボタンで「はい」「いいえ」を選ぶだけ。</p></div>
-      <div class="pair"><p class="bubble q">「夜のあいだ任せて寝たい」</p><p class="bubble a">朝には決めることだけまとめておきます。</p></div>
-      <div class="pair"><p class="bubble q">「スマホで確認することが多い」</p><p class="bubble a">報告は短く、選択肢は番号で。</p></div>
+      <div class="pair"><p class="bubble q">「コードはまったくわかりません」</p><p class="bubble a">やりたいことを言葉で言うだけです。選ぶものはボタンで出ます。</p></div>
+      <div class="pair"><p class="bubble q">「AI が勝手に進めたらどうしよう」</p><p class="bubble a">作る前に試案で確認を取ります。記録・公開・反映は選んだ分だけ行います。</p></div>
+      <div class="pair"><p class="bubble q">「ちゃんとできたか、どうやってわかるの？」</p><p class="bubble a">テストの結果と、できなかったことまでそのまま見せます。危ない変更は別の AI がもう一度見直します。</p></div>
     </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <p class="eyebrow">できること</p>
-    <h2 class="sec-title">お願いは一行、<br>仕事は最後まで。</h2>
-    <div class="cards">
-      <div class="card"><div class="ico"><span data-pix="seed" data-s="4"></span></div><h3>計画を立てる</h3><span class="say">「最初から企画して」</span><p>使う人を5人想像して、その人たちの一日を描きます。すると本当に必要な機能と作る順番が見えてきます。</p></div>
-      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>先に絵で見せる</h3><span class="say">「この機能を入れて」</span><p>作る前に、どうなるかを絵で見せます。「これで」と言われてから作り、終わったら絵のとおりにできたか照らし合わせます。</p></div>
-      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>最初に一度だけ聞く</h3><span class="say">選択ボタン</span><p>今回の作業に必要なことだけを1画面で聞きます。そのあとは、絵の確認と取り消しにくいこと以外では止まりません。</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="team" id="how">
-  <div class="wrap">
-    <p class="eyebrow">どう動くか</p>
-    <h2 class="sec-title">7つの段階のうち、<br>必要なところから始めます。</h2>
-    <p class="sec-lead">いつも最初からは始めません。計画が要るなら計画から、直すものがひとつなら、すぐ作るところから始めます。</p>
-    <ol class="grow">
-      <li><span class="pix" aria-hidden="true"><span data-pix="seed" data-s="4"></span></span><h3>お願い</h3><p>言葉を聞いて、どこから始めるかを決めます。必要なことだけを1画面で聞きます。</p></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="sprout" data-s="4"></span></span><h3>計画</h3><p>使う人を想像して、何から作るかの順番を決めます。</p><span class="from">「最初から企画して」ならここから</span></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="sprout" data-s="5"></span></span><h3>絵を見る</h3><p>作る前に、どうなるかを絵で見せます。気に入るまで直します。</p><span class="from">「この機能を入れて」ならここから</span></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="tulip2" data-s="4"></span></span><h3>「これで」</h3><p>このひと言が基準になります。それまでは作りません。</p></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="lavender" data-s="4"></span></span><h3>作る</h3><p>決めた絵のとおりに作ります。絵にないものは足しません。</p><span class="from">「このバグを直して」ならここから</span></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="daisy" data-s="4"></span></span><h3>試す</h3><p>動かして、絵と照らし合わせます。足りなければ作るところへ戻ります。</p><span class="from">「テストを回して」ならここから</span></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="tulip" data-s="4"></span></span><h3>反映</h3><p>最初に選んだ分だけ保存して反映します。</p><span class="from">「反映して」ならここだけ</span></li>
-    </ol>
-  </div>
-</section>
-
-<section id="safe">
-  <div class="wrap">
-    <p class="eyebrow">安心して任せて</p>
-    <h2 class="sec-title">AI の言葉だけを信じません。<br>証拠を残して、絵と照らし合わせます。</h2>
-    <div class="checks-grid">
-      <div class="four">
-        <div><span class="ok">✓ 先に</span><b>絵</b><p>「これで」と言われるまでは作りません</p></div>
-        <div><span class="ok">✓ 合格</span><b>テスト</b><p>動かした結果をそのまま残します</p></div>
-        <div><span class="ok">✓ 合格</span><b>範囲</b><p>頼んでいないところに触れていないか</p></div>
-        <div><span class="ok">✓ もう一度</span><b>別の目</b><p>危ない変更は別の AI が改めて見ます</p></div>
-      </div>
-      <div class="report" aria-label="最後の報告の例">
-        <div class="bar"><i></i><i></i><i></i></div>
-        <p><b>何を</b>ログイン画面を作る</p>
-        <p><b>テスト</b>12件すべて合格</p>
-        <p><b>絵との照合</b>① できた · ② できた · ③ ボタンを下へ移動</p>
-        <p><b>未確認</b>スマホで実際に触ってみる</p>
-        <hr>
-        <ol><li class="pick">次の機能を作る（おすすめ）</li><li>記録を残す</li><li>完成版に反映する</li></ol>
-      </div>
-    </div>
-    <p class="sec-lead">報告はこれだけ短く届きます。番号をひとつ選ぶだけ。</p>
-  </div>
-</section>
-
-<section style="background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
-  <div class="wrap">
-    <p class="eyebrow">計画の立て方</p>
-    <h2 class="sec-title">計画は7つのステップで立てます。</h2>
-    <p class="sec-lead">機能リストからは始めません。「誰が、どんな一日に使うか」から始めます。</p>
-    <div class="seasons">
-      <div class="season" style="--c: var(--seed)"><small>1</small><h3>核を決める</h3><p>これで人がすること3〜6個</p></div>
-      <div class="season" style="--c: var(--spring)"><small>2</small><h3>使う人を想像</h3><p>架空のユーザー5人</p></div>
-      <div class="season" style="--c: var(--spring)"><small>3</small><h3>一日を描く</h3><p>その人の一日を場面で</p></div>
-      <div class="season" style="--c: var(--summer)"><small>4</small><h3>必要なものを探す</h3><p>場面ごとに必要な機能</p></div>
-      <div class="season" style="--c: var(--summer)"><small>5</small><h3>点数をつける</h3><p>多くの人に必要なほど高く</p></div>
-      <div class="season" style="--c: var(--autumn)"><small>6</small><h3>順番を決める</h3><p>点数の高いものから</p></div>
-      <div class="season" style="--c: var(--winter)"><small>7</small><h3>段階に分ける</h3><p>第1段階、第2段階…計画表の完成</p></div>
-    </div>
-    <p class="formula">点数は AI の目分量ではなく、スクリプトで数えます。だから何度やっても同じ答えになります。</p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <p class="eyebrow">こう話しかけて</p>
-    <h2 class="sec-title">コマンドは覚えなくて大丈夫。</h2>
-    <div class="says">
-      <div><code>「最初から企画して」</code><span>何を作るか一緒に決めて、計画表まで書きます。</span></div>
-      <div><code>「こんなユーザーも入れて：週末だけ遊ぶ会社員」</code><span>その人を計画に足して、変わるところだけ直します。</span></div>
-      <div><code>「この機能を入れて」</code><span>どうなるかを絵で見せ、「これで」と言われたら作ります。</span></div>
-      <div><code>「ロードマップどおり開発して」</code><span>計画表に残った仕事を順に作ってテストします。</span></div>
-      <div><code>「このバグを直して」</code><span>絵なしですぐ直してテストします。</span></div>
-      <div><code>「反映して」</code><span>言われた分だけ保存して反映します。</span></div>
-      <div><code>「寝るね」</code><span>離れる前に一度だけ聞いて作業を続けます。朝には決めることだけまとめておきます。</span></div>
-      <div><code>「ロードマップはどこまで進んだ？」</code><span>終わったことと次にすることだけ短く伝えます。</span></div>
-    </div>
-  </div>
-</section>
-
-<section style="padding-top: 24px;">
-  <div class="wrap">
-    <p class="eyebrow">必ず聞くこと</p>
-    <h2 class="sec-title">取り消しにくいことは<br>選んだ分だけ行います。</h2>
-    <p class="sec-lead">「おまかせ」と言っても、始めるときにどこまで行うかをボタンひとつで選びます。選ばなかったことは行いません。</p>
-    <div class="words">
-      <div><b>デザイン・文言</b><p>見て感じるものはあなたの好みで</p></div>
-      <div><b>お金・アカウント</b><p>支払いとログインはあなただけ</p></div>
-      <div><b>記録を残す</b><p>作ったものを保存しておくこと</p></div>
-      <div><b>公開する</b><p>ネット上の保管場所に上げること</p></div>
-      <div><b>反映する</b><p>完成版に取り込むこと</p></div>
-    </div>
-    <div class="options"><span class="rec">ファイルだけ直す（おすすめ）</span><span>記録を残すまで</span><span>公開するまで</span><span>反映するまで</span></div>
   </div>
 </section>
 
 <section class="cta" id="start">
   <div class="wrap">
-    <div class="flowerbed" aria-hidden="true" style="margin-bottom: 18px;">
-      <span data-pix="daisy" data-s="4"></span><span data-pix="tulip" data-s="4"></span><span data-pix="lavender" data-s="4"></span>
-    </div>
     <h2>用意するものはひとつ、<br>言うことはひと言。</h2>
     <div class="need"><b>用意するもの：Claude Code</b><p>Anthropic の AI 開発アシスタントです。先に<a href="https://claude.com/claude-code">インストール</a>してください。</p></div>
     <div class="install" id="install">
