@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // 기획 문서 다섯 개의 갱신 시각을 비교하고 내용도 확인해 낡은 단계를 찾고, 마일스톤·시나리오 진행 수를 센다.
-// roadmap 1절 "지금 상태 보기"를 눈으로 비교하지 않게 하는 스크립트. 문서는 고치지 않는다(읽기만).
+// 기획 플로우(references/plan.md "지금 상태 보기")를 눈으로 비교하지 않게 하는 스크립트. 문서는 고치지 않는다(읽기만).
 // 사용법: node status.js [기획 폴더] [--checklist <파일>] [--prefix <절>] [--no-git] [--no-content]
 //   기획 폴더: personas.md가 있는 폴더(기본: 현재 폴더)
 //   --checklist: 체크리스트 파일(기본: personas.md "> 문서:" 줄 → 폴더의 *checklist*.md·체크리스트*.md)
