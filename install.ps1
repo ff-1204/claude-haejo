@@ -3,7 +3,7 @@ claude-haejo 설치·점검 (Windows PowerShell 5.1 이상). install.sh와 같�
   .\install.ps1             skills\*를 ~\.claude\skills\에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 다른 줄만 보인다. 버전은 ~\.claude\claude-haejo.json에 남긴다.
   .\install.ps1 -Check      복사하지 않고 다른 파일만 보인다. 다르거나 옛 하위 스킬 폴더가 남아 있으면 exit 1.
   .\install.ps1 -DryRun     복사할 파일만 보이고 복사하지 않는다.
-  .\install.ps1 -Prune      옛 하위 스킬 폴더(roadmap-core 등 7개, 지금은 roadmap 하나로 합쳐짐)만 지운다. *.local.md(숨김 파일 포함)가 든 폴더는 지우지 않는다.
+  .\install.ps1 -Prune      옛 하위 스킬 폴더(roadmap·roadmap-teammate 등 9개, 지금은 haejo 하나로 합쳐짐)만 지운다. *.local.md(숨김 파일 포함)가 든 폴더는 지우지 않는다.
                             -Check나 -DryRun과 같이 주면 지우지 않고 지울 폴더만 보인다(-Check면 옛 폴더가 있을 때 exit 1).
   -HomeDir <폴더>           ~ 대신 쓸 폴더 (시험용)
 옵션은 이름 전체로만 받는다(-P 같은 줄인 이름은 거부). 모르는 옵션과 -Check·-DryRun을 같이 주면 exit 2.
@@ -45,8 +45,26 @@ $dest = Join-Path $HomeDir '.claude'
 $script:diffs = 0
 
 # 옛 하위 스킬 폴더 (고정 목록). 이 폴더들이 설치본에 남아 있으면 옛 스킬이 계속 불릴 수 있다.
-$oldSkills = @('roadmap-core', 'roadmap-personas', 'roadmap-scenarios', 'roadmap-map', 'roadmap-score', 'roadmap-priority', 'roadmap-milestones')
+$oldSkills = @('roadmap', 'roadmap-teammate', 'roadmap-core', 'roadmap-personas', 'roadmap-scenarios', 'roadmap-map', 'roadmap-score', 'roadmap-priority', 'roadmap-milestones')
+$newSkill = 'haejo'
 $oldFound = @($oldSkills | Where-Object { Test-Path -LiteralPath (Join-Path $dest "skills\$_") -PathType Container })
+
+# 바이트까지 똑같은 파일인가
+function Test-SameBytes($a, $b) {
+  if (-not (Test-Path -LiteralPath $b -PathType Leaf)) { return $false }
+  $x = [IO.File]::ReadAllBytes($a); $y = [IO.File]::ReadAllBytes($b)
+  if ($x.Length -ne $y.Length) { return $false }
+  for ($k = 0; $k -lt $x.Length; $k++) { if ($x[$k] -ne $y[$k]) { return $false } }
+  return $true
+}
+# 옛 폴더의 *.local.md(숨김 파일 포함)와 새 스킬 폴더에서의 자리
+function Get-OldLocals($n) {
+  $d = Join-Path $dest "skills\$n"
+  @(Get-ChildItem -LiteralPath $d -Recurse -File -Force | Where-Object { $_.Name -like '*.local.md' } | ForEach-Object {
+    $r = $_.FullName.Substring($d.Length + 1)
+    [pscustomobject]@{ Full = $_.FullName; Rel = $r; Target = (Join-Path $dest "skills\$newSkill\$r") }
+  })
+}
 
 if ($Prune) {
   # -Check·-DryRun과 같이 주면 미리 보기만 한다 (아무것도 지우지 않는다)
@@ -54,11 +72,11 @@ if ($Prune) {
   if ($oldFound.Count -eq 0) { Write-Output '지울 옛 하위 스킬 폴더 없음'; exit 0 }
   foreach ($n in $oldFound) {
     $d = Join-Path $dest "skills\$n"
-    # -Force: 숨김 속성 파일도 찾는다 (install.sh의 find와 같게)
-    $keep = @(Get-ChildItem -LiteralPath $d -Recurse -File -Force | Where-Object { $_.Name -like '*.local.md' })
+    # 새 스킬 폴더 같은 자리에 똑같은 사본이 없는 *.local.md만 남길 이유가 된다 (사본이 있으면 지워도 잃는 것이 없다)
+    $keep = @(Get-OldLocals $n | Where-Object { -not (Test-SameBytes $_.Full $_.Target) })
     if ($keep.Count -gt 0) {
       Write-Output "지우지 않음: skills/$n (이 PC에만 두는 *.local.md가 있다. 옮긴 뒤 다시 -Prune)"
-      $keep | ForEach-Object { Write-Output "  - $($_.FullName.Substring($dest.Length + 1) -replace '\\', '/')" }
+      $keep | ForEach-Object { Write-Output "  - $($_.Full.Substring($dest.Length + 1) -replace '\\', '/')" }
     } elseif ($preview) {
       Write-Output "지울 폴더: skills/$n"
     } else {
@@ -104,6 +122,25 @@ Get-ChildItem -LiteralPath $skills -Recurse -File |
   Sort-Object FullName |
   ForEach-Object { Sync-File $_.FullName.Substring($repo.Length + 1) }
 
+# 옛 스킬 폴더에 있던 *.local.md(이 PC에만 두는 규칙)를 새 스킬 폴더 같은 자리로 복사한다. 옛 파일은 그대로 둔다.
+if (-not $Check) {
+  foreach ($n in $oldFound) {
+    foreach ($l in Get-OldLocals $n) {
+      $from = "skills/$n/$($l.Rel -replace '\\', '/')"
+      $to = "skills/$newSkill/$($l.Rel -replace '\\', '/')"
+      if (Test-Path -LiteralPath $l.Target -PathType Leaf) {
+        if (-not (Test-SameBytes $l.Full $l.Target)) { Write-Output "참고: 둘 다 있고 다름(덮지 않음): $from 와 $to" }
+      } elseif ($DryRun) {
+        Write-Output "옮길 것(복사): $from → $to"
+      } else {
+        New-Item -ItemType Directory -Force -Path (Split-Path $l.Target) | Out-Null
+        Copy-Item -LiteralPath $l.Full -Destination $l.Target -Force
+        Write-Output "옮김(복사): $from → $to"
+      }
+    }
+  }
+}
+
 # 저장소에서 빠진 파일은 알리기만 한다
 foreach ($d in Get-ChildItem -LiteralPath $skills -Directory) {
   $td = Join-Path $dest "skills\$($d.Name)"
@@ -134,7 +171,7 @@ if (-not (Test-Path -LiteralPath $t)) {
 }
 
 # 설치한 버전을 ~\.claude\claude-haejo.json에 남긴다 (skills\ 밖이라 -Check 비교에 걸리지 않는다).
-# 새 버전 안내(skills/roadmap/scripts/check-update.js)가 읽는다. git이나 태그가 없으면 version은 null.
+# 새 버전 안내(skills/haejo/scripts/check-update.js)가 읽는다. git이나 태그가 없으면 version은 null.
 function Write-Version {
   # git 오류(태그 없음 등)가 설치를 멈추지 않게 이 함수 안에서는 오류를 넘긴다 (PowerShell 5.1은 2>$null도 오류로 본다)
   $ErrorActionPreference = 'SilentlyContinue'
@@ -169,7 +206,7 @@ if (-not $Check -and -not $DryRun) { Write-Version }
 # 옛 하위 스킬 폴더는 지우지 않고 눈에 띄게 알린다 (-Check에서는 다른 파일로 센다)
 if ($oldFound.Count -gt 0) {
   Write-Output ''
-  Write-Output '!! 옛 하위 스킬 폴더가 남아 있다 (지금은 roadmap 스킬 하나로 합쳐짐):'
+  Write-Output '!! 옛 하위 스킬 폴더가 남아 있다 (지금은 haejo 스킬 하나로 합쳐짐):'
   foreach ($n in $oldFound) { Write-Output "!!   ~/.claude/skills/$n" }
   Write-Output '!! 남아 있으면 Claude가 옛 스킬을 계속 불러 옛 규칙대로 할 수 있다.'
   Write-Output '!! 지우려면: .\install.ps1 -Prune   (Git Bash·macOS·Linux: ./install.sh --prune)'

@@ -12,9 +12,10 @@ fail() { echo "실패: $*"; exit 1; }
 # 명령의 종료 코드를 set -e에 걸리지 않게 읽는다
 code() { local c=0; "$@" > "$tmp/last.txt" 2>&1 || c=$?; echo "$c"; }
 
-mkdir -p "$s/roadmap-score" "$s/roadmap-core"
+mkdir -p "$s/roadmap-score" "$s/roadmap-core" "$s/roadmap-teammate/references"
 echo old > "$s/roadmap-score/SKILL.md"
 echo mine > "$s/roadmap-core/notes.local.md"
+echo rules > "$s/roadmap-teammate/references/projects.local.md"
 
 # 1) 설치 때 알림
 inst > "$tmp/out.txt"
@@ -47,10 +48,21 @@ for bad in "--bogus" "--prune --bogus" "--check --dry-run" "--prun"; do
   echo "통과: $bad → exit 2"
 done
 
-# 5) --prune: local.md가 든 폴더는 남긴다
+# 4-1) 설치가 옛 폴더의 local.md를 haejo 같은 자리로 복사했다 (옛 파일은 그대로)
+[ -f "$s/haejo/references/projects.local.md" ] || fail "projects.local.md가 haejo로 복사되지 않음"
+[ -f "$s/haejo/notes.local.md" ] || fail "notes.local.md가 haejo로 복사되지 않음"
+[ -f "$s/roadmap-teammate/references/projects.local.md" ] || fail "옛 projects.local.md가 없어짐"
+grep -q "옮김(복사): skills/roadmap-teammate/references/projects.local.md" "$tmp/out.txt" || fail "옮김 알림 없음"
+echo "통과: 설치가 local.md를 haejo로 복사"
+# 사본이 없는 local.md가 든 폴더는 남기는지 보려고 notes 사본만 지운다
+rm "$s/haejo/notes.local.md"
+
+# 5) --prune: 사본이 없는 local.md가 든 폴더는 남기고, 똑같은 사본이 있는 폴더는 지운다
 inst --prune > /dev/null
 [ ! -d "$s/roadmap-score" ] || fail "--prune 뒤 roadmap-score가 남음"
 [ -f "$s/roadmap-core/notes.local.md" ] || fail "local.md가 지워짐"
+[ ! -d "$s/roadmap-teammate" ] || fail "사본이 있는데 roadmap-teammate가 남음"
+[ "$(cat "$s/haejo/references/projects.local.md")" = rules ] || fail "haejo의 projects.local.md가 달라짐"
 [ "$(code inst --check)" = 1 ] || fail "local.md 폴더가 남았는데 --check가 1이 아님"
 echo "통과: --prune이 local.md 폴더는 남김"
 

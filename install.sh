@@ -3,7 +3,7 @@
 #   (옵션 없음)  skills/*를 ~/.claude/skills/에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 diff만 보인다. 버전은 ~/.claude/claude-haejo.json에 남긴다.
 #   --check      복사하지 않고 다른 파일만 보인다. 다르거나 옛 하위 스킬 폴더가 남아 있으면 exit 1.
 #   --dry-run    복사할 파일만 보이고 복사하지 않는다.
-#   --prune      옛 하위 스킬 폴더(roadmap-core 등 7개, 지금은 roadmap 하나로 합쳐짐)만 지운다. *.local.md가 든 폴더는 지우지 않는다.
+#   --prune      옛 하위 스킬 폴더(roadmap·roadmap-teammate 등 9개, 지금은 haejo 하나로 합쳐짐)만 지운다. *.local.md가 든 폴더는 지우지 않는다.
 #                --check나 --dry-run과 같이 주면 지우지 않고 지울 폴더만 보인다(--check면 옛 폴더가 있을 때 exit 1).
 # *.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. --prune 말고는 ~/.claude의 파일을 지우지 않는다.
 set -euo pipefail
@@ -35,17 +35,27 @@ diffs=0
 cd "$repo"
 
 # 옛 하위 스킬 폴더 (고정 목록). 이 폴더들이 설치본에 남아 있으면 옛 스킬이 계속 불릴 수 있다.
-old_skills="roadmap-core roadmap-personas roadmap-scenarios roadmap-map roadmap-score roadmap-priority roadmap-milestones"
+old_skills="roadmap roadmap-teammate roadmap-core roadmap-personas roadmap-scenarios roadmap-map roadmap-score roadmap-priority roadmap-milestones"
+new_skill="haejo"
 old_found=""
 for n in $old_skills; do
   if [ -d "$dest/skills/$n" ]; then old_found="$old_found $n"; fi
 done
 
+# 옛 폴더의 *.local.md 가운데 새 스킬 폴더 같은 자리에 똑같은 사본이 없는 것만 낸다 (사본이 있으면 지워도 잃는 것이 없다)
+unmoved_locals() {
+  local d="$1" f
+  while IFS= read -r f; do
+    [ -n "$f" ] || continue
+    cmp -s "$f" "$dest/skills/$new_skill/${f#"$d"/}" || echo "$f"
+  done < <(find "$d" -type f -name '*.local.md' | sort)
+}
+
 if [ "$mode" = prune ] || [ "$mode" = prune-preview ]; then
   if [ -z "$old_found" ]; then echo "지울 옛 하위 스킬 폴더 없음"; exit 0; fi
   for n in $old_found; do
     d="$dest/skills/$n"
-    keep="$(find "$d" -type f -name '*.local.md' | sort)"
+    keep="$(unmoved_locals "$d")"
     if [ -n "$keep" ]; then
       echo "지우지 않음: skills/$n (이 PC에만 두는 *.local.md가 있다. 옮긴 뒤 다시 --prune)"
       echo "$keep" | sed "s|^$dest/|  - |"
@@ -90,6 +100,25 @@ for d in skills/*/; do
   done < <(find "$dest/$d" -type f ! -name '*.local.md' | sort)
 done
 
+# 옛 스킬 폴더에 있던 *.local.md(이 PC에만 두는 규칙)를 새 스킬 폴더 같은 자리로 복사한다. 옛 파일은 그대로 둔다.
+if [ "$mode" != check ]; then
+  for n in $old_found; do
+    d="$dest/skills/$n"
+    while IFS= read -r f; do
+      [ -n "$f" ] || continue
+      r="${f#"$d"/}"; t="$dest/skills/$new_skill/$r"
+      if [ -f "$t" ]; then
+        cmp -s "$f" "$t" || echo "참고: 둘 다 있고 다름(덮지 않음): skills/$n/$r 와 skills/$new_skill/$r"
+      elif [ "$mode" = dry ]; then
+        echo "옮길 것(복사): skills/$n/$r → skills/$new_skill/$r"
+      else
+        mkdir -p "$(dirname "$t")"; cp "$f" "$t"
+        echo "옮김(복사): skills/$n/$r → skills/$new_skill/$r"
+      fi
+    done < <(find "$d" -type f -name '*.local.md' | sort)
+  done
+fi
+
 # CLAUDE.md는 기기마다 고친 줄이 있을 수 있어 덮지 않는다
 t="$dest/CLAUDE.md"
 if [ ! -f "$t" ]; then
@@ -104,7 +133,7 @@ elif ! same CLAUDE.md "$t"; then
 fi
 
 # 설치한 버전을 ~/.claude/claude-haejo.json에 남긴다 (skills/ 밖이라 --check 비교에 걸리지 않는다).
-# 새 버전 안내(skills/roadmap/scripts/check-update.js)가 읽는다. git이나 태그가 없으면 version은 null.
+# 새 버전 안내(skills/haejo/scripts/check-update.js)가 읽는다. git이나 태그가 없으면 version은 null.
 json_str() { # 문자열이면 JSON 따옴표로, 비었으면 null
   if [ -z "$1" ]; then printf 'null'; return; fi
   local s="${1//\\/\\\\}"
@@ -140,7 +169,7 @@ if [ "$mode" = install ]; then write_version; fi
 # 옛 하위 스킬 폴더는 지우지 않고 눈에 띄게 알린다 (--check에서는 다른 파일로 센다)
 if [ -n "$old_found" ]; then
   echo ""
-  echo "!! 옛 하위 스킬 폴더가 남아 있다 (지금은 roadmap 스킬 하나로 합쳐짐):"
+  echo "!! 옛 하위 스킬 폴더가 남아 있다 (지금은 haejo 스킬 하나로 합쳐짐):"
   for n in $old_found; do echo "!!   ~/.claude/skills/$n"; done
   echo "!! 남아 있으면 Claude가 옛 스킬을 계속 불러 옛 규칙대로 할 수 있다."
   echo "!! 지우려면: ./install.sh --prune   (Windows PowerShell: .\\install.ps1 -Prune)"
