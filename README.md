@@ -122,6 +122,7 @@ Just ask in Claude Code. Every change takes effect **from the next new session**
 
 - If `~/.claude/CLAUDE.md` already exists, it isn't overwritten; you're shown the differing lines and decide yourself.
 - Machine-only rules (`*.local.md`) are never copied or deleted.
+- When a new release is out, the skills mention it in one line at the end of their report. They check at most once a day, asking GitHub only for the list of tags, and never download anything on their own. Say `Update claude-haejo` to get it.
 
 <details>
 <summary>Prefer running the commands yourself?</summary>
