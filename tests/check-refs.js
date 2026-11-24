@@ -134,6 +134,27 @@ for (const file of files) {
   });
 }
 
+// 6) SKILL.md 머리(frontmatter)가 읽히는 꼴인가. name과 description이 한 줄씩 있고,
+//    description 값이 따옴표나 YAML 특수 문자로 시작하지 않아야 한다
+//    (예: `description: "~해줘" 한마디…`는 따옴표 뒤에 글이 이어져 YAML이 깨지고, 설명이 통째로 버려진다).
+for (const s of fs.readdirSync(skillsDir)) {
+  const skillFile = path.join(skillsDir, s, 'SKILL.md');
+  if (!fs.existsSync(skillFile)) { problems.push(`skills/${s}/SKILL.md 없음`); continue; }
+  const head = read(skillFile).match(/^---\n([\s\S]*?)\n---\n/);
+  if (!head) { problems.push(`${rel(skillFile)} 머리(---)가 없음`); continue; }
+  const lines = head[1].split('\n');
+  const name = lines.find((l) => l.startsWith('name: '));
+  const desc = lines.find((l) => l.startsWith('description: '));
+  if (!name || name.slice(6).trim() !== s) problems.push(`${rel(skillFile)} name이 폴더 이름(${s})과 다름`);
+  if (!desc) problems.push(`${rel(skillFile)} description 줄이 없음`);
+  else {
+    const v = desc.slice('description: '.length);
+    if (/^["'\[\]{}>|&*!%@`#,?-]/.test(v)) problems.push(`${rel(skillFile)} description이 "${v[0]}"로 시작해 YAML로 읽히지 않음`);
+    if (/: |\s#/.test(v)) problems.push(`${rel(skillFile)} description 안에 ": "나 " #"가 있어 YAML로 잘못 읽힘`);
+  }
+  if (lines.some((l) => l && !/^(name|description): /.test(l))) problems.push(`${rel(skillFile)} 머리에 name·description 말고 다른 줄이 있음`);
+}
+
 if (problems.length) {
   console.error(`참조 오류 ${problems.length}개`);
   for (const p of problems) console.error('- ' + p);
