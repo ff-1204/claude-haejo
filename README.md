@@ -2,130 +2,121 @@
 
 # claude-haejo
 
-**"Claude, do this for me."** A set of Claude Code skills that takes you from planning to shipping with plain requests.
+**"Claude, do this for me."** A Claude Code skill that hears one request, starts from the right step, and carries it through to the end.
 
 🌱 Website: **https://ff-1204.github.io/claude-haejo/en/**
 
+- **One flow**: request → plan → mockup review → review done → build → test → ship/merge. It starts from the step your request calls for.
 - **Planning**: "Plan this from scratch" → writes everything from personas (imagined users) to milestones (development stages).
-- **Delegating work**: "Work on M2" → splits the work across sub-sessions (separate Claude conversations) like teammates, then checks the results and reports back.
-- **Asks only what's yours to decide**: Claude handles the process and asks, with choice buttons, only about taste, money, and things that are hard to undo.
-
-The skills themselves are written in Korean, but every document and question they produce is in your language (see "Writing" in [rules.md](skills/roadmap/references/rules.md)).
+- **A picture first**: before building, it shows you a mockup as a picture and builds only after you say "go with this".
+- **Asks once, up front**: it asks only what this job needs on a single screen. After that it stops only to confirm a mockup or before something hard to undo.
 
 ## Getting started
 
-1. Paste this into Claude Code:
+1. Paste this into Claude Code.
    ```text
-   Download https://github.com/ff-1204/claude-haejo and install it
+   Get https://github.com/ff-1204/claude-haejo and install it
    ```
 2. Open a new Claude Code session. Skills take effect from the next session.
 3. In your project folder, say: **"Plan this from scratch"**
 
+The skill text is written in Korean. Claude follows it and answers in your language.
+
 ## Why use it
 
-- **Decides what to build first, based on people.** It pulls the features each persona needs from a day in their life and orders them by how many people need them.
-- **Scores you can trust.** Priority scores are counted by a script (`score.js`), not eyeballed by Claude.
-- **Picks up where it left off.** Every document carries an updated-at timestamp, and a script also checks that the documents agree with each other, so the next session sees which document is stale and why, and resumes there.
-- **Parallel work without collisions.** One task = one branch = one PR, with one sub-session per milestone.
-- **Mockup first, then build to the mockup.** For visible results like screens, wording or rules, it first shows a numbered "now ↔ mockup" list and builds only after you say "go with this." When done, it shows a table of whether each mockup item was met.
-- **Doesn't just take a report's word for it.** The parent session checks four things on each PR (summary, tests, scope, conflicts) before asking you to merge.
-- **Phone-friendly.** Reports are short, and choices are numbered.
-- **Results first, in plain words.** Answers and reports lead with the result in a friendly, conversational tone; records like commit messages stay short and clean. If you set your own tone, it follows that.
+- **Starts where your request starts.** "Plan this" starts at planning, "add this feature" at the mockup, "fix this bug" at building, and "merge it" only merges.
+- **Decides what to build first from people.** It pulls needed features out of each persona's day and orders them by how many people need them.
+- **Scores don't drift.** Weight scores are counted by a script (`score.js`), not by eye.
+- **Picks up wherever it stopped.** Every document carries an update time and a script checks that the documents agree, so the next session sees which one is stale and why.
+- **Mockup as a picture, result as mocked.** For anything you can see — screens, flows, rules — it shows a picture before building and a per-item check against it afterwards.
+- **Git only as far as you allow.** It does what you picked up front (files only / commit / PR / merge) or what you tell it ("commit it"), and nothing more.
+- **Doesn't take "done" on faith.** It keeps the commands and result lines it ran, and risky changes get a second review by another agent that sees only the change.
+- **Easy to read on a phone.** Reports are short and choices are numbered.
 
-## Things to say
+## What to say
 
-| Say this | What happens |
-|---|---|
-| "Plan this from scratch" | Confirms the core experience with you, then writes 5 personas → scenarios → scores → priorities → milestones |
-| "Add one more persona: an office worker who only plays on weekends" | Adds that person and their scenario, and updates only what changes in the later documents |
-| "Work on M2" | Hands the remaining items, one after another, to a single M2 sub-session (one PR — a request to merge changes — per item), checks each, then asks whether to merge. Moving on to M3 starts a new session |
-| "I'm going to bed" | Asks for permissions before you leave and keeps going. When you're back, it shows you everything that needs a decision |
-| "Where are we on the roadmap?" | Shows, per milestone, how many items are done and what's next. Changes nothing |
+| Say this | Starts at | What happens |
+|---|---|---|
+| "Plan this from scratch" | Plan | Confirms the core experiences with you, then writes 5 personas → scenarios → scores → priorities → milestones |
+| "Add one more persona: an office worker who only plays on weekends" | Plan | Adds that person and their scenario, and updates only what changed downstream |
+| "Add this feature" | Mockup review | Shows a picture mockup, then builds and tests once you say "go with this" |
+| "Work on M2" | Build | Builds and tests M2's remaining items in order. Each item's "done when" is the bar |
+| "Fix this bug" | Build | Fixes and tests straight away, no mockup |
+| "Keep testing" | Test | Repeats test → improve for the time you set |
+| "Commit it", "Merge it" | Ship/merge | Does exactly that much |
+| "I'm going to bed" | — | Asks what it needs before you leave, keeps going, and collects decisions for when you're back |
+| "How far along is the roadmap?" | — | Reports done counts per milestone and the next item. Changes nothing |
 
-You can also call them as slash commands, like `/roadmap` or `/roadmap-teammate`. Those are the only two skills. To run just one planning stage, say so in plain words, like "Rewrite only the scenarios."
+You can also call it with a slash: `/haejo`. This is the only skill.
 
 ## How it works
 
-### Planning flow
+### The whole flow
 
 ```mermaid
 flowchart TD
-  say["What you say"] -->|"from scratch"| core["core<br/>core experience"]
-  say -->|"add a persona"| personas
-  say -->|"Work on M2"| teammate
-  core --> personas["personas<br/>personas"] --> scenarios["scenarios<br/>a day in their life"]
-  scenarios --> map["map<br/>link to checklist"] --> score["score<br/>scores"]
-  score --> priority["priority<br/>build order"] --> milestones["milestones<br/>milestones"]
-  milestones --> teammate["teammate<br/>hand off to sub-sessions"]
-  teammate -->|"milestone done"| update["mark done ·<br/>update scenarios"]
-  update --> score
+  ask["Request<br/>pick the step · first question"] --> plan["Plan<br/>personas → milestones"]
+  plan --> mock["Mockup review<br/>show a picture, revise"]
+  mock --> ok["Review done<br/>'go with this' is the bar"]
+  ok --> dev["Build<br/>this session does it"]
+  dev --> test["Test<br/>run tests · check against mockup"]
+  test -->|"if it fails"| dev
+  test --> ship["Ship/merge<br/>only as allowed"]
+  ship -->|"milestone done"| plan
 ```
 
-- Where it starts depends on what you say. "Add one more persona" doesn't start over; it runs from personas onward.
-- The core experience (the 3–6 things users do with your product) is always confirmed with you, even if you say "just finish it all." If that's wrong, everything after it is wasted.
-- When development finishes, it updates the scenarios and rescores, so the next thing to do is always current.
+- Where you enter depends on what you say. Earlier steps are skipped.
+- If testing fails it goes back to building; if the mockup itself was wrong it goes back to mockup review.
+- When a milestone ends it updates the scenarios and re-scores, so the next thing to do is always current.
 
-### Sub-sessions and PRs
+### The first question
 
-```mermaid
-sequenceDiagram
-  participant U as You
-  participant P as Parent session
-  participant C as Sub-session
-  participant G as GitHub PR
-  U->>P: Work on M2
-  P->>U: Ask for permissions (choice buttons)
-  P->>U: Confirm mockup (now ↔ mockup)
-  U->>P: Go with this
-  P->>C: Brief + start session
-  C->>C: Build · test on its own branch
-  C->>G: Push, open PR
-  P->>G: 4 checks
-  Note over P,G: summary · tests · scope · conflicts
-  P->>C: If anything fails, fix it in the same PR
-  P->>U: Merge?
-  U->>P: Yes
-  P->>G: Merge
-```
+It reads the request, looks ahead at how far this job will go, and asks only what's needed on one screen. If there's nothing to ask, no screen appears.
 
-- Each sub-session works on its own branch (a line of work split off from the main line), so many tasks can run at once without stepping on each other.
-- The parent session doesn't reread the code. It checks four things on the PR: is the summary complete, do the tests pass, is it within the assigned scope, are there no conflicts.
-- For tests it reads the CI result. With no CI, the parent doesn't rerun the tests; it reads the command, exit code and result lines the sub-session left (a bare "tests passed" doesn't count). Only risky PRs get one run by the parent.
-- Minor review notes (naming, comments, polish) go into a "Later" section of the PR description and the PR is merged; they're fixed together in one batch later.
-- Risky PRs (shared storage or network code, format or version changes, login, payment or secrets, new tests with no CI) also get one review by a separate agent that sees only the diff and the task, not the sub-session's report.
-- Merges are squashed: each PR lands as one commit that lists only the results. Commit titles start with a type, like `feat: add login screen` (feat, fix, docs, …).
-- In code work you usually decide in three places: permissions at the start, confirming the mockup before building, and "yes" right before a merge. Matters of taste like wording are settled inside the mockup.
+| Question | When it appears | Choices |
+|---|---|---|
+| Git scope | When files will change | Files only (recommended) / commit / PR / merge |
+| Sub-session | When the job is too big for one conversation | This session does it (recommended) / hand it to a sub-session |
+| Time | For open-ended work like a test loop | e.g. 3 hours / 6 hours |
+| Anything else | Last, whenever a question above appears | No, start now (recommended) / I'll be away |
 
-## What it always asks you
+- Your answers hold for the rest of that session. It doesn't ask again midway.
+- If a git action you didn't allow becomes necessary, it doesn't do it and notes "say the word and I'll do this" in the final report.
+- Everything else — the model, the `Co-Authored-By: Claude …` trailer on commits (kept by default) — isn't asked; it uses defaults and shows them in one line when it starts. Tell it to change one and it will from then on.
 
-Claude decides and reports everything else, but it always asks about these:
+### Building and testing
 
-- **Taste, like the core experience or on-screen wording**: people see and feel these, so Claude doesn't decide for you.
+- **This session does the work.** Sub-sessions (separate Claude conversations) are used only if you chose that in the first question or say "do it in a separate session".
+- **The confirmed mockup is the bar.** Nothing outside it gets added, and anything that can't be done as mocked is reported with the reason.
+- **Tests leave evidence.** It records the commands, exit codes and result lines as they are, and marks each mockup item "done / not done / done differently".
+- **Risky changes** (shared storage or network code, format or version changes, login, payments, secrets, code that deletes things) get one more review by another agent that sees only the change and the bar.
+- When it does commit, open a PR or merge, merges are squashed. Commit titles start with a type, like `feat: add login screen`.
+
+## What you decide
+
+Claude decides the rest and reports it, but these are yours.
+
+- **Taste, like core experiences and on-screen wording**: these are things people see and feel, so Claude won't decide them for you. They go into the mockup and are confirmed together.
 - **Payments and accounts**: only you handle money and accounts.
-- **Commit** (saving changes as a record) · **push** (uploading those records to GitHub)
-- **PR** (a request to merge changes) · **merge** (folding a PR into the main line, `main`)
-- **Tag** (a name pinned to a point in history, e.g. `v1.0`)
-
-From commit to tag, things become permanent records, become visible to others, and can lead to a release. So even when you say "handle it," it asks once at the start of each session, then keeps using that answer for the rest of the session. Tags are added only when you ask for one ("tag it"). You pick one of three: **hand off up to the PR, ask before merging** (recommended) / hand off through merge, this run only / ask every time.
-
-That permission is the only thing asked at the start (plus a time limit on the same screen for open-ended work like repeated testing). Everything else, such as models, what happens to sub-sessions after a merge (archived by default) and the `Co-Authored-By: Claude …` line (trailer) at the end of commits (kept by default), uses a default that's shown in one line of the start report. To change one, just say so and it sticks from then on.
+- **Git**: **commit** (recording changes), **push** (uploading that record to GitHub), **PR** (a request asking whether changes can be merged) and **merge** (folding a PR into the main branch) happen only within the scope you picked in the first question or the amount you asked for. The default is "files only".
+- **Tags** (a name pinned to a point in time, e.g. `v1.0`): only when you ask for one.
 
 ## Install and update
 
-You'll need: [Claude Code](https://claude.com/claude-code), [Git](https://git-scm.com/), Node.js (for scoring), and the [GitHub CLI](https://cli.github.com/) `gh` (for opening PRs; without it, Claude stops at push).
+You need: [Claude Code](https://claude.com/claude-code), [Git](https://git-scm.com/), Node.js (for scoring), and the [GitHub CLI](https://cli.github.com/) `gh` (for PRs; without it, work stops at push).
 
-Just ask in Claude Code. Every change takes effect **from the next new session**.
+Just say it in Claude Code. Either way it takes effect **from the next session**.
 
 | Say this | What Claude does |
 |---|---|
-| `Download https://github.com/ff-1204/claude-haejo and install it` | Clones the repo and runs `install.sh` (`install.ps1` on Windows), copying the skills into `~/.claude/skills/` |
+| `Get https://github.com/ff-1204/claude-haejo and install it` | Clones the repo and runs `install.sh` (`install.ps1` on Windows) to copy the skill into `~/.claude/skills/` |
 | `Update claude-haejo` | Runs `git pull`, shows what will change with `--check` first, then reinstalls |
 | `Check my claude-haejo install` | Uses `--check` to list only files that differ between the repo and your install. Copies nothing |
 
 - If `~/.claude/CLAUDE.md` already exists, it isn't overwritten; you're shown the differing lines and decide yourself.
-- Machine-only rules (`*.local.md`) are never copied or deleted.
-- If old planning sub-skill folders from an earlier install (`roadmap-core` and 6 others, now merged into `roadmap`) are still there, install and check point them out. Leftovers can keep the old skills being called, so remove them with `./install.sh --prune` (PowerShell: `-Prune`). Folders containing `*.local.md` are left alone.
-- When a new release is out, the skills mention it in one line at the end of their report. They check at most once a day, asking GitHub only for the list of tags, and never download anything on their own. Say `Update claude-haejo` to get it.
+- Machine-only rules (`*.local.md`) are never overwritten. The only deletion is `--prune` cleaning up an old copy that was already moved to `haejo`.
+- **Coming from an older version**: the skills were merged into one, `haejo`. If old skill folders (`roadmap`, `roadmap-teammate`, `roadmap-core` and the rest, nine in all) remain, install and check tell you. Left in place, the old skills can keep being called, so remove them with `./install.sh --prune` (PowerShell: `-Prune`). Any `*.local.md` in an old folder is copied to the same place under `haejo` at install time, and a folder holding a `*.local.md` that has no copy is not deleted.
+- When a new version is out, the skill tells you in one line at the end of a report. It checks once a day, asks GitHub only for the tag list, and never downloads on its own. To get it, say `Update claude-haejo`.
 
 <details>
 <summary>Prefer running the commands yourself?</summary>
@@ -136,7 +127,7 @@ cd claude-haejo
 ./install.sh             # Windows PowerShell: powershell -ExecutionPolicy Bypass -File .\install.ps1
 ./install.sh --check     # show differing files without copying (PowerShell: -Check)
 ./install.sh --dry-run   # show files that would be copied (PowerShell: -DryRun)
-./install.sh --prune     # remove only the old sub-skill folders (PowerShell: -Prune)
+./install.sh --prune     # remove old skill folders only (PowerShell: -Prune)
 git pull && ./install.sh # update
 ```
 
@@ -144,11 +135,12 @@ git pull && ./install.sh # update
 
 ## Learn more (in Korean)
 
-- Planning flow and where it asks you: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
-- The 5 documents it writes and shared rules: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
-- What each planning stage does (core, personas, scenarios, map, score, priority, milestones): [skills/roadmap/references/](skills/roadmap/references/)
-- Sub-sessions, PRs, merging, test loops, working while you're away: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
-- Writing private rules that must not be published (`*.local.md`): [projects.md](skills/roadmap-teammate/references/projects.md)
+- The whole flow, the first question and git scope: [skills/haejo/SKILL.md](skills/haejo/SKILL.md)
+- Planning flow and where it asks you: [plan.md](skills/haejo/references/plan.md)
+- The 5 documents it writes and shared rules: [rules.md](skills/haejo/references/rules.md)
+- Picture mockups and checking against them: [mockup.md](skills/haejo/references/mockup.md)
+- Testing and review of risky changes: [test.md](skills/haejo/references/test.md)
+- Writing private rules that must not be published (`*.local.md`): [projects.md](skills/haejo/references/projects.md)
 
 ## License
 

@@ -27,9 +27,10 @@ function Inst([string[]]$a) {
 }
 function Fail([string]$m) { Write-Output "실패: $m"; exit 1 }
 
-New-Item -ItemType Directory -Force (Join-Path $s 'roadmap-score'), (Join-Path $s 'roadmap-core'), (Join-Path $s 'roadmap-map') | Out-Null
+New-Item -ItemType Directory -Force (Join-Path $s 'roadmap-score'), (Join-Path $s 'roadmap-core'), (Join-Path $s 'roadmap-map'), (Join-Path $s 'roadmap-teammate\references') | Out-Null
 Set-Content (Join-Path $s 'roadmap-score\SKILL.md') 'old'
 Set-Content (Join-Path $s 'roadmap-core\notes.local.md') 'mine'
+Set-Content (Join-Path $s 'roadmap-teammate\references\projects.local.md') 'rules'
 # 숨김 속성 *.local.md
 $hidden = Join-Path $s 'roadmap-map\hidden.local.md'
 Set-Content $hidden 'mine'
@@ -67,10 +68,21 @@ foreach ($bad in @(@('-Bogus'), @('-P'), @('-Pru'), @('-Prune', '-Bogus'), @('-C
   Write-Output "통과: ${name} → exit 2"
 }
 
-# 5) -Prune: *.local.md(숨김 포함)가 든 폴더는 남긴다
+# 4-1) 설치가 옛 폴더의 local.md를 haejo 같은 자리로 복사했다 (옛 파일은 그대로)
+$moved = Join-Path $s 'haejo\references\projects.local.md'
+if (-not (Test-Path -LiteralPath $moved)) { Fail 'projects.local.md가 haejo로 복사되지 않음' }
+if (-not (Test-Path -LiteralPath (Join-Path $s 'roadmap-teammate\references\projects.local.md'))) { Fail '옛 projects.local.md가 없어짐' }
+Write-Output '통과: 설치가 local.md를 haejo로 복사'
+# 사본이 없는 local.md가 든 폴더는 남기는지 보려고 notes·hidden 사본만 지운다
+Remove-Item -LiteralPath (Join-Path $s 'haejo\notes.local.md') -Force
+Remove-Item -LiteralPath (Join-Path $s 'haejo\hidden.local.md') -Force
+
+# 5) -Prune: 사본이 없는 *.local.md(숨김 포함)가 든 폴더는 남기고, 똑같은 사본이 있는 폴더는 지운다
 $r = Inst @('-Prune')
 if ($r[0] -ne 0) { Fail "-Prune exit $($r[0])" }
 if (Test-Path (Join-Path $s 'roadmap-score')) { Fail 'roadmap-score가 남음' }
+if (Test-Path (Join-Path $s 'roadmap-teammate')) { Fail '사본이 있는데 roadmap-teammate가 남음' }
+if ((Get-Content -LiteralPath $moved -Raw).Trim() -ne 'rules') { Fail 'haejo의 projects.local.md가 달라짐' }
 if (-not (Test-Path (Join-Path $s 'roadmap-core\notes.local.md'))) { Fail 'local.md가 지워짐' }
 if (-not (Test-Path -LiteralPath $hidden)) { Fail '숨김 local.md가 든 폴더가 지워짐' }
 Write-Output '통과: -Prune이 local.md(숨김 포함) 폴더는 남김'

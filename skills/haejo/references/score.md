@@ -17,7 +17,7 @@
 1. 스크립트를 돌린다.
 
    ```bash
-   node ~/.claude/skills/roadmap/scripts/score.js <persona-scenarios.md> [옵션]
+   node ~/.claude/skills/haejo/scripts/score.js <persona-scenarios.md> [옵션]
    ```
 
    | 옵션 | 기본값 | 언제 바꾸나 |
@@ -35,7 +35,7 @@
 3. 매핑 문서 **1절**(🔜)과 **2절**(✅)을 스크립트 표로 바꾼다. 표에 "이름" 칸을 더해 체크리스트에서 묶음 이름을 채운다. 쓴 옵션은 머리 `점수 =` 줄 뒤에 적는다.
 4. 지난 표가 있었으면, 점수가 바뀐 묶음을 "6. 바뀐 기록"에 `<묶음> 13 → 16`으로 적는다.
 
-score.js를 고쳤으면 `node ~/.claude/skills/roadmap/tests/score/run.js`로 테스트한다(기대 출력은 손으로 센 값).
+score.js를 고쳤으면 `node ~/.claude/skills/haejo/tests/score/run.js`로 테스트한다(기대 출력은 손으로 센 값).
 
 ## 출력
 

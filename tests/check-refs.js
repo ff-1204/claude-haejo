@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 // 스킬 문서 안의 참조가 실제로 있는지 본다.
 //   1) 마크다운 링크 ](경로) → 그 파일이 있나
-//   2) "roadmap-<이름> N절", "SKILL.md N절" → 그 SKILL.md에 "## N." 제목이 있나
-//      맨 "N절" → roadmap의 단계 문서(references/)나 "매핑"을 말하는 줄이면 매핑 문서 템플릿에, 아니면 자기 SKILL.md에 "## N."이 있나
+//   2) "haejo N절", "SKILL.md N절" → SKILL.md에 "## N." 제목이 있나
+//      맨 "N절" → 참조 문서(references/)나 "매핑"을 말하는 줄이면 매핑 문서 템플릿에, 아니면 자기 SKILL.md에 "## N."이 있나
 //   3) "<파일>.md \"<이름>\"" → 그 파일에 그 이름이 든 제목(#)이 있나
-//   4) 권한 규칙의 자세한 문장이 roadmap-teammate 0절 밖에 되풀이되지 않나
+//   4) git 범위 규칙의 자세한 문장이 SKILL.md 2절 밖에 되풀이되지 않나
+//   5) 합쳐서 없어진 옛 스킬 이름(roadmap-teammate 등)이 스킬 문서와 CLAUDE.md에 남아 있지 않나
 // 틀린 곳이 있으면 목록을 내고 exit 1. 사용: node tests/check-refs.js
 'use strict';
 const fs = require('fs');
@@ -37,10 +38,10 @@ const rel = (p) => path.relative(root, p).replace(/\\/g, '/');
 // 이 파일이 속한 스킬 폴더 (skills/<이름>)
 function skillOf(file) {
   const parts = path.relative(skillsDir, file).split(path.sep);
-  return parts.length > 1 ? path.join(skillsDir, parts[0]) : null;
+  return parts.length > 1 && parts[0] !== '..' ? path.join(skillsDir, parts[0]) : null;
 }
 
-// 이름만 적힌 .md 파일을 찾는다: 같은 폴더 → 같은 스킬 → roadmap/references
+// 이름만 적힌 .md 파일을 찾는다: 같은 폴더 → 같은 스킬 → 스킬마다 references
 function findMd(name, file) {
   const skill = skillOf(file);
   const tries = [path.join(path.dirname(file), name)];
@@ -49,9 +50,10 @@ function findMd(name, file) {
   return tries.find((p) => fs.existsSync(p)) || null;
 }
 
-// roadmap 단계 문서 폴더와 매핑 문서 템플릿 (맨 "N절"이 매핑 문서 절을 가리키는 곳)
-const roadmapRefs = path.join(skillsDir, 'roadmap', 'references');
-const mapTemplate = path.join(skillsDir, 'roadmap', 'assets', 'persona-checklist-map.md');
+// 참조 문서 폴더와 매핑 문서 템플릿 (맨 "N절"이 매핑 문서 절을 가리키는 곳)
+const SKILL = 'haejo';
+const refsDir = path.join(skillsDir, SKILL, 'references');
+const mapTemplate = path.join(skillsDir, SKILL, 'assets', 'persona-checklist-map.md');
 if (!fs.existsSync(mapTemplate)) problems.push(`매핑 문서 템플릿 없음: ${rel(mapTemplate)}`);
 
 const files = [...walk(skillsDir), ...['CLAUDE.md', 'README.md', 'README.ko.md', 'README.ja.md'].map((f) => path.join(root, f))];
@@ -74,17 +76,18 @@ for (const file of files) {
     }
 
     // 2) N절. 맨 "N절"은 두 가지다.
-    //    - roadmap의 단계 문서(skills/roadmap/references/*.md)와 "매핑"을 말하는 줄: 매핑 문서 절(템플릿 assets/persona-checklist-map.md)
-    //    - 그 밖(SKILL.md, roadmap-teammate 문서): 자기 SKILL.md 절
-    //    단계 문서가 SKILL.md 절을 말할 때는 "SKILL.md N절"로 쓴다. 스킬 밖 파일(README 등)의 맨 "N절"은 보지 않는다.
+    //    - 참조 문서(skills/haejo/references/*.md)와 "매핑"을 말하는 줄: 매핑 문서 절(템플릿 assets/persona-checklist-map.md)
+    //    - 그 밖(SKILL.md): 자기 SKILL.md 절
+    //    참조 문서가 SKILL.md 절을 말할 때는 "SKILL.md N절"로 쓴다. 스킬 밖 파일(README, CLAUDE.md)은 "haejo N절"로 쓰고, 맨 "N절"은 보지 않는다.
     const ownSkill = skill && path.join(skill, 'SKILL.md');
-    const inStageDocs = path.dirname(file) === roadmapRefs;
-    const mapLine = inStageDocs || /매핑|checklist-map/.test(line);
-    for (const m of line.matchAll(/(roadmap(?:-[a-z]+)?|SKILL\.md)?\s?(\d+)(?:[~·](\d+))?절/g)) {
+    const inRefDocs = path.dirname(file) === refsDir;
+    const mapLine = inRefDocs || /매핑|checklist-map/.test(line);
+    // "[../SKILL.md](../SKILL.md) 8절"처럼 링크 뒤에 오는 절 번호도 SKILL.md 절로 본다(닫는 괄호 허용).
+    for (const m of line.matchAll(/(haejo|SKILL\.md)?\)?\s?(\d+)(?:[~·](\d+))?절/g)) {
       const [, who, a, b] = m;
       let target = null;
-      if (who && who.startsWith('roadmap')) target = path.join(skillsDir, who, 'SKILL.md');
-      else if (who === 'SKILL.md') target = ownSkill;
+      if (who === 'haejo') target = path.join(skillsDir, SKILL, 'SKILL.md');
+      else if (who === 'SKILL.md') target = ownSkill || path.join(skillsDir, SKILL, 'SKILL.md');
       else if (skill && mapLine) target = mapTemplate;
       else if (skill) target = ownSkill;
       if (!target) continue;
@@ -104,16 +107,30 @@ for (const file of files) {
   });
 }
 
-// 4) 권한 규칙의 원본은 roadmap-teammate 0절 한 곳. 자세한 예외 문장이 다른 문서에 되풀이되면 잡는다
-//    (다른 문서는 핵심만 두고 0절을 가리킨다).
-const permOrigin = path.join(skillsDir, 'roadmap-teammate', 'SKILL.md');
-const permDetails = ['브리프에 없는 권한만', '먼저 달거나 권하지', '직접 연 새 세션', '아직 푸시하지 마'];
+// 4) git 범위 규칙의 원본은 SKILL.md 2절 한 곳. 자세한 예외 문장이 다른 문서에 되풀이되면 잡는다
+//    (다른 문서는 핵심만 두고 2절을 가리킨다).
+const permOrigin = path.join(skillsDir, SKILL, 'SKILL.md');
+const permDetails = ['말이 곧 허락', '먼저 달거나 권하지', '대신 못 하는 것', '아직 푸시하지 마'];
 for (const file of files) {
   if (file === permOrigin) continue;
   read(file).split('\n').forEach((line, i) => {
     for (const s of permDetails) {
-      if (line.includes(s)) problems.push(`${rel(file)}:${i + 1} 권한 규칙 되풀이: "${s}" → roadmap-teammate 0절을 가리킬 것`);
+      if (line.includes(s)) problems.push(`${rel(file)}:${i + 1} git 범위 규칙 되풀이: "${s}" → SKILL.md 2절을 가리킬 것`);
     }
+  });
+}
+// 원본에는 그 문장들이 있어야 한다(원본이 바뀌어 검사가 헛돌지 않게).
+for (const s of permDetails) {
+  if (!read(permOrigin).includes(s)) problems.push(`${rel(permOrigin)} git 범위 규칙 문장이 원본에 없음: "${s}"`);
+}
+
+// 5) 합쳐서 없어진 옛 스킬 이름. README는 설치 안내에서 옛 폴더 이름을 말하므로 보지 않는다.
+const oldNames = /roadmap-(teammate|core|personas|scenarios|map|score|priority|milestones)\b|`roadmap` 스킬|skills\/roadmap\b/;
+for (const file of files) {
+  if (/README/.test(path.basename(file))) continue;
+  read(file).split('\n').forEach((line, i) => {
+    const m = line.match(oldNames);
+    if (m) problems.push(`${rel(file)}:${i + 1} 옛 스킬 이름: "${m[0]}" → haejo`);
   });
 }
 
