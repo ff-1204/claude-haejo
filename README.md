@@ -27,6 +27,7 @@ The skills themselves are written in Korean, but every document and question the
 - **Scores you can trust.** Priority scores are counted by a script (`score.js`), not eyeballed by Claude.
 - **Picks up where it left off.** Every document carries an updated-at timestamp, so the next session sees which document is stale and resumes there.
 - **Parallel work without collisions.** One task = one branch = one PR, with one sub-session per milestone.
+- **Mockup first, then build to the mockup.** For visible results like screens, wording or rules, it first shows a numbered "now ↔ mockup" list and builds only after you say "go with this." When done, it shows a table of whether each mockup item was met.
 - **Doesn't just take a report's word for it.** The parent session checks four things on each PR (summary, tests, scope, conflicts) before asking you to merge.
 - **Phone-friendly.** Reports are short, and choices are numbered.
 - **Results first, in plain words.** Answers and reports lead with the result in a friendly, conversational tone; records like commit messages stay short and clean. If you set your own tone, it follows that.
@@ -74,6 +75,8 @@ sequenceDiagram
   participant G as GitHub PR
   U->>P: Work on M2
   P->>U: Ask for permissions (choice buttons)
+  P->>U: Confirm mockup (now ↔ mockup)
+  U->>P: Go with this
   P->>C: Brief + start session
   C->>C: Build · test on its own branch
   C->>G: Push, open PR
@@ -89,10 +92,9 @@ sequenceDiagram
 - The parent session doesn't reread the code. It checks four things on the PR: is the summary complete, do the tests pass, is it within the assigned scope, are there no conflicts.
 - For tests it reads the CI result. With no CI, the parent doesn't rerun the tests; it reads the command, exit code and result lines the sub-session left (a bare "tests passed" doesn't count). Only risky PRs get one run by the parent.
 - Minor review notes (naming, comments, polish) go into a "Later" section of the PR description and the PR is merged; they're fixed together in one batch later.
-- If you like, a sub-session can be created ahead of time for each milestone and wait for a "start" message (standby sessions, off by default). This helps when you can't open new sessions from your phone.
 - Risky PRs (shared storage or network code, format or version changes, login, payment or secrets, new tests with no CI) also get one review by a separate agent that sees only the diff and the task, not the sub-session's report.
 - Merges are squashed: each PR lands as one commit that lists only the results. Commit titles start with a type, like `feat: add login screen` (feat, fix, docs, …).
-- In code work you usually decide in two places: permissions at the start, and "yes" right before a merge. Anything that comes down to taste is asked separately.
+- In code work you usually decide in three places: permissions at the start, confirming the mockup before building, and "yes" right before a merge. Matters of taste like wording are settled inside the mockup.
 
 ## What it always asks you
 
