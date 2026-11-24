@@ -42,7 +42,7 @@
 | 「もう寝るね」 | 離れる前に権限だけ聞いて進め続けます。戻ったら決めることをまとめて見せます |
 | 「ロードマップ、どこまで進んだ？」 | マイルストーンごとに終わった数と次の項目だけを伝えます。何も変更しません |
 
-`/roadmap`、`/roadmap-teammate` のようにスラッシュで呼んでもかまいません。企画の段階ごとにサブスキル（`roadmap-core`、`-personas`、`-scenarios`、`-map`、`-score`、`-priority`、`-milestones`）があり、単独でも呼べます。
+`/roadmap`、`/roadmap-teammate` のようにスラッシュで呼んでもかまいません。スキルはこの2つだけです。企画の段階をひとつだけやりたいときは「シナリオだけ書き直して」のように言葉で伝えてください。
 
 ## どう動くか
 
@@ -124,6 +124,7 @@ Claude Code に話しかけるだけです。どれも **新しいセッショ�
 
 - `~/.claude/CLAUDE.md` がすでにあれば上書きせず、違う行だけを見せます。入れるかどうかはご自身で選んでください。
 - この PC だけに置くルール（`*.local.md`）はコピーも削除もしません。
+- 以前インストールした企画のサブスキルのフォルダ（`roadmap-core` など7つ、今は `roadmap` ひとつに統合）が残っていると、インストールや確認のときにお知らせします。残っていると古いスキルが呼ばれ続けることがあるので、`./install.sh --prune`（PowerShell: `-Prune`）で消してください。`*.local.md` が入ったフォルダは消しません。
 - 新しいバージョンが出ると、スキルを使ったときに報告の最後に一行でお知らせします。確認は一日一回、GitHub にタグの一覧だけを問い合わせ、自動でダウンロードはしません。入れるには `claude-haejo をアップデートして` と言ってください。
 
 <details>
@@ -135,6 +136,7 @@ cd claude-haejo
 ./install.sh             # Windows PowerShell: powershell -ExecutionPolicy Bypass -File .\install.ps1
 ./install.sh --check     # コピーせず違うファイルだけ見る (PowerShell: -Check)
 ./install.sh --dry-run   # コピーするファイルだけ見る (PowerShell: -DryRun)
+./install.sh --prune     # 古いサブスキルのフォルダだけ消す (PowerShell: -Prune)
 git pull && ./install.sh # アップデート
 ```
 
@@ -144,6 +146,7 @@ git pull && ./install.sh # アップデート
 
 - 企画の流れと質問する場面: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
 - 作る文書5つと共通ルール: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
+- 企画の段階ごとにすること（core、personas、scenarios、map、score、priority、milestones）: [skills/roadmap/references/](skills/roadmap/references/)
 - サブセッション・PR・マージ、テストの繰り返し、留守中の作業: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
 - 公開してはいけない個人ルール（`*.local.md`）の書き方: [projects.md](skills/roadmap-teammate/references/projects.md)
 

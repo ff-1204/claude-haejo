@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // score.js를 예시 시나리오로 돌려 기대 출력과 비교한다. 다르면 다른 줄을 보이고 exit 1.
-// 사용법: node tests/run.js
+// 사용법: node skills/roadmap/tests/score/run.js
 // 기대 출력은 손으로 센 값이다. score.js를 고쳐 출력이 바뀌면 숫자를 다시 세어 확인한 뒤 고친다.
 const fs = require('fs');
 const os = require('os');
@@ -8,7 +8,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 
 const dir = __dirname;
-const script = path.join(dir, '..', 'scripts', 'score.js');
+const script = path.join(dir, '..', '..', 'scripts', 'score.js');
 const input = path.join(dir, 'scenarios.md');
 
 // BOM + CRLF로 시작하고 첫 줄이 바로 페르소나 제목인 파일. 페르소나 앞 줄은 원래 세지 않으므로 결과는 expected.md와 같아야 한다.

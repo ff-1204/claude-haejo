@@ -42,7 +42,7 @@ The skills themselves are written in Korean, but every document and question the
 | "I'm going to bed" | Asks for permissions before you leave and keeps going. When you're back, it shows you everything that needs a decision |
 | "Where are we on the roadmap?" | Shows, per milestone, how many items are done and what's next. Changes nothing |
 
-You can also call them as slash commands, like `/roadmap` or `/roadmap-teammate`. Each planning stage has its own sub-skill (`roadmap-core`, `-personas`, `-scenarios`, `-map`, `-score`, `-priority`, `-milestones`) that you can run on its own.
+You can also call them as slash commands, like `/roadmap` or `/roadmap-teammate`. Those are the only two skills. To run just one planning stage, say so in plain words, like "Rewrite only the scenarios."
 
 ## How it works
 
@@ -124,6 +124,7 @@ Just ask in Claude Code. Every change takes effect **from the next new session**
 
 - If `~/.claude/CLAUDE.md` already exists, it isn't overwritten; you're shown the differing lines and decide yourself.
 - Machine-only rules (`*.local.md`) are never copied or deleted.
+- If old planning sub-skill folders from an earlier install (`roadmap-core` and 6 others, now merged into `roadmap`) are still there, install and check point them out. Leftovers can keep the old skills being called, so remove them with `./install.sh --prune` (PowerShell: `-Prune`). Folders containing `*.local.md` are left alone.
 - When a new release is out, the skills mention it in one line at the end of their report. They check at most once a day, asking GitHub only for the list of tags, and never download anything on their own. Say `Update claude-haejo` to get it.
 
 <details>
@@ -135,6 +136,7 @@ cd claude-haejo
 ./install.sh             # Windows PowerShell: powershell -ExecutionPolicy Bypass -File .\install.ps1
 ./install.sh --check     # show differing files without copying (PowerShell: -Check)
 ./install.sh --dry-run   # show files that would be copied (PowerShell: -DryRun)
+./install.sh --prune     # remove only the old sub-skill folders (PowerShell: -Prune)
 git pull && ./install.sh # update
 ```
 
@@ -144,6 +146,7 @@ git pull && ./install.sh # update
 
 - Planning flow and where it asks you: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
 - The 5 documents it writes and shared rules: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
+- What each planning stage does (core, personas, scenarios, map, score, priority, milestones): [skills/roadmap/references/](skills/roadmap/references/)
 - Sub-sessions, PRs, merging, test loops, working while you're away: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
 - Writing private rules that must not be published (`*.local.md`): [projects.md](skills/roadmap-teammate/references/projects.md)
 

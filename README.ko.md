@@ -40,7 +40,7 @@
 | "자러 갈게" | 떠나기 전에 권한만 묻고 계속 진행합니다. 돌아오면 정할 것을 모아 보여 줍니다 |
 | "로드맵 어디까지 왔어?" | 마일스톤마다 끝난 수와 다음 항목만 알려 줍니다. 아무것도 고치지 않습니다 |
 
-`/roadmap`, `/roadmap-teammate`처럼 슬래시로 불러도 됩니다. 기획 단계마다 하위 스킬이 따로 있어(`roadmap-core`, `-personas`, `-scenarios`, `-map`, `-score`, `-priority`, `-milestones`) 혼자 부를 수도 있습니다.
+`/roadmap`, `/roadmap-teammate`처럼 슬래시로 불러도 됩니다. 스킬은 이 둘뿐입니다. 기획 단계 하나만 하고 싶으면 "시나리오만 다시 써줘"처럼 말로 하면 됩니다.
 
 ## 어떻게 움직이나
 
@@ -122,6 +122,7 @@ Claude Code 창에 말로 하면 됩니다. 어느 것이든 **새 세션부터*
 
 - `~/.claude/CLAUDE.md`가 이미 있으면 덮지 않고 다른 줄만 보여 줍니다. 넣을지는 직접 고르세요.
 - 이 PC에만 두는 규칙(`*.local.md`)은 복사하지도 지우지도 않습니다.
+- 예전에 설치한 기획 하위 스킬 폴더(`roadmap-core` 등 7개, 지금은 `roadmap` 하나로 합쳐짐)가 남아 있으면 설치·확인 때 알려 줍니다. 남아 있으면 옛 스킬이 계속 불릴 수 있으니 `./install.sh --prune`(PowerShell: `-Prune`)으로 지우세요. `*.local.md`가 든 폴더는 지우지 않습니다.
 - 새 버전이 나오면 스킬을 쓸 때 보고 끝에 한 줄로 알려 줍니다. 확인은 하루 한 번, GitHub에 태그 목록만 묻고, 자동으로 받지는 않습니다. 받으려면 `claude-haejo 업데이트해줘`라고 하세요.
 
 <details>
@@ -133,6 +134,7 @@ cd claude-haejo
 ./install.sh             # Windows PowerShell: powershell -ExecutionPolicy Bypass -File .\install.ps1
 ./install.sh --check     # 복사하지 않고 다른 파일만 보기 (PowerShell: -Check)
 ./install.sh --dry-run   # 복사할 파일만 보기 (PowerShell: -DryRun)
+./install.sh --prune     # 옛 하위 스킬 폴더만 지우기 (PowerShell: -Prune)
 git pull && ./install.sh # 업데이트
 ```
 
@@ -142,6 +144,7 @@ git pull && ./install.sh # 업데이트
 
 - 기획 플로우와 묻는 지점: [skills/roadmap/SKILL.md](skills/roadmap/SKILL.md)
 - 만드는 문서 5개와 공통 규칙: [skills/roadmap/references/rules.md](skills/roadmap/references/rules.md)
+- 기획 단계마다 하는 일(core, personas, scenarios, map, score, priority, milestones): [skills/roadmap/references/](skills/roadmap/references/)
 - 하위 세션·PR·머지, 테스트 반복, 자리 비움: [skills/roadmap-teammate/SKILL.md](skills/roadmap-teammate/SKILL.md)
 - 공개하면 안 되는 개인 규칙(`*.local.md`) 쓰는 법: [projects.md](skills/roadmap-teammate/references/projects.md)
 

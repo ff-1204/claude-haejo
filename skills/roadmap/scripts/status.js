@@ -85,7 +85,7 @@ function orderTime(checklist, prefix) {
   return pick ? { prefix: pick[1], time: pick[2] } : { prefix: prefix || null, time: null };
 }
 
-// 한 단계 줄의 조각별 표시. roadmap-score/scripts/score.js의 pieces()와 같은 규칙이다(그쪽을 바꾸면 여기도 같이):
+// 한 단계 줄의 조각별 표시. 같은 폴더 score.js의 pieces()와 같은 규칙이다(그쪽을 바꾸면 여기도 같이):
 // " / "로 나눈 조각마다 든 표시를 MARKS 순서로 모아 마지막 것을 그 조각의 표시로 본다.
 // 조각이 하나뿐이면 줄 전체의 표시를 본다. 그래서 " / " 없이 ✅와 🔜가 같이 있는 줄은 ✅ 한 표시다.
 const MARKS = ['🔜', '✅', '❌'];

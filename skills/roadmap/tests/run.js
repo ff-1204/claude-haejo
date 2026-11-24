@@ -11,7 +11,7 @@ const path = require('path');
 
 const here = __dirname;
 const script = path.join(here, '..', 'scripts', 'status.js');
-const scoreScript = path.join(here, '..', '..', 'roadmap-score', 'scripts', 'score.js');
+const scoreScript = path.join(here, '..', 'scripts', 'score.js');
 const run = (args, cwd = here) => spawnSync(process.execPath, [script, ...args], { cwd, encoding: 'utf8' });
 const norm = (s) => s.replace(/\r\n/g, '\n').trimEnd();
 let failed = 0;

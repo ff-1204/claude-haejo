@@ -1,24 +1,68 @@
 #!/usr/bin/env bash
-# claude-haejo 설치·점검 (Git Bash, macOS, Linux). 사용법: ./install.sh [--check | --dry-run]
+# claude-haejo 설치·점검 (Git Bash, macOS, Linux). 사용법: ./install.sh [--check | --dry-run | --prune]
 #   (옵션 없음)  skills/*를 ~/.claude/skills/에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 diff만 보인다. 버전은 ~/.claude/claude-haejo.json에 남긴다.
-#   --check      복사하지 않고 다른 파일만 보인다. 다르면 exit 1.
+#   --check      복사하지 않고 다른 파일만 보인다. 다르거나 옛 하위 스킬 폴더가 남아 있으면 exit 1.
 #   --dry-run    복사할 파일만 보이고 복사하지 않는다.
-# *.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. ~/.claude에만 있는 파일은 지우지 않는다.
+#   --prune      옛 하위 스킬 폴더(roadmap-core 등 7개, 지금은 roadmap 하나로 합쳐짐)만 지운다. *.local.md가 든 폴더는 지우지 않는다.
+#                --check나 --dry-run과 같이 주면 지우지 않고 지울 폴더만 보인다(--check면 옛 폴더가 있을 때 exit 1).
+# *.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. --prune 말고는 ~/.claude의 파일을 지우지 않는다.
 set -euo pipefail
 
+# 인자를 모두 읽는다. 모르는 옵션과 뜻이 안 맞는 조합은 exit 2로 거부한다.
+opt_check=0; opt_dry=0; opt_prune=0
+for a in "$@"; do
+  case "$a" in
+    --check) opt_check=1 ;;
+    --dry-run) opt_dry=1 ;;
+    --prune) opt_prune=1 ;;
+    -h|--help) sed -n '2,9p' "$0"; exit 0 ;;
+    *) echo "오류: 모르는 옵션: $a (쓸 수 있는 것: --check, --dry-run, --prune)" >&2; exit 2 ;;
+  esac
+done
+if [ "$opt_check" = 1 ] && [ "$opt_dry" = 1 ]; then
+  echo "오류: --check와 --dry-run은 같이 쓸 수 없다" >&2; exit 2
+fi
 mode=install
-case "${1:-}" in
-  "") ;;
-  --check) mode=check ;;
-  --dry-run) mode=dry ;;
-  -h|--help) sed -n '2,6p' "$0"; exit 0 ;;
-  *) echo "모르는 옵션: $1 (--check, --dry-run)" >&2; exit 2 ;;
-esac
+if [ "$opt_check" = 1 ]; then mode=check; fi
+if [ "$opt_dry" = 1 ]; then mode=dry; fi
+if [ "$opt_prune" = 1 ]; then
+  if [ "$mode" = install ]; then mode=prune; else mode=prune-preview; fi
+fi
 
 repo="$(cd "$(dirname "$0")" && pwd)"
 dest="$HOME/.claude"
 diffs=0
 cd "$repo"
+
+# 옛 하위 스킬 폴더 (고정 목록). 이 폴더들이 설치본에 남아 있으면 옛 스킬이 계속 불릴 수 있다.
+old_skills="roadmap-core roadmap-personas roadmap-scenarios roadmap-map roadmap-score roadmap-priority roadmap-milestones"
+old_found=""
+for n in $old_skills; do
+  if [ -d "$dest/skills/$n" ]; then old_found="$old_found $n"; fi
+done
+
+if [ "$mode" = prune ] || [ "$mode" = prune-preview ]; then
+  if [ -z "$old_found" ]; then echo "지울 옛 하위 스킬 폴더 없음"; exit 0; fi
+  for n in $old_found; do
+    d="$dest/skills/$n"
+    keep="$(find "$d" -type f -name '*.local.md' | sort)"
+    if [ -n "$keep" ]; then
+      echo "지우지 않음: skills/$n (이 PC에만 두는 *.local.md가 있다. 옮긴 뒤 다시 --prune)"
+      echo "$keep" | sed "s|^$dest/|  - |"
+    elif [ "$mode" = prune-preview ]; then
+      echo "지울 폴더: skills/$n"
+    else
+      rm -rf "$d"
+      echo "지움: skills/$n"
+    fi
+  done
+  if [ "$mode" = prune-preview ]; then
+    echo "아무것도 지우지 않았다 (미리 보기. 지우려면 --prune만 준다)"
+    # --check와 같이 주면 --check처럼 옛 폴더가 남아 있는 것 자체로 exit 1
+    if [ "$opt_check" = 1 ]; then exit 1; fi
+  fi
+  exit 0
+fi
 
 # 줄바꿈(CRLF/LF)만 다르면 같은 파일로 본다 (Windows git의 autocrlf)
 same() { [ -f "$2" ] && cmp -s <(tr -d '\r' < "$1") <(tr -d '\r' < "$2"); }
@@ -92,6 +136,19 @@ write_version() {
   else echo "버전 기록: 태그를 못 읽어 version 없이 적었다 (~/.claude/claude-haejo.json)"; fi
 }
 if [ "$mode" = install ]; then write_version; fi
+
+# 옛 하위 스킬 폴더는 지우지 않고 눈에 띄게 알린다 (--check에서는 다른 파일로 센다)
+if [ -n "$old_found" ]; then
+  echo ""
+  echo "!! 옛 하위 스킬 폴더가 남아 있다 (지금은 roadmap 스킬 하나로 합쳐짐):"
+  for n in $old_found; do echo "!!   ~/.claude/skills/$n"; done
+  echo "!! 남아 있으면 Claude가 옛 스킬을 계속 불러 옛 규칙대로 할 수 있다."
+  echo "!! 지우려면: ./install.sh --prune   (Windows PowerShell: .\\install.ps1 -Prune)"
+  echo ""
+  if [ "$mode" = check ]; then
+    for n in $old_found; do diffs=$((diffs + 1)); done
+  fi
+fi
 
 case $mode in
   check)

@@ -40,7 +40,7 @@ jobs:
           node-version: 20
 
       - name: score.js 시험
-        run: node skills/roadmap-score/tests/run.js
+        run: node skills/roadmap/tests/score/run.js
       - name: status.js 시험
         run: node skills/roadmap/tests/run.js
       - name: check-update.js 시험
@@ -60,6 +60,12 @@ jobs:
           bash install.sh --check
           node skills/roadmap/scripts/check-update.js --home "$HOME" --remote "$RUNNER_TEMP/no-such-repo"
 
+      # 옛 하위 스킬 폴더: 설치 때 알림, --check exit 1, 미리 보기 조합(--dry-run·--check와 --prune)은 안 지움,
+      # 모르는 옵션·안 맞는 조합 exit 2, *.local.md가 든 폴더는 --prune이 남김, 비우면 --prune 뒤 --check exit 0
+      - name: install.sh 옛 하위 스킬 폴더 알림과 --prune
+        shell: bash
+        run: bash tests/install-old.sh "$RUNNER_TEMP/old-sh"
+
       # install.ps1은 Windows용이다(macOS·Linux는 install.sh)
       - name: install.ps1 설치 뒤 -Check (PowerShell 7)
         if: runner.os == 'Windows'
@@ -73,6 +79,15 @@ jobs:
           node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" $j
           if ($LASTEXITCODE -ne 0) { exit 1 }
           ./install.ps1 -HomeDir $h -Check
+
+      - name: install.ps1 옛 하위 스킬 폴더 알림과 -Prune (PowerShell 7)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          ./tests/install-old.ps1 (Join-Path $env:RUNNER_TEMP 'old-pwsh-inline') -Way inline
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          ./tests/install-old.ps1 (Join-Path $env:RUNNER_TEMP 'old-pwsh-file') -Way file
+          if ($LASTEXITCODE -ne 0) { exit 1 }
 
       - name: install.ps1 설치 뒤 -Check (Windows PowerShell 5.1)
         if: runner.os == 'Windows'
@@ -88,4 +103,13 @@ jobs:
           node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" $j
           if ($LASTEXITCODE -ne 0) { exit 1 }
           powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h -Check
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: install.ps1 옛 하위 스킬 폴더 알림과 -Prune (Windows PowerShell 5.1)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          powershell -ExecutionPolicy Bypass -File .\tests\install-old.ps1 (Join-Path $env:RUNNER_TEMP 'old-ps51-inline') -Way inline
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          powershell -ExecutionPolicy Bypass -File .\tests\install-old.ps1 (Join-Path $env:RUNNER_TEMP 'old-ps51-file') -Way file
           if ($LASTEXITCODE -ne 0) { exit 1 }

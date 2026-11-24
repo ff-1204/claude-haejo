@@ -1,21 +1,78 @@
 ﻿<#
 claude-haejo 설치·점검 (Windows PowerShell 5.1 이상). install.sh와 같은 동작이다.
   .\install.ps1             skills\*를 ~\.claude\skills\에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 다른 줄만 보인다. 버전은 ~\.claude\claude-haejo.json에 남긴다.
-  .\install.ps1 -Check      복사하지 않고 다른 파일만 보인다. 다르면 exit 1.
+  .\install.ps1 -Check      복사하지 않고 다른 파일만 보인다. 다르거나 옛 하위 스킬 폴더가 남아 있으면 exit 1.
   .\install.ps1 -DryRun     복사할 파일만 보이고 복사하지 않는다.
+  .\install.ps1 -Prune      옛 하위 스킬 폴더(roadmap-core 등 7개, 지금은 roadmap 하나로 합쳐짐)만 지운다. *.local.md(숨김 파일 포함)가 든 폴더는 지우지 않는다.
+                            -Check나 -DryRun과 같이 주면 지우지 않고 지울 폴더만 보인다(-Check면 옛 폴더가 있을 때 exit 1).
   -HomeDir <폴더>           ~ 대신 쓸 폴더 (시험용)
-*.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. ~\.claude에만 있는 파일은 지우지 않는다.
+옵션은 이름 전체로만 받는다(-P 같은 줄인 이름은 거부). 모르는 옵션과 -Check·-DryRun을 같이 주면 exit 2.
+*.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. -Prune 말고는 ~\.claude의 파일을 지우지 않는다.
 실행이 막히면: powershell -ExecutionPolicy Bypass -File .\install.ps1
 #>
-param([switch]$Check, [switch]$DryRun, [string]$HomeDir = $HOME)
+# param 블록을 두지 않는다: PowerShell은 선언된 매개변수를 앞부분만 줘도(-P → -Prune) 받아 주기 때문에,
+# 인자를 $args로 받아 이름 전체가 맞을 때만 쓴다 (PowerShell 5.1에서도 같다).
 $ErrorActionPreference = 'Stop'
 # 한글 결과가 Git Bash·Claude 쪽에서 깨지지 않게 UTF-8로 낸다
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
 $OutputEncoding = [Console]::OutputEncoding
 
+$Check = $false; $DryRun = $false; $Prune = $false; $HomeDir = $HOME
+# 오류 문장은 표준 출력으로 낸다: 표준 오류로 내면 PowerShell 5.1에서 부른 쪽이 NativeCommandError로 멈추고,
+# 같은 창에서 부르면 2>&1로도 잡히지 않는다. 종료 코드 2로 실패를 알린다.
+function Stop-Usage([string]$msg) {
+  Write-Output "오류: $msg (쓸 수 있는 것: -Check, -DryRun, -Prune, -HomeDir <폴더>)"
+  exit 2
+}
+for ($i = 0; $i -lt $args.Count; $i++) {
+  $a = [string]$args[$i]
+  switch ($a.ToLowerInvariant()) {
+    '-check' { $Check = $true }
+    '-dryrun' { $DryRun = $true }
+    '-prune' { $Prune = $true }
+    '-homedir' {
+      if ($i + 1 -ge $args.Count) { Stop-Usage '-HomeDir 뒤에 폴더가 없다' }
+      $i++
+      $HomeDir = [string]$args[$i]
+    }
+    default { Stop-Usage "모르는 옵션: $a" }
+  }
+}
+if ($Check -and $DryRun) { Stop-Usage '-Check와 -DryRun은 같이 쓸 수 없다' }
+
 $repo = $PSScriptRoot
 $dest = Join-Path $HomeDir '.claude'
 $script:diffs = 0
+
+# 옛 하위 스킬 폴더 (고정 목록). 이 폴더들이 설치본에 남아 있으면 옛 스킬이 계속 불릴 수 있다.
+$oldSkills = @('roadmap-core', 'roadmap-personas', 'roadmap-scenarios', 'roadmap-map', 'roadmap-score', 'roadmap-priority', 'roadmap-milestones')
+$oldFound = @($oldSkills | Where-Object { Test-Path -LiteralPath (Join-Path $dest "skills\$_") -PathType Container })
+
+if ($Prune) {
+  # -Check·-DryRun과 같이 주면 미리 보기만 한다 (아무것도 지우지 않는다)
+  $preview = $Check -or $DryRun
+  if ($oldFound.Count -eq 0) { Write-Output '지울 옛 하위 스킬 폴더 없음'; exit 0 }
+  foreach ($n in $oldFound) {
+    $d = Join-Path $dest "skills\$n"
+    # -Force: 숨김 속성 파일도 찾는다 (install.sh의 find와 같게)
+    $keep = @(Get-ChildItem -LiteralPath $d -Recurse -File -Force | Where-Object { $_.Name -like '*.local.md' })
+    if ($keep.Count -gt 0) {
+      Write-Output "지우지 않음: skills/$n (이 PC에만 두는 *.local.md가 있다. 옮긴 뒤 다시 -Prune)"
+      $keep | ForEach-Object { Write-Output "  - $($_.FullName.Substring($dest.Length + 1) -replace '\\', '/')" }
+    } elseif ($preview) {
+      Write-Output "지울 폴더: skills/$n"
+    } else {
+      Remove-Item -LiteralPath $d -Recurse -Force
+      Write-Output "지움: skills/$n"
+    }
+  }
+  if ($preview) {
+    Write-Output '아무것도 지우지 않았다 (미리 보기. 지우려면 -Prune만 준다)'
+    # -Check와 같이 주면 -Check처럼 옛 폴더가 남아 있는 것 자체로 exit 1
+    if ($Check) { exit 1 }
+  }
+  exit 0
+}
 
 # 줄바꿈(CRLF/LF)만 다르면 같은 파일로 본다 (Windows git의 autocrlf)
 function Test-Same($a, $b) {
@@ -109,6 +166,17 @@ function Write-Version {
 }
 if (-not $Check -and -not $DryRun) { Write-Version }
 
+# 옛 하위 스킬 폴더는 지우지 않고 눈에 띄게 알린다 (-Check에서는 다른 파일로 센다)
+if ($oldFound.Count -gt 0) {
+  Write-Output ''
+  Write-Output '!! 옛 하위 스킬 폴더가 남아 있다 (지금은 roadmap 스킬 하나로 합쳐짐):'
+  foreach ($n in $oldFound) { Write-Output "!!   ~/.claude/skills/$n" }
+  Write-Output '!! 남아 있으면 Claude가 옛 스킬을 계속 불러 옛 규칙대로 할 수 있다.'
+  Write-Output '!! 지우려면: .\install.ps1 -Prune   (Git Bash·macOS·Linux: ./install.sh --prune)'
+  Write-Output ''
+  if ($Check) { $script:diffs += $oldFound.Count }
+}
+
 if ($Check) {
   if ($script:diffs -gt 0) { Write-Output "다른 파일 $($script:diffs)개"; exit 1 }
   Write-Output '모두 같다'
@@ -117,3 +185,5 @@ if ($Check) {
 } else {
   Write-Output '끝. 새 Claude Code 세션부터 쓴다.'
 }
+# 끝까지 왔으면 성공이다. 같은 창에서 부르면 안에서 돈 git의 종료 코드(태그 없음 128 등)가 $LASTEXITCODE에 남으므로 분명히 0으로 끝낸다.
+exit 0

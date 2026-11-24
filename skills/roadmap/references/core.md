@@ -1,11 +1,8 @@
----
-name: roadmap-core
-description: 기획 플로우 0단계 하위 스킬. 핵심 경험(사용자가 하는 일 3~6개, ①②③ 번호)과 범위(기기, 온라인 여부, 뺄 것)를 정해 personas.md 머리에 적는다. 보통 roadmap이 부르고(기획 문서를 고치는 말은 roadmap이 받는다), 이 단계만 돌릴 때는 /roadmap-core.
----
+# core — 핵심 경험과 범위
 
-# roadmap-core — 핵심 경험과 범위
+기획 플로우 0단계. 핵심 경험(사용자가 하는 일 3~6개, ①②③ 번호)과 범위(기기, 온라인 여부, 뺄 것)를 정해 personas.md 머리에 적는다. 플로우에 core가 나오거나 이 단계만 말했을 때 읽는다.
 
-공통 규칙: [../roadmap/references/rules.md](../roadmap/references/rules.md)
+공통 규칙: [rules.md](rules.md)
 
 ## 모드
 
@@ -32,7 +29,7 @@ description: 기획 플로우 0단계 하위 스킬. 핵심 경험(사용자가 
 
 ## 출력
 
-`personas.md`가 없으면 [../roadmap-personas/assets/personas.md](../roadmap-personas/assets/personas.md) 템플릿의 머리 부분만 채워 만든다(페르소나 본문은 비워 둠). 있으면 머리만 고친다. 제목의 인원 수(`N명`)와 "원래 있던 사람" 줄은 roadmap-personas가 채우므로 템플릿 글자 그대로 둔다.
+`personas.md`가 없으면 [../assets/personas.md](../assets/personas.md) 템플릿의 머리 부분만 채워 만든다(페르소나 본문은 비워 둠). 있으면 머리만 고친다. 제목의 인원 수(`N명`)와 "원래 있던 사람" 줄은 personas 단계가 채우므로 템플릿 글자 그대로 둔다.
 
 ```
 > 갱신: YYYY-MM-DD HH:MM (핵심 경험·범위 정함)
@@ -45,6 +42,6 @@ description: 기획 플로우 0단계 하위 스킬. 핵심 경험(사용자가 
 
 ## 한 줄 보고
 
-`⓪ roadmap-core: 핵심 경험 N개 · 범위 <요약> · personas.md`
+`⓪ core: 핵심 경험 N개 · 범위 <요약> · personas.md`
 
-상위 스킬이 이 뒤에 사용자 확인을 받는다. 혼자 불렸으면 목록을 보여 주고, rules.md "하위 스킬을 혼자 불렀을 때"의 한 줄을 붙여 끝낸다(묻지 않는다).
+플로우 안이면 이 뒤에 사용자 확인을 받는다(SKILL.md 3절). 이 단계만 돌렸으면 목록을 보여 주고, rules.md "한 단계만 돌릴 때"의 한 줄을 붙여 끝낸다(묻지 않는다).
