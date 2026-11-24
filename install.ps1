@@ -185,3 +185,5 @@ if ($Check) {
 } else {
   Write-Output '끝. 새 Claude Code 세션부터 쓴다.'
 }
+# 끝까지 왔으면 성공이다. 같은 창에서 부르면 안에서 돈 git의 종료 코드(태그 없음 128 등)가 $LASTEXITCODE에 남으므로 분명히 0으로 끝낸다.
+exit 0
