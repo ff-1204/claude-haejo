@@ -60,6 +60,27 @@ jobs:
           bash install.sh --check
           node skills/roadmap/scripts/check-update.js --home "$HOME" --remote "$RUNNER_TEMP/no-such-repo"
 
+      # 옛 하위 스킬 폴더: 설치 때 알림, --check exit 1, *.local.md가 든 폴더는 --prune이 남김, 비우면 --prune 뒤 --check exit 0
+      - name: install.sh 옛 하위 스킬 폴더 알림과 --prune
+        shell: bash
+        run: |
+          export HOME="$RUNNER_TEMP/home-sh-old"
+          mkdir -p "$HOME/.claude/skills/roadmap-score" "$HOME/.claude/skills/roadmap-core"
+          echo old > "$HOME/.claude/skills/roadmap-score/SKILL.md"
+          echo mine > "$HOME/.claude/skills/roadmap-core/notes.local.md"
+          bash install.sh > "$RUNNER_TEMP/out-old.txt"
+          grep -q "옛 하위 스킬 폴더가 남아 있다" "$RUNNER_TEMP/out-old.txt"
+          grep -q "skills/roadmap-score" "$RUNNER_TEMP/out-old.txt"
+          if bash install.sh --check; then echo "옛 폴더가 있는데 --check가 0"; exit 1; fi
+          bash install.sh --prune
+          test ! -d "$HOME/.claude/skills/roadmap-score"
+          test -f "$HOME/.claude/skills/roadmap-core/notes.local.md"
+          if bash install.sh --check; then echo "local.md 폴더가 남았는데 --check가 0"; exit 1; fi
+          rm "$HOME/.claude/skills/roadmap-core/notes.local.md"
+          bash install.sh --prune
+          test ! -d "$HOME/.claude/skills/roadmap-core"
+          bash install.sh --check
+
       # install.ps1은 Windows용이다(macOS·Linux는 install.sh)
       - name: install.ps1 설치 뒤 -Check (PowerShell 7)
         if: runner.os == 'Windows'
@@ -73,6 +94,28 @@ jobs:
           node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'))" $j
           if ($LASTEXITCODE -ne 0) { exit 1 }
           ./install.ps1 -HomeDir $h -Check
+
+      - name: install.ps1 옛 하위 스킬 폴더 알림과 -Prune (PowerShell 7)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $h = Join-Path $env:RUNNER_TEMP 'home-pwsh-old'
+          $s = Join-Path $h '.claude\skills'
+          New-Item -ItemType Directory -Force (Join-Path $s 'roadmap-score'), (Join-Path $s 'roadmap-core') | Out-Null
+          Set-Content (Join-Path $s 'roadmap-score\SKILL.md') 'old'
+          Set-Content (Join-Path $s 'roadmap-core\notes.local.md') 'mine'
+          $out = ./install.ps1 -HomeDir $h | Out-String
+          if ($out -notmatch '옛 하위 스킬 폴더가 남아 있다' -or $out -notmatch 'skills/roadmap-score') { throw '설치 때 알림 없음' }
+          ./install.ps1 -HomeDir $h -Check
+          if ($LASTEXITCODE -ne 1) { throw '옛 폴더가 있는데 -Check가 1이 아님' }
+          ./install.ps1 -HomeDir $h -Prune
+          if (Test-Path (Join-Path $s 'roadmap-score')) { throw 'roadmap-score가 남음' }
+          if (-not (Test-Path (Join-Path $s 'roadmap-core\notes.local.md'))) { throw 'local.md가 지워짐' }
+          Remove-Item (Join-Path $s 'roadmap-core\notes.local.md')
+          ./install.ps1 -HomeDir $h -Prune
+          if (Test-Path (Join-Path $s 'roadmap-core')) { throw 'roadmap-core가 남음' }
+          ./install.ps1 -HomeDir $h -Check
+          if ($LASTEXITCODE -ne 0) { throw '-Prune 뒤 -Check가 0이 아님' }
 
       - name: install.ps1 설치 뒤 -Check (Windows PowerShell 5.1)
         if: runner.os == 'Windows'
@@ -89,3 +132,21 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit 1 }
           powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h -Check
           if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: install.ps1 옛 하위 스킬 폴더 알림과 -Prune (Windows PowerShell 5.1)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $h = Join-Path $env:RUNNER_TEMP 'home-ps51-old'
+          $s = Join-Path $h '.claude\skills'
+          New-Item -ItemType Directory -Force (Join-Path $s 'roadmap-score') | Out-Null
+          Set-Content (Join-Path $s 'roadmap-score\SKILL.md') 'old'
+          powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h -Check
+          if ($LASTEXITCODE -ne 1) { Write-Output '옛 폴더가 있는데 -Check가 1이 아님'; exit 1 }
+          powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h -Prune
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          if (Test-Path (Join-Path $s 'roadmap-score')) { Write-Output 'roadmap-score가 남음'; exit 1 }
+          powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h -Check
+          if ($LASTEXITCODE -ne 0) { Write-Output '-Prune 뒤 -Check가 0이 아님'; exit 1 }

@@ -1,13 +1,14 @@
 ﻿<#
 claude-haejo 설치·점검 (Windows PowerShell 5.1 이상). install.sh와 같은 동작이다.
   .\install.ps1             skills\*를 ~\.claude\skills\에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 다른 줄만 보인다. 버전은 ~\.claude\claude-haejo.json에 남긴다.
-  .\install.ps1 -Check      복사하지 않고 다른 파일만 보인다. 다르면 exit 1.
+  .\install.ps1 -Check      복사하지 않고 다른 파일만 보인다. 다르거나 옛 하위 스킬 폴더가 남아 있으면 exit 1.
   .\install.ps1 -DryRun     복사할 파일만 보이고 복사하지 않는다.
+  .\install.ps1 -Prune      옛 하위 스킬 폴더(roadmap-core 등 7개, 지금은 roadmap 하나로 합쳐짐)만 지운다. *.local.md가 든 폴더는 지우지 않는다.
   -HomeDir <폴더>           ~ 대신 쓸 폴더 (시험용)
-*.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. ~\.claude에만 있는 파일은 지우지 않는다.
+*.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. -Prune 말고는 ~\.claude의 파일을 지우지 않는다.
 실행이 막히면: powershell -ExecutionPolicy Bypass -File .\install.ps1
 #>
-param([switch]$Check, [switch]$DryRun, [string]$HomeDir = $HOME)
+param([switch]$Check, [switch]$DryRun, [switch]$Prune, [string]$HomeDir = $HOME)
 $ErrorActionPreference = 'Stop'
 # 한글 결과가 Git Bash·Claude 쪽에서 깨지지 않게 UTF-8로 낸다
 [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
@@ -16,6 +17,26 @@ $OutputEncoding = [Console]::OutputEncoding
 $repo = $PSScriptRoot
 $dest = Join-Path $HomeDir '.claude'
 $script:diffs = 0
+
+# 옛 하위 스킬 폴더 (고정 목록). 이 폴더들이 설치본에 남아 있으면 옛 스킬이 계속 불릴 수 있다.
+$oldSkills = @('roadmap-core', 'roadmap-personas', 'roadmap-scenarios', 'roadmap-map', 'roadmap-score', 'roadmap-priority', 'roadmap-milestones')
+$oldFound = @($oldSkills | Where-Object { Test-Path -LiteralPath (Join-Path $dest "skills\$_") -PathType Container })
+
+if ($Prune) {
+  if ($oldFound.Count -eq 0) { Write-Output '지울 옛 하위 스킬 폴더 없음'; exit 0 }
+  foreach ($n in $oldFound) {
+    $d = Join-Path $dest "skills\$n"
+    $keep = @(Get-ChildItem -LiteralPath $d -Recurse -File -Filter '*.local.md')
+    if ($keep.Count -gt 0) {
+      Write-Output "지우지 않음: skills/$n (이 PC에만 두는 *.local.md가 있다. 옮긴 뒤 다시 -Prune)"
+      $keep | ForEach-Object { Write-Output "  - $($_.FullName.Substring($dest.Length + 1) -replace '\\', '/')" }
+    } else {
+      Remove-Item -LiteralPath $d -Recurse -Force
+      Write-Output "지움: skills/$n"
+    }
+  }
+  exit 0
+}
 
 # 줄바꿈(CRLF/LF)만 다르면 같은 파일로 본다 (Windows git의 autocrlf)
 function Test-Same($a, $b) {
@@ -108,6 +129,17 @@ function Write-Version {
   else { Write-Output '버전 기록: 태그를 못 읽어 version 없이 적었다 (~/.claude/claude-haejo.json)' }
 }
 if (-not $Check -and -not $DryRun) { Write-Version }
+
+# 옛 하위 스킬 폴더는 지우지 않고 눈에 띄게 알린다 (-Check에서는 다른 파일로 센다)
+if ($oldFound.Count -gt 0) {
+  Write-Output ''
+  Write-Output '!! 옛 하위 스킬 폴더가 남아 있다 (지금은 roadmap 스킬 하나로 합쳐짐):'
+  foreach ($n in $oldFound) { Write-Output "!!   ~/.claude/skills/$n" }
+  Write-Output '!! 남아 있으면 Claude가 옛 스킬을 계속 불러 옛 규칙대로 할 수 있다.'
+  Write-Output '!! 지우려면: .\install.ps1 -Prune   (Git Bash·macOS·Linux: ./install.sh --prune)'
+  Write-Output ''
+  if ($Check) { $script:diffs += $oldFound.Count }
+}
 
 if ($Check) {
   if ($script:diffs -gt 0) { Write-Output "다른 파일 $($script:diffs)개"; exit 1 }

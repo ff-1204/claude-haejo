@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# claude-haejo 설치·점검 (Git Bash, macOS, Linux). 사용법: ./install.sh [--check | --dry-run]
+# claude-haejo 설치·점검 (Git Bash, macOS, Linux). 사용법: ./install.sh [--check | --dry-run | --prune]
 #   (옵션 없음)  skills/*를 ~/.claude/skills/에 복사한다. CLAUDE.md는 없을 때만 복사하고, 다르면 diff만 보인다. 버전은 ~/.claude/claude-haejo.json에 남긴다.
-#   --check      복사하지 않고 다른 파일만 보인다. 다르면 exit 1.
+#   --check      복사하지 않고 다른 파일만 보인다. 다르거나 옛 하위 스킬 폴더가 남아 있으면 exit 1.
 #   --dry-run    복사할 파일만 보이고 복사하지 않는다.
-# *.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. ~/.claude에만 있는 파일은 지우지 않는다.
+#   --prune      옛 하위 스킬 폴더(roadmap-core 등 7개, 지금은 roadmap 하나로 합쳐짐)만 지운다. *.local.md가 든 폴더는 지우지 않는다.
+# *.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. --prune 말고는 ~/.claude의 파일을 지우지 않는다.
 set -euo pipefail
 
 mode=install
@@ -11,14 +12,38 @@ case "${1:-}" in
   "") ;;
   --check) mode=check ;;
   --dry-run) mode=dry ;;
-  -h|--help) sed -n '2,6p' "$0"; exit 0 ;;
-  *) echo "모르는 옵션: $1 (--check, --dry-run)" >&2; exit 2 ;;
+  --prune) mode=prune ;;
+  -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
+  *) echo "모르는 옵션: $1 (--check, --dry-run, --prune)" >&2; exit 2 ;;
 esac
 
 repo="$(cd "$(dirname "$0")" && pwd)"
 dest="$HOME/.claude"
 diffs=0
 cd "$repo"
+
+# 옛 하위 스킬 폴더 (고정 목록). 이 폴더들이 설치본에 남아 있으면 옛 스킬이 계속 불릴 수 있다.
+old_skills="roadmap-core roadmap-personas roadmap-scenarios roadmap-map roadmap-score roadmap-priority roadmap-milestones"
+old_found=""
+for n in $old_skills; do
+  if [ -d "$dest/skills/$n" ]; then old_found="$old_found $n"; fi
+done
+
+if [ "$mode" = prune ]; then
+  if [ -z "$old_found" ]; then echo "지울 옛 하위 스킬 폴더 없음"; exit 0; fi
+  for n in $old_found; do
+    d="$dest/skills/$n"
+    keep="$(find "$d" -type f -name '*.local.md' | sort)"
+    if [ -n "$keep" ]; then
+      echo "지우지 않음: skills/$n (이 PC에만 두는 *.local.md가 있다. 옮긴 뒤 다시 --prune)"
+      echo "$keep" | sed "s|^$dest/|  - |"
+    else
+      rm -rf "$d"
+      echo "지움: skills/$n"
+    fi
+  done
+  exit 0
+fi
 
 # 줄바꿈(CRLF/LF)만 다르면 같은 파일로 본다 (Windows git의 autocrlf)
 same() { [ -f "$2" ] && cmp -s <(tr -d '\r' < "$1") <(tr -d '\r' < "$2"); }
@@ -92,6 +117,19 @@ write_version() {
   else echo "버전 기록: 태그를 못 읽어 version 없이 적었다 (~/.claude/claude-haejo.json)"; fi
 }
 if [ "$mode" = install ]; then write_version; fi
+
+# 옛 하위 스킬 폴더는 지우지 않고 눈에 띄게 알린다 (--check에서는 다른 파일로 센다)
+if [ -n "$old_found" ]; then
+  echo ""
+  echo "!! 옛 하위 스킬 폴더가 남아 있다 (지금은 roadmap 스킬 하나로 합쳐짐):"
+  for n in $old_found; do echo "!!   ~/.claude/skills/$n"; done
+  echo "!! 남아 있으면 Claude가 옛 스킬을 계속 불러 옛 규칙대로 할 수 있다."
+  echo "!! 지우려면: ./install.sh --prune   (Windows PowerShell: .\\install.ps1 -Prune)"
+  echo ""
+  if [ "$mode" = check ]; then
+    for n in $old_found; do diffs=$((diffs + 1)); done
+  fi
+fi
 
 case $mode in
   check)
