@@ -199,6 +199,87 @@ footer a { color: var(--muted); }
 .cta .install { margin-top: 18px; }
 nav a.lang { font-family: var(--mono); font-size: 13px; padding: 6px 8px; }
 nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline; text-underline-offset: 4px; }
+.walk { display: grid; gap: 44px; margin-top: 44px; }
+.frame { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 32px; align-items: center; }
+.frame .n { font: 600 14px var(--mono); color: var(--accent); }
+.frame h3 { font-size: 26px; margin: 4px 0 8px; line-height: 1.3; }
+.frame .d { color: var(--muted); font-size: 16.5px; }
+.screen { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 18px; }
+.screen .cap { font: 12.5px var(--mono); color: var(--muted); margin-bottom: 12px; }
+.me { margin-left: auto; width: fit-content; max-width: 88%; background: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 10px 15px; border-radius: 16px 16px 4px 16px; }
+.ai { width: fit-content; max-width: 92%; background: var(--sunk); padding: 10px 15px; border-radius: 16px 16px 16px 4px; margin-top: 10px; font-size: 15.5px; }
+.ask-q { font-weight: 600; font-size: 16px; margin-bottom: 4px; }
+.opt { border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 9px 13px; margin-top: 7px; font-size: 15px; }
+.opt.pick { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); font-weight: 600; }
+.opt small { display: block; color: var(--muted); font-weight: 400; font-size: 13px; }
+.ba { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.phone { border: 2px solid var(--ink); border-radius: 16px; padding: 10px 11px 14px; background: var(--bg); min-height: 190px; }
+.phone small { display: block; font: 12px var(--mono); color: var(--muted); margin-bottom: 8px; }
+.phone .ln { height: 10px; border-radius: 5px; background: var(--line); margin-top: 8px; }
+.phone .ln.s { width: 58%; }
+.phone .fd { height: 24px; border: 1.5px solid var(--muted); border-radius: 7px; margin-top: 8px; font-size: 11.5px; color: var(--muted); padding: 2px 7px; }
+.phone .bt { min-height: 30px; border-radius: 8px; background: var(--accent); color: var(--accent-ink); margin-top: 10px; display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 600; white-space: nowrap; }
+.mk { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--autumn); color: #1f2a22; font: 600 11px var(--mono); margin-right: 5px; vertical-align: 1px; }
+.screen .report { margin: 0; }
+.ticks { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 6px; font-size: 15.5px; }
+.ticks li::before { content: "✓"; color: var(--good); font-weight: 600; margin-right: 8px; }
+.starts { margin-top: 36px; display: grid; gap: 12px; }
+.start { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 8px 20px; align-items: center; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 15px 18px; }
+.start b { font-size: 17px; }
+.start small { display: block; color: var(--muted); font-size: 14.5px; margin-top: 2px; }
+.steps7 { display: flex; flex-wrap: wrap; gap: 5px; }
+.steps7 i { font-style: normal; font-size: 12.5px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.steps7 i.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.ex { margin-top: 18px; background: var(--bg); border: 1px dashed var(--line); border-radius: var(--r); padding: 16px 18px; }
+.ex .cap { font: 12.5px var(--mono); color: var(--muted); margin-bottom: 10px; }
+.ex ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.ex li { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; font-size: 15.5px; }
+.ex li span { color: var(--muted); font-size: 13.5px; padding-top: 2px; }
+@media (max-width: 760px) { .frame { grid-template-columns: minmax(0, 1fr); gap: 14px; } .frame .txt { order: -1; } .start { grid-template-columns: minmax(0, 1fr); } .walk { gap: 36px; } }
+.hero-ex { max-width: 520px; margin: 30px auto 0; text-align: left; }
+.flow { list-style: none; padding: 0; margin: 40px 0 0; max-width: 740px; counter-reset: f; }
+.flow li { counter-increment: f; position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; padding-left: 46px; padding-bottom: 14px; }
+.flow li::before { content: counter(f); position: absolute; left: 0; top: 14px; width: 30px; height: 30px; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font: 600 13px var(--mono); line-height: 30px; text-align: center; }
+.flow li::after { content: ""; position: absolute; left: 14px; top: 46px; bottom: -12px; width: 2px; background: var(--line); }
+.flow li:last-child { padding-bottom: 0; }
+.flow li:last-child::after { display: none; }
+.flow .st { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px 16px 12px 12px; display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 14px; align-items: center; }
+.flow .pic { width: 84px; height: 62px; display: block; border-radius: 9px; background: var(--bg); border: 1px solid var(--line); }
+.flow .pic .ln { stroke: var(--muted); stroke-width: 3; stroke-linecap: round; fill: none; opacity: .55; }
+.flow .pic .bx { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.flow .pic .ac { fill: var(--accent); }
+.flow .pic .as { stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.flow .pic .wh { stroke: var(--accent-ink); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+@media (max-width: 420px) { .flow .st { grid-template-columns: 64px minmax(0, 1fr); gap: 10px; } .flow .pic { width: 64px; height: 48px; } }
+.flow .st b { display: block; font-size: 18px; }
+.flow .st span { color: var(--muted); font-size: 14.5px; }
+.flow li.you .st { border-color: var(--autumn); box-shadow: inset 0 0 0 1px var(--autumn); }
+.flow em { font-style: normal; font-size: 14px; font-weight: 600; background: var(--sunk); border-radius: 999px; padding: 5px 13px; white-space: nowrap; }
+.flow-note { display: flex; flex-wrap: wrap; gap: 8px 22px; color: var(--muted); font-size: 14.5px; margin-top: 20px; }
+.flow-note i { font-style: normal; display: inline-block; width: 14px; height: 14px; border-radius: 4px; vertical-align: -2px; margin-right: 6px; }
+@media (max-width: 600px) { .flow li { grid-template-columns: minmax(0, 1fr); } .flow em { justify-self: start; } }
+.cans { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; margin-top: 40px; }
+.can { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; gap: 14px; align-content: start; }
+.can h3 { font-size: 21px; line-height: 1.35; }
+.can .d { color: var(--muted); font-size: 15.5px; margin-top: 4px; }
+.mini { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; font-size: 14.5px; }
+.mini .cap { font: 12px var(--mono); color: var(--muted); margin-bottom: 8px; }
+.mini table { width: 100%; border-collapse: collapse; }
+.mini td { padding: 5px 0; border-top: 1px solid var(--line); vertical-align: top; }
+.mini tr:first-child td { border-top: none; }
+.mini td:first-child { color: var(--muted); width: 62px; white-space: nowrap; }
+.mini .ba { gap: 8px; }
+.mini .phone { min-height: 0; padding: 8px 9px 10px; border-width: 1.5px; border-radius: 12px; }
+.mini .phone .fd { height: 20px; font-size: 11px; }
+.mini .phone .bt { min-height: 24px; font-size: 11.5px; margin-top: 8px; }
+.mini ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 5px; }
+.mini .ok::before { content: "✓"; color: var(--good); font-weight: 600; margin-right: 7px; }
+.mini .todo::before { content: "○"; color: var(--muted); margin-right: 7px; }
+.meter { display: grid; grid-template-columns: 54px minmax(0, 1fr) 34px; gap: 8px; align-items: center; margin-top: 6px; font-size: 13.5px; }
+.meter:first-of-type { margin-top: 0; }
+.meter b { height: 10px; border-radius: 5px; background: var(--line); display: block; overflow: hidden; }
+.meter b i { display: block; height: 100%; background: var(--accent); }
+.meter span { color: var(--muted); text-align: right; }
 </style>
 </head>
 <body>
@@ -207,8 +288,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
   <div class="wrap">
     <a class="brand" href="#top"><span data-pix="sprout" data-s="2"></span>claude-haejo</a>
     <nav>
-      <a class="hide-s" href="#how">How</a>
-      <a class="hide-s" href="#safe">Trust</a>
+      <a class="hide-s" href="#how">Example</a>
       <a class="hide-s" href="#start">Start</a>
       <a class="lang" href="../" hreflang="ko">KO</a>
       <a class="lang on" href="./" hreflang="en" aria-current="page">EN</a>
@@ -226,146 +306,174 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <h1>“Claude,<br><em>do this.</em>”</h1>
     <p class="typing" aria-live="polite"><b id="typed">Plan this from scratch</b><span class="caret"></span></p>
     <p class="lead">Have an app or game in mind, but don’t know how to code?<br>Just ask. It starts from the right step and sees it through.</p>
-    <div class="flowerbed" aria-hidden="true">
-      <span data-pix="tulip" data-s="5"></span>
-      <span data-pix="daisy" data-s="6"></span>
-      <span data-pix="sprout" data-s="5"></span>
-      <span data-pix="lavender" data-s="6"></span>
-      <span data-pix="tulip2" data-s="5"></span>
+    <div class="screen hero-ex" aria-label="Example conversation">
+      <p class="cap">Example</p>
+      <p class="me">Add a login screen</p>
+      <p class="ai">I'll show you a mockup before building.</p>
+      <p class="ai">Done. All 12 tests pass, and it matches the mockup.</p>
     </div>
-    <div class="soil" aria-hidden="true"></div>
     <div class="btns">
-      <a class="main" href="#how">See how it works</a>
-      <a href="#start">Get started</a>
+      <a class="main" href="#start">Get started</a>
+      <a href="#how">See an example</a>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <p class="eyebrow">A 30-second example</p>
+    <h2 class="sec-title">“Add a login screen”<br>Here is how that one request goes.</h2>
+    <div class="walk">
+
+      <div class="frame">
+        <div class="screen" aria-label="Example screen: saying it">
+          <p class="cap">Example screen</p>
+          <p class="me">Add a login screen</p>
+          <p class="ai">Let's start with a mockup. One thing to decide first.</p>
+        </div>
+        <div class="txt"><span class="n">1</span><h3>Just say it</h3><p class="d">There are no commands. Write what you want in plain words, and it works out which step to start from.</p></div>
+      </div>
+
+      <div class="frame">
+        <div class="screen" aria-label="Example screen: the first question">
+          <p class="cap">Example screen</p>
+          <p class="ask-q">How far should this job go?</p>
+          <div class="opt pick">Change files only (recommended)<small>It builds, but doesn't save a record or publish</small></div>
+          <div class="opt">Up to saving a record</div>
+          <div class="opt">Up to publishing</div>
+          <div class="opt">Up to merging it in</div>
+        </div>
+        <div class="txt"><span class="n">2</span><h3>It asks once, at the start</h3><p class="d">You pick with a button how far it goes with things that are hard to undo. It doesn't do what you didn't pick, and it doesn't ask again.</p></div>
+      </div>
+
+      <div class="frame">
+        <div class="screen" aria-label="Example screen: mockup">
+          <p class="cap">Example screen</p>
+          <div class="ba">
+            <div class="phone"><small>Now</small><div class="ln"></div><div class="ln s"></div><div class="ln"></div><div class="ln s"></div></div>
+            <div class="phone"><small>After the change</small><div class="fd"><span class="mk">1</span>Email</div><div class="fd"><span class="mk">2</span>Password</div><div class="bt"><span class="mk">3</span>Log in</div></div>
+          </div>
+          <p class="me" style="margin-top: 14px;">Go with this</p>
+        </div>
+        <div class="txt"><span class="n">3</span><h3>It shows a mockup before building</h3><p class="d">A mockup is a drawing of the screen it is about to build. You see the change first and ask for edits in words. Nothing is built until you say “go with this”.</p></div>
+      </div>
+
+      <div class="frame" id="safe">
+        <div class="screen" aria-label="Example screen: final report">
+          <p class="cap">Example screen</p>
+          <div class="report">
+            <div class="bar"><i></i><i></i><i></i></div>
+            <p><b>What</b>Build the login screen</p>
+            <p><b>Tests</b>All 12 passed</p>
+            <p><b>Against the mockup</b>① done · ② done · ③ button moved lower</p>
+            <p><b>Not done</b>Tapping through it on a real phone</p>
+            <hr>
+            <ol><li class="pick">Build the next feature (recommended)</li><li>Save a record</li><li>Merge it into the real thing</li></ol>
+          </div>
+        </div>
+        <div class="txt"><span class="n">4</span><h3>It builds, then shows what it checked</h3><p class="d">It doesn't stop at “done”.</p>
+          <ul class="ticks"><li>It writes down the test results as they are</li><li>It compares each item with the mockup</li><li>A second AI reviews risky changes</li><li>It also lists what it couldn't do</li></ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section style="padding-top: 0;">
+  <div class="wrap">
+    <p class="eyebrow">The whole flow</p>
+    <h2 class="sec-title">Seven steps.<br>It starts at the one you need.</h2>
+    <p class="sec-lead">It doesn't always begin at step one. Say the phrase shown next to a step and it starts there.</p>
+    <ol class="flow">
+      <li><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><rect class="ac" x="24" y="16" width="48" height="24" rx="12"/><path class="ac" d="M62 36l10 10-14-6z"/><path class="wh" d="M36 28h24"/></svg><div><b>Request</b><span>It reads your request and picks the step to start from</span></div></div></li>
+      <li><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><circle class="ac" cx="18" cy="17" r="5"/><path class="as" d="M30 17h38"/><circle class="bx" cx="18" cy="31" r="5"/><path class="ln" d="M30 31h30"/><circle class="bx" cx="18" cy="45" r="5"/><path class="ln" d="M30 45h22"/></svg><div><b>Plan</b><span>It imagines who will use it and sets the build order</span></div></div><em>“Plan this from scratch”</em></li>
+      <li class="you"><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><rect class="bx" x="9" y="11" width="26" height="40" rx="5"/><path class="ln" d="M15 22h14M15 31h9"/><path class="as" d="M39 31h6m-3-3l3 3-3 3"/><rect class="bx" x="49" y="11" width="26" height="40" rx="5"/><path class="ln" d="M55 21h14M55 29h14"/><rect class="ac" x="54" y="37" width="16" height="8" rx="3"/></svg><div><b>Mockup</b><span>You see the screen in advance and ask for edits</span></div></div><em>“Add this feature”</em></li>
+      <li class="you"><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><rect class="bx" x="22" y="11" width="30" height="40" rx="5"/><path class="ln" d="M29 22h16M29 30h16"/><circle class="ac" cx="54" cy="40" r="12"/><path class="wh" d="M48 40l4 4 8-9"/></svg><div><b>Confirm</b><span>Say “go with this” and that mockup becomes the reference</span></div></div></li>
+      <li><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><rect class="bx" x="12" y="10" width="60" height="42" rx="5"/><rect class="ac" x="18" y="16" width="48" height="8" rx="3"/><rect class="ac" x="18" y="29" width="22" height="17" rx="3"/><rect class="bx" x="45" y="29" width="21" height="17" rx="3" stroke-dasharray="3 3"/></svg><div><b>Build</b><span>It builds what the confirmed mockup shows</span></div></div><em>“Fix this bug”</em></li>
+      <li><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><path class="as" d="M13 17l4 4 7-8"/><path class="ln" d="M32 17h38"/><path class="as" d="M13 31l4 4 7-8"/><path class="ln" d="M32 31h30"/><path class="as" d="M13 45l4 4 7-8"/><path class="ln" d="M32 45h34"/></svg><div><b>Tests</b><span>It runs it and compares with the mockup. If something is off, it goes back to building</span></div></div><em>“Run the tests”</em></li>
+      <li class="you"><div class="st"><svg class="pic" viewBox="0 0 84 62" aria-hidden="true"><path class="bx" d="M16 34v12a4 4 0 0 0 4 4h44a4 4 0 0 0 4-4V34"/><path class="as" d="M42 10v26m-9-9l9 9 9-9"/></svg><div><b>Merge</b><span>It saves and merges only as far as you chose at the start</span></div></div><em>“Merge it”</em></li>
+    </ol>
+    <p class="flow-note"><span><i style="border: 2px solid var(--autumn);"></i>Steps you decide</span><span><i style="background: var(--sunk);"></i>Say this to start here</span></p>
+  </div>
+</section>
+
+<section style="background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+  <div class="wrap">
+    <p class="eyebrow">Things you can say</p>
+    <h2 class="sec-title">Say this,<br>get this.</h2>
+    <div class="cans">
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>“Plan this from scratch”</h3><p class="d">It imagines the people who will use it and writes a roadmap of what to build first.</p></div>
+        <div class="mini"><p class="cap">Sample result: a running log app</p>
+          <table>
+            <tr><td>Users</td><td>An office worker who runs on weekends, and 4 more</td></tr>
+            <tr><td>Stage 1</td><td>View past runs · set a goal</td></tr>
+            <tr><td>Stage 2</td><td>Compare runs with friends</td></tr>
+            <tr><td>Stage 3</td><td>Show the route on a map</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>“Add this feature”</h3><p class="d">It shows a mockup first and builds once you say “go with this”.</p></div>
+        <div class="mini"><p class="cap">Sample result: a login screen</p>
+          <div class="ba">
+            <div class="phone"><small>Now</small><div class="ln"></div><div class="ln s"></div><div class="ln"></div></div>
+            <div class="phone"><small>After</small><div class="fd">Email</div><div class="fd">Password</div><div class="bt">Log in</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>“Fix this bug”</h3><p class="d">It fixes it right away, no mockup, and tells you the test results.</p></div>
+        <div class="mini"><p class="cap">Sample result</p>
+          <ul><li class="ok">Fixed: the save button didn't respond</li><li class="ok">All 12 tests passed</li><li class="todo">Not done: tapping through it on a real phone</li></ul>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>“Build it by the roadmap”</h3><p class="d">It builds and tests what's left on the roadmap, in order.</p></div>
+        <div class="mini"><p class="cap">Sample result: stage 1</p>
+          <ul><li class="ok">View past runs</li><li class="ok">Set a goal</li><li class="todo">Delete a run (next up)</li></ul>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>“I'm going to bed”</h3><p class="d">It asks once before you leave and keeps working. Decisions wait for you in one list.</p></div>
+        <div class="mini"><p class="cap">Sample result: what you see in the morning</p>
+          <ul><li class="ok">4 things finished</li><li class="todo">To decide 1: pick the wording for the first screen</li><li class="todo">To decide 2: whether to merge it in</li></ul>
+        </div>
+      </div>
+
+      <div class="can" style="background: var(--bg);">
+        <div><h3>“How far along is the roadmap?”</h3><p class="d">It briefly tells you what's done and what's next. It changes nothing.</p></div>
+        <div class="mini"><p class="cap">Sample result</p>
+          <div class="meter">Stage 1<b><i style="width: 100%"></i></b><span>5/5</span></div>
+          <div class="meter">Stage 2<b><i style="width: 40%"></i></b><span>2/5</span></div>
+          <div class="meter">Stage 3<b><i style="width: 0%"></i></b><span>0/4</span></div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <section class="worries">
   <div class="wrap">
-    <p class="eyebrow">Who it’s for</p>
-    <h2 class="sec-title">You don’t need<br>to know how to code.</h2>
+    <p class="eyebrow">If you're worried</p>
+    <h2 class="sec-title">Three common questions.</h2>
     <div class="talk">
-      <div class="pair"><p class="bubble q">“I have ideas, but I can’t code at all.”</p><p class="bubble a">Just say it. The AI does the rest.</p></div>
-      <div class="pair"><p class="bubble q">“The AI says ‘done’, but is it really?”</p><p class="bubble a">It keeps the test results, and a second AI reviews anything risky.</p></div>
-      <div class="pair"><p class="bubble q">“I don’t know where to start.”</p><p class="bubble a">It orders the work around the people who’ll use it.</p></div>
-      <div class="pair"><p class="bubble q">“Technical jargon scares me.”</p><p class="bubble a">You just tap “yes” or “no”.</p></div>
-      <div class="pair"><p class="bubble q">“I want to leave it running overnight.”</p><p class="bubble a">In the morning, only your decisions are waiting.</p></div>
-      <div class="pair"><p class="bubble q">“I mostly check from my phone.”</p><p class="bubble a">Short reports, numbered choices.</p></div>
+      <div class="pair"><p class="bubble q">“I can't code at all.”</p><p class="bubble a">Say what you want in words. Choices come as buttons.</p></div>
+      <div class="pair"><p class="bubble q">“What if the AI does whatever it wants?”</p><p class="bubble a">It gets your OK on a mockup before building. Saving, publishing and merging go only as far as you chose.</p></div>
+      <div class="pair"><p class="bubble q">“How do I know it was done right?”</p><p class="bubble a">It shows the test results and what it couldn't do, as they are. A second AI reviews risky changes.</p></div>
     </div>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <p class="eyebrow">What it does</p>
-    <h2 class="sec-title">One line from you,<br>done all the way.</h2>
-    <div class="cards">
-      <div class="card"><div class="ico"><span data-pix="seed" data-s="4"></span></div><h3>Plan</h3><span class="say">“Plan this from scratch”</span><p>It imagines five people who’d use it and sketches their day. The must-have features and their order fall out of that.</p></div>
-      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>Shows a picture first</h3><span class="say">“Add this feature”</span><p>Before building, it shows you a picture of how it will turn out. It builds once you say “go with this”, then checks the result against the picture.</p></div>
-      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>Asks once, up front</h3><span class="say">Choice buttons</span><p>It asks only what this job needs, on one screen. After that it stops only to confirm a picture or before something hard to undo.</p></div>
-    </div>
-  </div>
-</section>
-
-<section class="team" id="how">
-  <div class="wrap">
-    <p class="eyebrow">How it works</p>
-    <h2 class="sec-title">Seven steps from seed to flower,<br>starting where your request starts.</h2>
-    <p class="sec-lead">It doesn’t always begin at the beginning. If you need a plan it starts at the plan; if there’s one thing to fix it goes straight to building.</p>
-    <ol class="grow">
-      <li><span class="pix" aria-hidden="true"><span data-pix="seed" data-s="4"></span></span><h3>Ask</h3><p>It hears your request and picks where to start. It asks only what it needs, on one screen.</p></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="sprout" data-s="4"></span></span><h3>Plan</h3><p>It imagines who will use it and sets the order of what to build.</p><span class="from">“Plan this from scratch” starts here</span></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="sprout" data-s="5"></span></span><h3>See a picture</h3><p>Before building, it shows you how it will turn out. It revises until you like it.</p><span class="from">“Add this feature” starts here</span></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="tulip2" data-s="4"></span></span><h3>“Go with this”</h3><p>Those words set the bar. Nothing gets built before them.</p></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="lavender" data-s="4"></span></span><h3>Build</h3><p>It builds what the picture shows, and adds nothing that isn’t in it.</p><span class="from">“Fix this bug” starts here</span></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="daisy" data-s="4"></span></span><h3>Test</h3><p>It runs it and checks it against the picture. If something’s off, it goes back to building.</p><span class="from">“Run the tests” starts here</span></li>
-      <li><span class="pix" aria-hidden="true"><span data-pix="tulip" data-s="4"></span></span><h3>Add it in</h3><p>It saves and merges only as far as you chose at the start.</p><span class="from">“Merge it” does only this</span></li>
-    </ol>
-  </div>
-</section>
-
-<section id="safe">
-  <div class="wrap">
-    <p class="eyebrow">Hand it off with confidence</p>
-    <h2 class="sec-title">It doesn’t just take the AI’s word.<br>It keeps evidence and checks against the picture.</h2>
-    <div class="checks-grid">
-      <div class="four">
-        <div><span class="ok">✓ First</span><b>Picture</b><p>Nothing is built before you say “go with this”</p></div>
-        <div><span class="ok">✓ Pass</span><b>Tests</b><p>The results it ran are kept as they are</p></div>
-        <div><span class="ok">✓ Pass</span><b>Scope</b><p>Did it stay out of things nobody asked for?</p></div>
-        <div><span class="ok">✓ Once more</span><b>Second look</b><p>Another AI reviews risky changes on its own</p></div>
-      </div>
-      <div class="report" aria-label="Sample final report">
-        <div class="bar"><i></i><i></i><i></i></div>
-        <p><b>What</b>Build the login screen</p>
-        <p><b>Tests</b>All 12 passed</p>
-        <p><b>Against the picture</b>① done · ② done · ③ button moved lower</p>
-        <p><b>Not done</b>Tapping through it on a real phone</p>
-        <hr>
-        <ol><li class="pick">Build the next feature (recommended)</li><li>Save a record</li><li>Add it to the real thing</li></ol>
-      </div>
-    </div>
-    <p class="sec-lead">Reports arrive this short. You just pick a number.</p>
-  </div>
-</section>
-
-<section style="background: var(--panel); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
-  <div class="wrap">
-    <p class="eyebrow">How it plans</p>
-    <h2 class="sec-title">From seed to flower, in seven steps.</h2>
-    <p class="sec-lead">It doesn’t start with a feature list. It starts with “who uses this, on what kind of day?”</p>
-    <div class="seasons">
-      <div class="season" style="--c: var(--seed)"><small>1</small><h3>The core</h3><p>3–6 things people will do with it</p></div>
-      <div class="season" style="--c: var(--spring)"><small>2</small><h3>Imagine users</h3><p>Five made-up people</p></div>
-      <div class="season" style="--c: var(--spring)"><small>3</small><h3>Sketch a day</h3><p>Their day, scene by scene</p></div>
-      <div class="season" style="--c: var(--summer)"><small>4</small><h3>Find the needs</h3><p>Features each scene needs</p></div>
-      <div class="season" style="--c: var(--summer)"><small>5</small><h3>Score them</h3><p>Higher when more people need it</p></div>
-      <div class="season" style="--c: var(--autumn)"><small>6</small><h3>Set the order</h3><p>Highest score first</p></div>
-      <div class="season" style="--c: var(--winter)"><small>7</small><h3>Split into stages</h3><p>Stage 1, stage 2… the roadmap</p></div>
-    </div>
-    <p class="formula">Scores aren’t eyeballed by the AI. A script counts them, so you get the same answer every time.</p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <p class="eyebrow">Things to say</p>
-    <h2 class="sec-title">No commands to memorize.</h2>
-    <div class="says">
-      <div><code>“Plan this from scratch”</code><span>Decides with you what to build, then writes the roadmap.</span></div>
-      <div><code>“Add this kind of user: an office worker who only plays on weekends”</code><span>Adds them to the plan and only updates what changes.</span></div>
-      <div><code>“Add this feature”</code><span>Shows a picture of how it will turn out, then builds once you say “go with this”.</span></div>
-      <div><code>“Build it by the roadmap”</code><span>Builds and tests the remaining work in order.</span></div>
-      <div><code>“Fix this bug”</code><span>Fixes and tests it right away, no picture needed.</span></div>
-      <div><code>“Merge it”</code><span>Saves and merges exactly that much.</span></div>
-      <div><code>“I’m going to bed”</code><span>Asks once before you leave, then keeps working. Your decisions wait for the morning.</span></div>
-      <div><code>“How far along is the roadmap?”</code><span>Briefly tells you what’s done and what’s next.</span></div>
-    </div>
-  </div>
-</section>
-
-<section style="padding-top: 24px;">
-  <div class="wrap">
-    <p class="eyebrow">Always asks</p>
-    <h2 class="sec-title">Anything hard to undo<br>goes only as far as you choose.</h2>
-    <p class="sec-lead">Even if you say “handle it,” you pick how far it goes with one button at the start. What you didn’t pick doesn’t happen.</p>
-    <div class="words">
-      <div><b>Design & wording</b><p>What people see is your call</p></div>
-      <div><b>Money & accounts</b><p>Payments and logins are yours alone</p></div>
-      <div><b>Saving a record</b><p>Keeping a copy of what was built</p></div>
-      <div><b>Publishing</b><p>Uploading it to an online repository</p></div>
-      <div><b>Adding it in</b><p>Merging it into the real thing</p></div>
-    </div>
-    <div class="options"><span class="rec">Change files only (recommended)</span><span>Up to saving a record</span><span>Up to publishing</span><span>Up to adding it in</span></div>
   </div>
 </section>
 
 <section class="cta" id="start">
   <div class="wrap">
-    <div class="flowerbed" aria-hidden="true" style="margin-bottom: 18px;">
-      <span data-pix="daisy" data-s="4"></span><span data-pix="tulip" data-s="4"></span><span data-pix="lavender" data-s="4"></span>
-    </div>
     <h2>One thing to have,<br>one thing to say.</h2>
     <div class="need"><b>You’ll need: Claude Code</b><p>Anthropic’s AI coding assistant. <a href="https://claude.com/claude-code">Install it</a> first.</p></div>
     <div class="install" id="install">
