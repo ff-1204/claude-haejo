@@ -48,7 +48,7 @@ unmoved_locals() {
   while IFS= read -r f; do
     [ -n "$f" ] || continue
     cmp -s "$f" "$dest/skills/$new_skill/${f#"$d"/}" || echo "$f"
-  done < <(find "$d" -type f -name '*.local.md' | sort)
+  done < <(find "$d" \( -type f -o -type l \) -name '*.local.md' | sort)
 }
 
 if [ "$mode" = prune ] || [ "$mode" = prune-preview ]; then
@@ -115,7 +115,7 @@ if [ "$mode" != check ]; then
         mkdir -p "$(dirname "$t")"; cp "$f" "$t"
         echo "옮김(복사): skills/$n/$r → skills/$new_skill/$r"
       fi
-    done < <(find "$d" -type f -name '*.local.md' | sort)
+    done < <(find "$d" \( -type f -o -type l \) -name '*.local.md' | sort)
   done
 fi
 

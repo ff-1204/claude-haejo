@@ -9,7 +9,7 @@
 - **One flow**: request → plan → mockup review → review done → build → test → ship/merge. It starts from the step your request calls for.
 - **Planning**: "Plan this from scratch" → writes everything from personas (imagined users) to milestones (development stages).
 - **A picture first**: before building, it shows you a mockup as a picture and builds only after you say "go with this".
-- **Asks once, up front**: it asks only what this job needs on a single screen, then doesn't stop again.
+- **Asks once, up front**: it asks only what this job needs on a single screen. After that it stops only to confirm a mockup or before something hard to undo.
 
 ## Getting started
 
@@ -114,7 +114,7 @@ Just say it in Claude Code. Either way it takes effect **from the next session**
 | `Check my claude-haejo install` | Uses `--check` to list only files that differ between the repo and your install. Copies nothing |
 
 - If `~/.claude/CLAUDE.md` already exists, it isn't overwritten; you're shown the differing lines and decide yourself.
-- Machine-only rules (`*.local.md`) are never overwritten or deleted.
+- Machine-only rules (`*.local.md`) are never overwritten. The only deletion is `--prune` cleaning up an old copy that was already moved to `haejo`.
 - **Coming from an older version**: the skills were merged into one, `haejo`. If old skill folders (`roadmap`, `roadmap-teammate`, `roadmap-core` and the rest, nine in all) remain, install and check tell you. Left in place, the old skills can keep being called, so remove them with `./install.sh --prune` (PowerShell: `-Prune`). Any `*.local.md` in an old folder is copied to the same place under `haejo` at install time, and a folder holding a `*.local.md` that has no copy is not deleted.
 - When a new version is out, the skill tells you in one line at the end of a report. It checks once a day, asks GitHub only for the tag list, and never downloads on its own. To get it, say `Update claude-haejo`.
 
