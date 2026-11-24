@@ -4,18 +4,30 @@
 #   --check      복사하지 않고 다른 파일만 보인다. 다르거나 옛 하위 스킬 폴더가 남아 있으면 exit 1.
 #   --dry-run    복사할 파일만 보이고 복사하지 않는다.
 #   --prune      옛 하위 스킬 폴더(roadmap-core 등 7개, 지금은 roadmap 하나로 합쳐짐)만 지운다. *.local.md가 든 폴더는 지우지 않는다.
+#                --check나 --dry-run과 같이 주면 지우지 않고 지울 폴더만 보인다(--check면 옛 폴더가 있을 때 exit 1).
 # *.local.md(이 PC에만 두는 규칙)는 복사하지도 비교하지도 않는다. --prune 말고는 ~/.claude의 파일을 지우지 않는다.
 set -euo pipefail
 
+# 인자를 모두 읽는다. 모르는 옵션과 뜻이 안 맞는 조합은 exit 2로 거부한다.
+opt_check=0; opt_dry=0; opt_prune=0
+for a in "$@"; do
+  case "$a" in
+    --check) opt_check=1 ;;
+    --dry-run) opt_dry=1 ;;
+    --prune) opt_prune=1 ;;
+    -h|--help) sed -n '2,9p' "$0"; exit 0 ;;
+    *) echo "오류: 모르는 옵션: $a (쓸 수 있는 것: --check, --dry-run, --prune)" >&2; exit 2 ;;
+  esac
+done
+if [ "$opt_check" = 1 ] && [ "$opt_dry" = 1 ]; then
+  echo "오류: --check와 --dry-run은 같이 쓸 수 없다" >&2; exit 2
+fi
 mode=install
-case "${1:-}" in
-  "") ;;
-  --check) mode=check ;;
-  --dry-run) mode=dry ;;
-  --prune) mode=prune ;;
-  -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
-  *) echo "모르는 옵션: $1 (--check, --dry-run, --prune)" >&2; exit 2 ;;
-esac
+if [ "$opt_check" = 1 ]; then mode=check; fi
+if [ "$opt_dry" = 1 ]; then mode=dry; fi
+if [ "$opt_prune" = 1 ]; then
+  if [ "$mode" = install ]; then mode=prune; else mode=prune-preview; fi
+fi
 
 repo="$(cd "$(dirname "$0")" && pwd)"
 dest="$HOME/.claude"
@@ -29,7 +41,7 @@ for n in $old_skills; do
   if [ -d "$dest/skills/$n" ]; then old_found="$old_found $n"; fi
 done
 
-if [ "$mode" = prune ]; then
+if [ "$mode" = prune ] || [ "$mode" = prune-preview ]; then
   if [ -z "$old_found" ]; then echo "지울 옛 하위 스킬 폴더 없음"; exit 0; fi
   for n in $old_found; do
     d="$dest/skills/$n"
@@ -37,11 +49,18 @@ if [ "$mode" = prune ]; then
     if [ -n "$keep" ]; then
       echo "지우지 않음: skills/$n (이 PC에만 두는 *.local.md가 있다. 옮긴 뒤 다시 --prune)"
       echo "$keep" | sed "s|^$dest/|  - |"
+    elif [ "$mode" = prune-preview ]; then
+      echo "지울 폴더: skills/$n"
     else
       rm -rf "$d"
       echo "지움: skills/$n"
     fi
   done
+  if [ "$mode" = prune-preview ]; then
+    echo "아무것도 지우지 않았다 (미리 보기. 지우려면 --prune만 준다)"
+    # --check와 같이 주면 --check처럼 옛 폴더가 남아 있는 것 자체로 exit 1
+    if [ "$opt_check" = 1 ]; then exit 1; fi
+  fi
   exit 0
 fi
 
