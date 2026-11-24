@@ -1,11 +1,8 @@
----
-name: roadmap-map
-description: 기획 플로우 3·4단계 하위 스킬. 시나리오의 모든 단계를 체크리스트 번호에 잇고(빈 단계 0), 없는 기능은 체크리스트에 🆕 항목으로 적는다. 체크리스트가 없으면 템플릿으로 만든다. 보통 roadmap이 부르고(기획 문서를 고치는 말은 roadmap이 받는다), 이 단계만 돌릴 때는 /roadmap-map.
----
+# map — 체크리스트에 적기 + 매핑
 
-# roadmap-map — 체크리스트에 적기 + 매핑
+기획 플로우 3·4단계. 시나리오의 모든 단계를 체크리스트 번호에 잇고(빈 단계 0), 없는 기능은 체크리스트에 🆕 항목으로 적는다. 체크리스트가 없으면 템플릿으로 만든다. 플로우에 map이 나오거나 이 단계만 말했을 때 읽는다.
 
-공통 규칙: [../roadmap/references/rules.md](../roadmap/references/rules.md) · 템플릿: [assets/checklist.md](assets/checklist.md), [assets/persona-checklist-map.md](assets/persona-checklist-map.md)
+공통 규칙: [rules.md](rules.md) · 템플릿: [../assets/checklist.md](../assets/checklist.md), [../assets/persona-checklist-map.md](../assets/persona-checklist-map.md)
 
 ## 모드
 
@@ -14,9 +11,11 @@ description: 기획 플로우 3·4단계 하위 스킬. 시나리오의 모든 �
 
 ## 입력
 
-- `persona-scenarios.md` (없으면 "roadmap-scenarios가 먼저 필요하다"고 말하고 멈춘다)
+- `persona-scenarios.md` (없으면 "scenarios 단계가 먼저 필요하다"고 말하고 멈춘다)
 - `personas.md`의 "막힐 곳 → 필요한 것"
-- 체크리스트: 프로젝트에 있는 것(`*checklist*.md`, `체크리스트*.md`). **한 주제** 기획이면(rules.md "기획 크기") 새로 만들지 않고 그 체크리스트에 다음 번호의 절을 만들어 새 항목을 모두 그 절 아래에 적는다. 순서 줄과 바탕 일은 절 번호로 그 절 맨 위에 둔다(`📝 P28-00 순서 (아직 없음 — roadmap-priority가 씀)`, `P28-00-01 바탕 일`). 바탕 일이 이미 있으면 `✅ P28-00-01 바탕 일 — 이미 있음: <I00-01 또는 명령·도구>`로 적는다. 기존 절에 이미 계획된 항목(🔜)에 기대는 단계는 그 번호를 그대로 쓴다. 체크리스트가 없으면 [assets/checklist.md](assets/checklist.md)로 `checklist.md`를 만든다. 새로 만들 때는 시나리오에서 나오지 않는 **바탕 일** 항목 `I00-01`(뼈대, 자동 테스트, 오류 기록)을 같이 만든다. roadmap-priority가 이것을 맨 앞에 둔다. `I00-00` 순서 줄은 `📝 I00-00 순서 (아직 없음 — roadmap-priority가 씀)`로 둔다.
+- 체크리스트: 프로젝트에 있는 것(`*checklist*.md`, `체크리스트*.md`).
+  - **한 주제** 기획이면 rules.md "기획 크기"대로 새로 만들지 않고 다음 번호의 절에 적는다. 그 절 맨 위 순서 줄은 `📝 P28-00 순서 (아직 없음 — priority 단계가 씀)`로, 바탕 일은 `P28-00-01 바탕 일`(이미 있으면 `✅ P28-00-01 바탕 일 — 이미 있음: <I00-01 또는 명령·도구>`)로 둔다.
+  - 체크리스트가 없으면 [../assets/checklist.md](../assets/checklist.md)로 `checklist.md`를 만든다. 새로 만들 때는 시나리오에서 나오지 않는 **바탕 일** 항목 `I00-01`(뼈대, 자동 테스트, 오류 기록)을 같이 만든다. priority 단계가 이것을 맨 앞에 둔다. `I00-00` 순서 줄은 `📝 I00-00 순서 (아직 없음 — priority 단계가 씀)`로 둔다.
 
 ## 하는 일
 
@@ -38,7 +37,7 @@ description: 기획 플로우 3·4단계 하위 스킬. 시나리오의 모든 �
 - 체크리스트: 🆕 항목(새로 만들었으면 `I00-01` 바탕 일도). 번호는 바꾸지 않는다.
 - `persona-scenarios.md`: `→ [번호]`, ❌ → 🔜.
 - `personas.md`: "필요한 것"에 붙인 번호.
-- `persona-checklist-map.md` 머리. 문서가 없을 때만 템플릿으로 만들고 1~5절을 비워 둔다(score·priority가 채운다). 이미 있으면 머리만 고치고 1~5절은 건드리지 않는다.
+- `persona-checklist-map.md` 머리. 문서가 없을 때만 템플릿으로 만들고 매핑 문서 1~5절을 비워 둔다(score·priority 단계가 채운다). 이미 있으면 머리만 고치고 매핑 문서 1~5절은 건드리지 않는다.
 
 머리는 템플릿 꼴 네 줄을 따른다:
 
@@ -49,10 +48,10 @@ description: 기획 플로우 3·4단계 하위 스킬. 시나리오의 모든 �
 > 점수 = 필요한 사람 수 × 2 + 나온 시나리오 단계 수 (묶음 단위)
 ```
 
-더해진 것만 모드면 "6. 바뀐 기록"에 한 줄(rules.md).
+더해진 것만 모드면 "6. 바뀐 기록"에 한 줄(rules.md "바뀐 기록").
 
 ## 한 줄 보고
 
-`③ roadmap-map: S단계 매핑 · 번호 붙임 K · 새 항목 🆕 n · 빈 단계 0 · <체크리스트>, persona-checklist-map.md`
+`③ map: S단계 매핑 · 번호 붙임 K · 새 항목 🆕 n · 빈 단계 0 · <체크리스트>, persona-checklist-map.md`
 
-혼자 불렸으면 rules.md "하위 스킬을 혼자 불렀을 때" 줄을 붙인다.
+이 단계만 돌렸으면 rules.md "한 단계만 돌릴 때" 줄을 붙인다.

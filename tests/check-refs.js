@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // 스킬 문서 안의 참조가 실제로 있는지 본다.
 //   1) 마크다운 링크 ](경로) → 그 파일이 있나
-//   2) "roadmap-<이름> N절", "SKILL.md N절", 맨 "N절" → 그 SKILL.md에 "## N." 제목이 있나
+//   2) "roadmap-<이름> N절", "SKILL.md N절" → 그 SKILL.md에 "## N." 제목이 있나
+//      맨 "N절" → roadmap의 단계 문서(references/)나 "매핑"을 말하는 줄이면 매핑 문서 템플릿에, 아니면 자기 SKILL.md에 "## N."이 있나
 //   3) "<파일>.md \"<이름>\"" → 그 파일에 그 이름이 든 제목(#)이 있나
 //   4) 권한 규칙의 자세한 문장이 roadmap-teammate 0절 밖에 되풀이되지 않나
 // 틀린 곳이 있으면 목록을 내고 exit 1. 사용: node tests/check-refs.js
@@ -48,6 +49,11 @@ function findMd(name, file) {
   return tries.find((p) => fs.existsSync(p)) || null;
 }
 
+// roadmap 단계 문서 폴더와 매핑 문서 템플릿 (맨 "N절"이 매핑 문서 절을 가리키는 곳)
+const roadmapRefs = path.join(skillsDir, 'roadmap', 'references');
+const mapTemplate = path.join(skillsDir, 'roadmap', 'assets', 'persona-checklist-map.md');
+if (!fs.existsSync(mapTemplate)) problems.push(`매핑 문서 템플릿 없음: ${rel(mapTemplate)}`);
+
 const files = [...walk(skillsDir), ...['CLAUDE.md', 'README.md', 'README.ko.md', 'README.ja.md'].map((f) => path.join(root, f))];
 
 for (const file of files) {
@@ -67,17 +73,20 @@ for (const file of files) {
       if (!fs.existsSync(path.resolve(path.dirname(file), target))) problems.push(`${where} 링크 없음: ${m[1]}`);
     }
 
-    // 2) N절. 맨 "N절"은 자기 SKILL.md에 "## N." 절이 있는 스킬(roadmap, roadmap-teammate)에서만 본다.
-    //    다른 하위 스킬의 맨 "N절"은 매핑 문서 절이다. 매핑 문서를 말하는 줄도 건너뛴다.
+    // 2) N절. 맨 "N절"은 두 가지다.
+    //    - roadmap의 단계 문서(skills/roadmap/references/*.md)와 "매핑"을 말하는 줄: 매핑 문서 절(템플릿 assets/persona-checklist-map.md)
+    //    - 그 밖(SKILL.md, roadmap-teammate 문서): 자기 SKILL.md 절
+    //    단계 문서가 SKILL.md 절을 말할 때는 "SKILL.md N절"로 쓴다. 스킬 밖 파일(README 등)의 맨 "N절"은 보지 않는다.
     const ownSkill = skill && path.join(skill, 'SKILL.md');
-    const numbered = ownSkill && fs.existsSync(ownSkill) && headings(ownSkill).some((h) => /^## \d+\. /.test(h));
-    const mapLine = !numbered || /매핑|checklist-map/.test(line);
+    const inStageDocs = path.dirname(file) === roadmapRefs;
+    const mapLine = inStageDocs || /매핑|checklist-map/.test(line);
     for (const m of line.matchAll(/(roadmap(?:-[a-z]+)?|SKILL\.md)?\s?(\d+)(?:[~·](\d+))?절/g)) {
       const [, who, a, b] = m;
       let target = null;
       if (who && who.startsWith('roadmap')) target = path.join(skillsDir, who, 'SKILL.md');
-      else if (who === 'SKILL.md') target = skill && path.join(skill, 'SKILL.md');
-      else if (!mapLine && skill) target = path.join(skill, 'SKILL.md');
+      else if (who === 'SKILL.md') target = ownSkill;
+      else if (skill && mapLine) target = mapTemplate;
+      else if (skill) target = ownSkill;
       if (!target) continue;
       if (!fs.existsSync(target)) { problems.push(`${where} 스킬 없음: ${m[0]}`); continue; }
       for (const n of b ? [a, b] : [a]) {

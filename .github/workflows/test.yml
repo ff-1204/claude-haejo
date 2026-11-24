@@ -40,7 +40,7 @@ jobs:
           node-version: 20
 
       - name: score.js 시험
-        run: node skills/roadmap-score/tests/run.js
+        run: node skills/roadmap/tests/score/run.js
       - name: status.js 시험
         run: node skills/roadmap/tests/run.js
       - name: check-update.js 시험
