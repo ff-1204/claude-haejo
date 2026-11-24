@@ -97,10 +97,29 @@ else {
   const num = run(['--home', home(installed('v1.9.0')), '--remote', r110]);
   check('v1.10.0 > v1.9.0 (숫자로 비교)', says(num, 'v1.10.0', 'v1.9.0'), show(num));
 
-  // 닿지 않는 원격 → 출력 없음, 캐시도 쓰지 않는다
+  // 닿지 않는 원격 → 출력 없음, 실패 시각만 캐시에 적는다
   const hu = home(installed('v1.3.0'));
-  const u = run(['--home', hu, '--remote', path.join(hu, 'no-such-repo')]);
-  check('닿지 않는 원격 → 출력 없음·exit 0', silent(u) && !fs.existsSync(cacheOf(hu)), show(u));
+  const nowhere = path.join(hu, 'no-such-repo');
+  const u = run(['--home', hu, '--remote', nowhere]);
+  let fc = null;
+  try { fc = JSON.parse(fs.readFileSync(cacheOf(hu), 'utf8')); } catch { /* 아래에서 실패 */ }
+  check('닿지 않는 원격 → 출력 없음·exit 0', silent(u) && fc && fc.latest === null && Date.now() - Date.parse(fc.failedAt) < 60000,
+    show(u) + JSON.stringify(fc));
+  // 실패 뒤 1시간 안에는 원격을 다시 묻지 않는다(닿는 원격이어도 출력 없음), --force면 묻는다
+  const w = run(['--home', hu, '--remote', r14]);
+  check('실패 뒤 1시간 안에는 다시 묻지 않음', silent(w), show(w));
+  const wf = run(['--home', hu, '--remote', r14, '--force']);
+  check('--force는 실패 캐시도 무시', says(wf, 'v1.4.0', 'v1.3.0'), show(wf));
+  // 1시간이 지나면 다시 묻는다
+  fs.writeFileSync(cacheOf(hu), JSON.stringify({ checkedAt: null, latest: null, failedAt: new Date(Date.now() - 61 * 60000).toISOString() }));
+  const wa = run(['--home', hu, '--remote', r14]);
+  check('실패 1시간 뒤에는 다시 물음', says(wa, 'v1.4.0', 'v1.3.0'), show(wa));
+  // 낡은 성공 값이 있으면 실패해도 그 값으로 비교하고, 1시간 안에는 그 값을 계속 쓴다
+  fs.writeFileSync(cacheOf(hu), JSON.stringify({ checkedAt: new Date(Date.now() - 2 * 86400000).toISOString(), latest: 'v1.4.0' }));
+  const ko = run(['--home', hu, '--remote', nowhere]);
+  check('실패하면 지난번 값으로 비교', says(ko, 'v1.4.0', 'v1.3.0'), show(ko));
+  const kw = run(['--home', hu, '--remote', r110]);
+  check('실패 뒤 1시간 안에는 지난번 값 사용', says(kw, 'v1.4.0', 'v1.3.0'), show(kw));
   // 깨진 캐시는 없는 것으로 본다
   fs.writeFileSync(cacheOf(hu), 'not json');
   const bc = run(['--home', hu, '--remote', r14]);

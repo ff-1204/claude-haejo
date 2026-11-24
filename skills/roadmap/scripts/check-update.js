@@ -2,7 +2,7 @@
 // claude-haejo 새 버전 안내: 설치 기록(~/.claude/claude-haejo.json)의 버전과 GitHub의 최신 태그를 비교해
 // 새 버전이 있으면 한 줄만 낸다. 받거나 설치하지는 않는다(안내만).
 // 사용: node check-update.js [--force] [--home <폴더>] [--remote <주소나 로컬 저장소 경로>]
-//   --force   24시간 캐시(~/.claude/claude-haejo-update.json)를 무시하고 다시 확인한다
+//   --force   캐시(~/.claude/claude-haejo-update.json: 성공 24시간, 실패 1시간)를 무시하고 다시 확인한다
 //   --home    ~ 대신 쓸 폴더 (시험용)
 //   --remote  태그를 읽을 원격 (시험용, 기본은 GitHub 저장소)
 // 오프라인·git 없음·시간 초과·깨진 기록 같은 실패는 모두 조용히 넘어가고 exit 0이다. 스킬 흐름을 막지 않는다.
@@ -15,6 +15,7 @@ const path = require('path');
 const DEFAULT_REMOTE = 'https://github.com/ff-1204/claude-haejo.git';
 const RELEASES = 'https://github.com/ff-1204/claude-haejo/releases/tag/';
 const DAY_MS = 24 * 60 * 60 * 1000;
+const FAIL_MS = 60 * 60 * 1000; // 확인에 실패하면 1시간은 다시 묻지 않는다(오프라인에서 매번 기다리지 않게)
 const TIMEOUT_MS = 5000;
 const VERSION = /^v(\d+)\.(\d+)\.(\d+)$/;
 
@@ -80,22 +81,32 @@ function main(opts) {
   const mine = installed && parse(installed.version);
   if (!mine) return; // version이 null이거나 꼴이 다름
 
+  // 캐시: { checkedAt, latest } 마지막 성공, failedAt 마지막 실패. --force면 시각을 보지 않고 다시 묻는다
   const cacheFile = path.join(dir, 'claude-haejo-update.json');
+  let cache = {};
+  try {
+    const c = readJson(cacheFile);
+    if (c && typeof c === 'object') cache = c;
+  } catch { /* 캐시 없음이나 깨짐 */ }
+  const fresh = (at, ms) => { const age = Date.now() - Date.parse(at); return age >= 0 && age < ms; };
+  const known = parse(cache.latest) ? cache.latest : null; // 지난번에 성공한 값
+  const save = (obj) => {
+    try { fs.writeFileSync(cacheFile, JSON.stringify(obj, null, 2) + '\n', 'utf8'); } catch { /* 못 써도 안내는 한다 */ }
+  };
+
   let latest = null;
-  if (!opts.force) {
-    try {
-      const c = readJson(cacheFile);
-      const age = Date.now() - Date.parse(c.checkedAt);
-      if (age >= 0 && age < DAY_MS && parse(c.latest)) latest = c.latest;
-    } catch { /* 캐시 없음 */ }
-  }
-  if (!latest) {
+  if (!opts.force && known && fresh(cache.checkedAt, DAY_MS)) latest = known;
+  else if (!opts.force && fresh(cache.failedAt, FAIL_MS)) latest = known; // 실패 뒤 1시간은 묻지 않는다
+  else {
     latest = latestFromRemote(opts.remote);
-    if (!latest) return; // 오프라인, git 없음, 시간 초과, 태그 없음
-    try {
-      fs.writeFileSync(cacheFile, JSON.stringify({ checkedAt: new Date().toISOString(), latest }, null, 2) + '\n', 'utf8');
-    } catch { /* 캐시를 못 써도 안내는 한다 */ }
+    if (latest) save({ checkedAt: new Date().toISOString(), latest });
+    else {
+      // 오프라인, git 없음, 시간 초과, 태그 없음: 실패 시각을 적고 지난번 값으로 비교한다
+      save({ checkedAt: cache.checkedAt || null, latest: known, failedAt: new Date().toISOString() });
+      latest = known;
+    }
   }
+  if (!latest) return;
 
   if (compare(parse(latest), mine) > 0) {
     console.log(`claude-haejo ${latest}이 나왔어요(지금 ${installed.version}). "claude-haejo 업데이트해줘"라고 하면 받아요. 바뀐 것: ${RELEASES}${latest}`);
