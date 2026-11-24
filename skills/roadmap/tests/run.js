@@ -57,7 +57,7 @@ check('--prefix 없는 절', p.status === 0 && p.stdout.includes('최신 (순서
   writeU(pf, readU(pf).replace(/^> 문서: .*\n/m, ''));
   const c = run(['plan'], root);
   check('한글 체크리스트 찾기', c.status === 0 && c.stdout.includes('- 체크리스트: plan/체크리스트.md')
-    && /\| milestones \|.*\| 낡음 \|/.test(c.stdout), c.stdout + c.stderr);
+    && /\| milestones \|.*\| 낡음\(시각만\) \|/.test(c.stdout), c.stdout + c.stderr);
 }
 
 // 4) "일부만"은 " / "로 나눈 조각에 표시가 섞인 단계만 (score.js pieces()와 같은 규칙)
@@ -107,14 +107,74 @@ else {
   const out = g2.stdout;
   check('git: 손으로 고친 문서 경고', c2.status === 0
     && /\| scenarios \|.*\| 최신 · 손으로 고침\?\(갱신 줄보다 뒤에 바뀜: 2026-11-05 09:00\) \|/.test(out)
-    && /\| milestones \|.*\| 낡음 · 손으로 고침\?\(갱신 줄보다 뒤에 바뀜: 2026-11-06 10:00, 커밋 안 됨\) \|/.test(out)
+    && /\| milestones \|.*\| 낡음\(시각만\) · 손으로 고침\?\(갱신 줄보다 뒤에 바뀜: 2026-11-06 10:00, 커밋 안 됨\) \|/.test(out)
     && /\| personas \|.*\| 최신 \|/.test(out)
     && out.includes('- 이어 할 곳: priority'), c2.stderr + out + g2.stderr);
   const g3 = run(['plan', '--no-git'], root);
   check('git: --no-git이면 경고 없음', norm(g3.stdout) === want, g3.stdout + g3.stderr);
 }
 
-// 6) 잘못된 입력이면 결과 없이 exit 1
+// 6) 내용 검사: 예시 기획(plan/)은 내용이 맞고 시각만 낡았다(priority·milestones "낡음(시각만)").
+//    한 곳씩 고쳐 걸리게 하고, 그 단계 행의 상태·"왜"와 "이어 할 곳"을 본다.
+{
+  // plan/을 복사해 edits({파일: 바꾸는 함수})를 적용하고 status.js를 돌린다
+  const variant = (edits, extra = []) => {
+    const root = copyPlan();
+    for (const [name, fn] of Object.entries(edits)) {
+      const f = path.join(root, 'plan', name);
+      writeU(f, fn(readU(f)));
+    }
+    return run(['plan', '--no-git', ...extra], root);
+  };
+  const row = (out, name) => (out.split('\n').find((l) => l.startsWith(`| ${name} |`)) || '');
+  const cases = [
+    // scenarios: 시각은 최신인데 장면 없는 페르소나가 있다
+    ['scenarios: 장면 없는 페르소나', { 'personas.md': (s) => `${s}\n### 03 세나\n` },
+      'scenarios', '| 낡음 | 내용: 장면 없는 페르소나: 03 |', 'scenarios'],
+    // map: 번호 없는 단계(❌에 번호 없음)·표시 없는 단계
+    ['map: 번호·표시 없는 단계', { 'persona-scenarios.md': (s) => s.replace('3. 친구에게 보낸다 ❌ (F03-01)', '3. 친구에게 보낸다 ❌')
+      .replace('2. 저장한다 🔜 (F03-01)', '2. 저장한다') },
+      'map', '| 낡음 | 내용: 번호 없는 단계 1 · 표시 없는 단계 1 |', 'map'],
+    // map: 시나리오 번호가 체크리스트에 없다
+    ['map: 체크리스트에 없는 번호', { 'persona-scenarios.md': (s) => s.replace('🔜 (F02-02)', '🔜 (F02-09)') },
+      'map', '| 낡음 | 내용: 체크리스트에 없는 번호: F02-09 |', 'map'],
+    // score: 1절 표의 점수가 다르고 한 묶음이 빠졌다
+    ['score: 점수 다름·빠진 묶음', { 'persona-checklist-map.md': (s) => s.replace('| **6** |', '| **5** |')
+      .replace(/^\| 3 \| F02-02 .*\n/m, '') },
+      'score', '| 낡음 | 내용: 점수 다름: F03-01 5 → 6 · 표에 없는 묶음: F02-02 |', 'score'],
+    // priority: 1절의 묶음이 순서(3절 표·순서 줄)에 없다
+    ['priority: 순서에 없는 묶음', {
+      'persona-checklist-map.md': (s) => s.replace(/^\| 2 \| F02-02 .*\n/m, ''),
+      'checklist.md': (s) => s.replace(' → ③ F02-02 검색', '') },
+      'priority', '| 낡음 | 내용: 순서에 없는 묶음: F02-02 · 시각: 앞 단계가 더 늦음 |', 'priority'],
+    // milestones: 보류(⏸)를 풀면 로드맵에 없는 묶음이 걸린다
+    ['milestones: 로드맵에 없는 묶음', {
+      'checklist.md': (s) => s.replace('- ⏸ F03-01', '- ⬜ F03-01'),
+      'persona-checklist-map.md': (s) => s.replace('보류(⏸)', '뒤로') },
+      'milestones', '| 낡음 | 내용: 로드맵에 없는 묶음: F03-01 · 시각: 앞 단계가 더 늦음 |', 'priority'],
+    // milestones: 끝난(✅) 묶음은 로드맵에 없어도 세지 않는다
+    ['milestones: 끝난 묶음은 안 셈', { 'roadmap.md': (s) => s.replace('| F02-01 |', '| - |') },
+      'milestones', '| 낡음(시각만) | 시각: 앞 단계가 더 늦음 |', 'priority'],
+    // 꼴이 달라 판단할 수 없으면 건너뛰고 적는다(낡음을 만들지 않는다)
+    ['꼴이 다르면 건너뜀', { 'persona-checklist-map.md': (s) => s.replace(/^\|.*\n/gm, '') },
+      'score', '| 최신 | 내용 검사 못 함(매핑 1절에 묶음·점수 표 없음) |', 'priority'],
+  ];
+  for (const [name, edits, step, want, first] of cases) {
+    const r = variant(edits);
+    const line = row(r.stdout, step);
+    check(`내용: ${name}`, r.status === 0 && line.endsWith(want) && r.stdout.includes(`- 이어 할 곳: ${first}\n`),
+      `--- ${step} 행: ${line}\n${r.stdout}${r.stderr}`);
+  }
+  // 건너뛴 단계는 시각으로 낡아도 "(시각만)"을 붙이지 않는다(내용을 못 봤으니까)
+  const sk = variant({ 'persona-checklist-map.md': (s) => s.replace(/^\|.*\n/gm, '') });
+  check('내용: 건너뛴 단계는 그냥 낡음', row(sk.stdout, 'priority').includes('| 낡음 | 시각: 앞 단계가 더 늦음 · 내용 검사 못 함('),
+    sk.stdout + sk.stderr);
+  // --no-content: 내용 검사를 끄면 시각만 본다(상태는 "낡음", 내용으로 걸리던 것도 안 걸림)
+  const nc = variant({ 'personas.md': (s) => `${s}\n### 03 세나\n` }, ['--no-content']);
+  check('--no-content', nc.status === 0 && norm(nc.stdout) === want.replace(/낡음\(시각만\)/g, '낡음'), nc.stdout + nc.stderr);
+}
+
+// 7) 잘못된 입력이면 결과 없이 exit 1
 const bad = [
   ['personas.md 없는 폴더', ['.']],
   ['모르는 옵션', ['plan', '--nope']],

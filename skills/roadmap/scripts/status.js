@@ -1,11 +1,12 @@
 #!/usr/bin/env node
-// 기획 문서 다섯 개의 갱신 시각을 비교해 낡은 단계를 찾고, 마일스톤·시나리오 진행 수를 센다.
-// roadmap 1절 "지금 상태 보기"를 눈으로 비교하지 않게 하는 스크립트. 문서는 고치지 않는다.
-// 사용법: node status.js [기획 폴더] [--checklist <파일>] [--prefix <절>] [--no-git]
+// 기획 문서 다섯 개의 갱신 시각을 비교하고 내용도 확인해 낡은 단계를 찾고, 마일스톤·시나리오 진행 수를 센다.
+// roadmap 1절 "지금 상태 보기"를 눈으로 비교하지 않게 하는 스크립트. 문서는 고치지 않는다(읽기만).
+// 사용법: node status.js [기획 폴더] [--checklist <파일>] [--prefix <절>] [--no-git] [--no-content]
 //   기획 폴더: personas.md가 있는 폴더(기본: 현재 폴더)
 //   --checklist: 체크리스트 파일(기본: personas.md "> 문서:" 줄 → 폴더의 *checklist*.md·체크리스트*.md)
 //   --prefix: 한 주제 기획의 절 번호(예: P28). 순서 줄 "<절>-00"을 읽는다. 기본은 I00, 없으면 처음 나온 순서 줄
 //   --no-git: git 시각 검사를 끈다(기본: 기획 폴더가 git 안이면 손으로 고친 문서에 경고를 붙인다)
+//   --no-content: 내용 검사를 끈다(시각만 비교한다)
 'use strict';
 const { spawnSync } = require('child_process');
 const fs = require('fs');
@@ -17,10 +18,11 @@ function fail(msg) {
 }
 
 function parseArgs(argv) {
-  const opts = { dir: null, checklist: null, prefix: null, git: true };
+  const opts = { dir: null, checklist: null, prefix: null, git: true, content: true };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--no-git') opts.git = false;
+    else if (a === '--no-content') opts.content = false;
     else if (a === '--checklist' || a === '--prefix') {
       const v = argv[++i];
       if (v === undefined || v.startsWith('--') || !v.trim()) fail(`${a} 뒤에 값이 필요해요`);
@@ -63,7 +65,11 @@ function findChecklist(dir, personas, given) {
   if (given) return path.resolve(given);
   const docs = (personas || '').match(/^> 문서: (.*)$/m);
   if (docs) {
-    const names = docs[1].split(' · ').map((s) => s.trim());
+    // 항목은 "checklist.md" 꼴이거나 "[../../checklist.md](../../checklist.md) (절 I36)"처럼 링크·덧말이 붙은 꼴이다
+    const names = docs[1].split(' · ').map((s) => {
+      const link = s.match(/\]\(([^)\s]+\.md)\)/);
+      return link ? link[1] : (s.trim().match(/^\S+\.md/) || [s.trim()])[0];
+    });
     const cl = names.find((n) => n.endsWith('.md') && !PLAN_DOCS.includes(n) && !n.includes('<'));
     if (cl) {
       // 기획 폴더 → 위 폴더들(저장소 루트까지) 차례로 찾는다
@@ -79,10 +85,10 @@ function findChecklist(dir, personas, given) {
 }
 
 function orderTime(checklist, prefix) {
-  if (!checklist) return { prefix: null, time: null };
-  const all = [...checklist.matchAll(/\b([A-Z]{1,3}\d{2})-00 순서 \((\d{4}-\d{2}-\d{2} \d{2}:\d{2})/g)];
+  if (!checklist) return { prefix: null, time: null, line: null };
+  const all = [...checklist.matchAll(/\b([A-Z]{1,3}\d{2})-00 순서 \((\d{4}-\d{2}-\d{2} \d{2}:\d{2})[^\n]*/g)];
   const pick = prefix ? all.find((m) => m[1] === prefix) : all.find((m) => m[1] === 'I00') || all[0];
-  return pick ? { prefix: pick[1], time: pick[2] } : { prefix: prefix || null, time: null };
+  return pick ? { prefix: pick[1], time: pick[2], line: pick[0] } : { prefix: prefix || null, time: null, line: null };
 }
 
 // 한 단계 줄의 조각별 표시. 같은 폴더 score.js의 pieces()와 같은 규칙이다(그쪽을 바꾸면 여기도 같이):
@@ -177,11 +183,179 @@ function handEdits(dir, stamps) {
   return warn;
 }
 
+// ---- 내용 검사: 시각을 빠뜨려도 낡은 문서를 잡는다 ----
+// 단계마다 { stale: [걸린 것], skip: 못 본 이유 } 를 낸다. 꼴이 달라 판단할 수 없으면 낡음을 만들지 않고 skip만 적는다.
+// 번호 꼴은 score.js의 REF와 같다(F01-02-03, I20-10 …).
+const REF = /\b([A-Z]{1,3}\d{2}(?:-\d{2})+)/g;
+const refsIn = (s) => [...s.matchAll(REF)].map((m) => m[1]);
+const groupOf = (ref, depth) => ref.split('-').slice(0, depth).join('-');
+// 번호 r이 묶음 g에 드나: 같거나, g의 아래 조각(쪼갠 조각 F03-02-03-01 포함)이거나, g를 감싸는 위 번호
+const inGroup = (r, g) => r === g || r.startsWith(`${g}-`) || g.startsWith(`${r}-`);
+const SCORE_JS = path.join(__dirname, 'score.js');
+const PERSONA_ID = /^###\s+(\d{2,})\b/;
+const STEP_LINE = /^\s*\d+\.\s+/;
+
+// "## <n>." 절 본문 (다음 "## " 앞까지). 없으면 null
+function section(text, n) {
+  if (!text) return null;
+  const at = text.search(new RegExp(`^## ${n}\\. `, 'm'));
+  if (at < 0) return null;
+  const lines = text.slice(at).split('\n');
+  const end = lines.findIndex((l, i) => i > 0 && l.startsWith('## '));
+  return lines.slice(0, end < 0 ? undefined : end).join('\n');
+}
+// 마크다운 표에서 머리 칸 이름으로 칸을 찾아 줄마다 { 칸이름: 값 } 을 낸다. 머리가 없으면 null
+function tableRows(text, need) {
+  const lines = (text || '').split('\n');
+  const cells = (l) => l.trim().replace(/^\||\|$/g, '').split('|').map((c) => c.trim());
+  const hi = lines.findIndex((l) => l.trim().startsWith('|') && need.every((n) => cells(l).includes(n)));
+  if (hi < 0) return null;
+  const head = cells(lines[hi]);
+  const rows = [];
+  for (const l of lines.slice(hi + 2)) {
+    if (!l.trim().startsWith('|')) break;
+    const c = cells(l);
+    rows.push(Object.fromEntries(head.map((h, i) => [h, (c[i] || '').replace(/\*\*/g, '').trim()])));
+  }
+  return rows;
+}
+// score.js를 자식 프로세스로 돌려 머리 수와 🔜 표(묶음 → 점수)를 읽는다. 못 읽으면 { error }
+function runScore(scenariosPath, args) {
+  const r = spawnSync(process.execPath, [SCORE_JS, scenariosPath, ...args], { encoding: 'utf8' });
+  if (r.error || r.status !== 0) return { error: `score.js 실패: ${(r.stderr || '').trim().split('\n')[0] || r.status}` };
+  const head = r.stdout.match(/번호 없는 단계 (\d+) · 표시 없는 단계 (\d+)/);
+  const pend = r.stdout.split('## 이미 된 것')[0];
+  const rows = tableRows(pend, ['묶음', '점수']);
+  if (!head || !rows) return { error: 'score.js 출력 꼴이 다름' };
+  return { unmapped: Number(head[1]), unmarked: Number(head[2]), points: new Map(rows.map((x) => [x['묶음'], x['점수']])) };
+}
+// "> 점수:" 줄에 적힌 score.js 옵션. 없으면 status.js의 --prefix와 기본값
+function scoreArgs(map, prefix) {
+  const sec = section(map, 1) || '';
+  const line = (sec.match(/^> 점수: .*$/m) || [''])[0];
+  const args = [];
+  let depth = 2;
+  for (const [name, re] of [['--depth', /--depth\s+(\d+)/], ['--people-weight', /--people-weight\s+(\d+)/],
+    ['--grades', /--grades\s+([\d.]+,[\d.]+,[\d.]+)/], ['--prefix', /--prefix\s+([A-Z0-9,]+)/]]) {
+    const m = line.match(re);
+    if (m) { args.push(name, m[1]); if (name === '--depth') depth = Number(m[1]); }
+  }
+  if (prefix && !/--prefix/.test(line)) args.push('--prefix', prefix);
+  return { args, depth };
+}
+// 시나리오 단계 줄(첫 페르소나 제목 뒤의 "1. …")에 나온 번호. score.js가 세는 줄과 같다
+function scenarioRefs(text) {
+  const out = new Set();
+  let started = false;
+  for (const line of (text || '').split('\n')) {
+    if (PERSONA_ID.test(line)) { started = true; continue; }
+    if (started && STEP_LINE.test(line)) refsIn(line).forEach((r) => out.add(r));
+  }
+  return out;
+}
+
+function contentChecks(ctx) {
+  const { personas, scenarios, scenariosPath, map, checklist, roadmap, order, prefix } = ctx;
+  const res = {};
+  const list = (xs) => (xs.length > 5 ? `${xs.slice(0, 5).join(', ')} 외 ${xs.length - 5}개` : xs.join(', '));
+
+  // scenarios: 페르소나마다 장면이 있나
+  if (scenarios) {
+    const ids = (t) => new Set(t.split('\n').map((l) => (l.match(PERSONA_ID) || [])[1]).filter(Boolean));
+    const want = ids(personas), have = ids(scenarios);
+    if (!want.size) res.scenarios = { stale: [], skip: 'personas.md에 ### NN 제목 없음' };
+    else {
+      const miss = [...want].filter((id) => !have.has(id));
+      res.scenarios = { stale: miss.length ? [`장면 없는 페르소나: ${list(miss)}`] : [] };
+    }
+  }
+
+  // map: 번호·표시 없는 단계(score.js와 같은 수), 체크리스트에 없는 번호
+  if (scenarios && map) {
+    const sc = runScore(scenariosPath, []);
+    const stale = [];
+    const skips = [];
+    if (sc.error) skips.push(sc.error);
+    else {
+      if (sc.unmapped) stale.push(`번호 없는 단계 ${sc.unmapped}`);
+      if (sc.unmarked) stale.push(`표시 없는 단계 ${sc.unmarked}`);
+    }
+    if (!checklist) skips.push('체크리스트 없음');
+    else {
+      const miss = [...scenarioRefs(scenarios)].filter((r) => !new RegExp(`\\b${r}(?!\\d)`).test(checklist)).sort();
+      if (miss.length) stale.push(`체크리스트에 없는 번호: ${list(miss)}`);
+    }
+    res.map = { stale, skip: skips.join(', ') || null };
+  }
+
+  // score: score.js 🔜 표와 매핑 1절 표가 같은가
+  const { args, depth } = scoreArgs(map, prefix);
+  const docRows = tableRows(section(map, 1), ['묶음', '점수']);
+  if (scenarios && map) {
+    if (!docRows) res.score = { stale: [], skip: '매핑 1절에 묶음·점수 표 없음' };
+    else {
+      const sc = runScore(scenariosPath, args);
+      if (sc.error) res.score = { stale: [], skip: sc.error };
+      else {
+        const doc = new Map(docRows.map((x) => [x['묶음'], x['점수']]));
+        const diff = [], absent = [], extra = [];
+        for (const [g, p] of sc.points) {
+          if (!doc.has(g)) absent.push(g);
+          else if (doc.get(g) !== p) diff.push(`${g} ${doc.get(g)} → ${p}`);
+        }
+        for (const g of doc.keys()) if (!sc.points.has(g)) extra.push(g);
+        const stale = [];
+        if (diff.length) stale.push(`점수 다름: ${list(diff)}`);
+        if (absent.length) stale.push(`표에 없는 묶음: ${list(absent)}`);
+        if (extra.length) stale.push(`다시 센 표에 없는 묶음: ${list(extra)}`);
+        res.score = { stale };
+      }
+    }
+  }
+
+  // 순서에 든 번호: 매핑 3절 표 줄마다 첫 번호(할 일 칸, "왜 이 자리"에 든 다른 번호는 말일 뿐) + 체크리스트 순서 줄의 번호
+  // 3절 위 글줄("기대는 기존 항목: …")의 번호는 보지 않는다
+  const orderTable = (section(map, 3) || '').split('\n').filter((l) => /^\s*\|/.test(l));
+  const orderRefs = [...orderTable.map((l) => refsIn(l)[0]).filter(Boolean), ...refsIn(order.line || '')]
+    .filter((r) => !/^[A-Z]{1,3}\d{2}-00$/.test(r));
+  const hasOrder = orderTable.length > 2 || !!order.line;
+
+  // priority: 1절 🔜 묶음이 모두 순서에 있나
+  if (map) {
+    if (!docRows) res.priority = { stale: [], skip: '매핑 1절에 묶음·점수 표 없음' };
+    else if (!hasOrder) res.priority = { stale: [], skip: '매핑 3절 순서 표와 체크리스트 순서 줄 없음' };
+    else {
+      const miss = docRows.map((x) => x['묶음']).filter((g) => g && !orderRefs.some((r) => inGroup(r, g)));
+      res.priority = { stale: miss.length ? [`순서에 없는 묶음: ${list(miss)}`] : [] };
+    }
+  }
+
+  // milestones: 순서의 묶음(끝난 ✅·보류 ⏸와 바탕 일 절 <절>-00 빼고)이 로드맵 세부 항목에 있나
+  if (roadmap) {
+    if (!hasOrder) res.milestones = { stale: [], skip: '순서 표·순서 줄 없음' };
+    else {
+      const rmRefs = roadmap.split('\n').filter((l) => /^\|\s*M\d+-\d+/.test(l)).flatMap(refsIn);
+      const lines = [...(checklist || '').split('\n'), ...orderTable];
+      // 그 묶음 번호로 시작하는 체크리스트 줄·순서 표 줄에 ✅나 ⏸가 있으면 셀 것에서 뺀다
+      const closed = (g) => lines.some((l) => {
+        const first = refsIn(l)[0];
+        return first && inGroup(first, g) && /✅|⏸/.test(l);
+      });
+      const groups = [...new Set(orderRefs.map((r) => groupOf(r, depth)))]
+        .filter((g) => !/^[A-Z]{1,3}\d{2}-00$/.test(g));
+      const miss = groups.filter((g) => !closed(g) && !rmRefs.some((r) => inGroup(r, g)));
+      res.milestones = { stale: miss.length ? [`로드맵에 없는 묶음: ${list(miss)}`] : [] };
+    }
+  }
+  return res;
+}
+
 const opts = parseArgs(process.argv.slice(2));
 const file = (n) => path.join(opts.dir, n);
 const personas = read(file('personas.md'));
 if (!personas) fail(`${opts.dir}에 personas.md가 없어요(아직 기획 전이거나 다른 폴더예요)`);
-const scenarios = read(file('persona-scenarios.md'));
+const scenariosPath = file('persona-scenarios.md');
+const scenarios = read(scenariosPath);
 const map = read(file('persona-checklist-map.md'));
 const roadmap = read(file('roadmap.md'));
 const checklistPath = findChecklist(opts.dir, personas, opts.checklist);
@@ -200,31 +374,54 @@ const exists = { personas: !!personas, scenarios: !!scenarios, map: !!map, score
 const rmTime = quoteTime(roadmap, '갱신');
 const warn = opts.git ? handEdits(opts.dir, [...steps.map((s) => s.time), rmTime, order.time]) : {};
 
-// 앞 단계가 뒤 단계보다 늦게 갱신됐으면 뒤 단계가 낡음. 처음 낡거나 없는 단계부터 이어 하면 된다.
+const content = opts.content
+  ? contentChecks({ personas, scenarios, scenariosPath, map, checklist, roadmap, order, prefix: opts.prefix })
+  : {};
+
+// 시각: 앞 단계가 뒤 단계보다 늦게 갱신됐으면 뒤 단계가 낡음.
+// 내용: 위 contentChecks가 걸린 것이 있으면 낡음. 둘 중 하나라도 걸리면 낡음이고, "왜" 칸에 무엇이 걸렸는지 적는다.
+// 시각으로만 낡으면 "낡음(시각만)"(내용 검사를 켰을 때). 처음 낡거나 없는 단계부터 이어 하면 된다.
+function verdict(name, baseState, timeStale) {
+  const c = content[name];
+  const contentStale = !!(c && c.stale.length);
+  const why = [];
+  if (contentStale) why.push(`내용: ${c.stale.join(' · ')}`);
+  if (timeStale) why.push('시각: 앞 단계가 더 늦음');
+  if (c && c.skip) why.push(`내용 검사 못 함(${c.skip})`);
+  let state = baseState;
+  if (state.startsWith('최신') && contentStale) state = '낡음';
+  else if (state === '낡음' && opts.content && !contentStale && !(c && c.skip) && c) state = '낡음(시각만)';
+  return { state, why: why.join(' · ') || '-' };
+}
 let firstStale = null;
 let prev = null;
 console.log(`# 기획 상태: ${slash(path.relative(process.cwd(), opts.dir) || '.')}\n`);
-console.log('| 단계 | 문서 | 시각 | 상태 |');
-console.log('|---|---|---|---|');
+console.log('| 단계 | 문서 | 시각 | 상태 | 왜 |');
+console.log('|---|---|---|---|---|');
 for (const s of steps) {
   const t = s.time || s.fallback || null;
-  let state;
-  if (!exists[s.name]) state = '없음';
-  else if (!t) state = '시각 없음';
-  else if (prev && prev > t) state = '낡음';
-  else state = '최신';
+  let base;
+  let timeStale = false;
+  if (!exists[s.name]) base = '없음';
+  else if (!t) base = '시각 없음';
+  else if (prev && prev > t) { base = '낡음'; timeStale = true; }
+  else base = '최신';
+  const v = exists[s.name] ? verdict(s.name, base, timeStale) : { state: base, why: '-' };
+  let state = v.state;
   if (s.time === null && s.fallback && exists[s.name]) state += ' (줄 없음, 머리 시각으로 봄)';
   if (!firstStale && !state.startsWith('최신')) firstStale = s.name;
-  console.log(`| ${s.name} | ${s.doc} | ${t || '-'} | ${state}${warn[s.name] || ''} |`);
+  console.log(`| ${s.name} | ${s.doc} | ${t || '-'} | ${state}${warn[s.name] || ''} | ${v.why} |`);
   if (t && (!prev || t > prev)) prev = t;
 }
-let rmState;
-if (!roadmap) rmState = '없음';
-else if (!rmTime) rmState = '시각 없음';
-else if (order.time && order.time > rmTime) rmState = '낡음';
-else rmState = order.time ? '최신' : '최신 (순서 줄 없음)';
-if (!firstStale && !rmState.startsWith('최신')) firstStale = 'milestones';
-console.log(`| milestones | roadmap.md (순서 줄 ${order.prefix || '?'}-00: ${order.time || '-'}) | ${rmTime || '-'} | ${rmState}${warn.milestones || ''} |`);
+let rmBase;
+let rmTimeStale = false;
+if (!roadmap) rmBase = '없음';
+else if (!rmTime) rmBase = '시각 없음';
+else if (order.time && order.time > rmTime) { rmBase = '낡음'; rmTimeStale = true; }
+else rmBase = order.time ? '최신' : '최신 (순서 줄 없음)';
+const rv = roadmap ? verdict('milestones', rmBase, rmTimeStale) : { state: rmBase, why: '-' };
+if (!firstStale && !rv.state.startsWith('최신')) firstStale = 'milestones';
+console.log(`| milestones | roadmap.md (순서 줄 ${order.prefix || '?'}-00: ${order.time || '-'}) | ${rmTime || '-'} | ${rv.state}${warn.milestones || ''} | ${rv.why} |`);
 console.log(`\n- 체크리스트: ${checklistPath ? slash(path.relative(process.cwd(), checklistPath)) : '못 찾음'}`);
 console.log(`- 이어 할 곳: ${firstStale || '없음 (모두 최신)'}`);
 
