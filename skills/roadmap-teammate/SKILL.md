@@ -88,14 +88,14 @@ description: 작업을 하위 세션에 팀원처럼 나눠 맡기고 결과를 
 
 ## 3. 시작하기
 
-- `mcp__ccd_session__start_session`. 도구 목록에 이름만 있으면(deferred) 먼저 `ToolSearch`로 `select:mcp__ccd_session__start_session`을 불러온다. 이름만 있는 걸 안 보인다고 여겨 `Agent`로 대신하지 않는다.
-- **시작할 수 없으면 [references/start-fallback.md](references/start-fallback.md)를 읽는다.** `start_session`이 도구 목록에도 `ToolSearch`에도 없을 때(터미널 CLI, 웹), 앱이 새 세션 시작을 막을 때(휴대폰 Remote Control에서 보낸 말로 시작한 턴 등), 하위 세션이 끝난 알림(`<side-sessions-event>`) 턴에서 다음 단계를 시작할 때다. 세션 도구가 아예 없는 곳에서만 `Agent`로 대신한다. 앱이 막으면 `Agent`로 대신하지 않고 쉬고 있는 기존 하위 세션에 맡긴다.
+- `mcp__ccd_session__start_session`. 도구 목록에 이름만 있으면(deferred) 먼저 `ToolSearch`로 `select:mcp__ccd_session__start_session`을 불러온다. 이름만 있는 걸 안 보인다고 여겨 건너뛰지 않는다. 아래 사다리는 정말 못 만들 때만 탄다.
+- **새 하위 세션을 만들 수 없으면**(세션 도구가 아예 없거나, 앱이 시작을 막거나) 차례로 ① 쉬고 있는 기존 하위 세션에 `SendMessage`로 맡긴다(마일스톤 일이면 같은 마일스톤 세션만) → ② `Agent`에 `isolation: "worktree"`로 맡긴다 → ③ 부모가 직접 한다. 어느 길이든 한 일 = 브랜치 하나 = PR 하나와 브리프 꼴은 그대로다. 시작 보고 첫 줄에 어느 길로 갔는지 적는다. 자리 비움 중에도 이 사다리를 타고 계속한다. 이때와 하위 세션이 끝난 알림(`<side-sessions-event>`) 턴에서 다음 단계를 시작할 때 [references/start-fallback.md](references/start-fallback.md)를 읽는다.
 - context는 `"fresh"`(브리프가 전부 담는다), title은 "개선 2회차 + 이동·리스폰"처럼 무엇을 하는지 바로 보이게.
 - 사용자가 맡기라고 했으면 initiation `"user_asked"`.
 - 코드를 바꾸는 세션은 `use_worktree: true`로 자기 worktree(브랜치)에서 일하게 한다. worktree 개수와 무거운 프로젝트 예외는 13절. GitHub 원격이 없거나 git이 아닌 프로젝트는 13절 예외를 따른다.
 - 모델: 0절에서 정한 테스트·검토 모델과 구현 모델을 쓴다.
 - 직전 세션의 보고서나 대화를 통째로 넘기지 않는다. 필요한 사실만 브리프에 요약한다(편향 방지).
-- `Agent` 하위 에이전트는 결과를 이번 턴에 바로 받는 일(조사, 나눠 쓰기, 검토 한 번)에만 쓴다. 브랜치·PR로 끝나는 구현 작업은 하위 세션으로만 맡긴다(세션 도구가 아예 없는 곳만 예외, 위).
+- `Agent` 하위 에이전트는 결과를 이번 턴에 바로 받는 일(조사, 나눠 쓰기, 검토 한 번)에만 쓴다. 브랜치·PR로 끝나는 구현 작업은 하위 세션이 먼저고, 하위 세션을 만들 수 없을 때만 위 사다리를 탄다.
 
 ## 4. 기다리는 동안
 
