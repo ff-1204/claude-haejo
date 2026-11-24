@@ -25,7 +25,7 @@ The skills themselves are written in Korean, but every document and question the
 
 - **Decides what to build first, based on people.** It pulls the features each persona needs from a day in their life and orders them by how many people need them.
 - **Scores you can trust.** Priority scores are counted by a script (`score.js`), not eyeballed by Claude.
-- **Picks up where it left off.** Every document carries an updated-at timestamp, so the next session sees which document is stale and resumes there.
+- **Picks up where it left off.** Every document carries an updated-at timestamp, and a script also checks that the documents agree with each other, so the next session sees which document is stale and why, and resumes there.
 - **Parallel work without collisions.** One task = one branch = one PR, with one sub-session per milestone.
 - **Mockup first, then build to the mockup.** For visible results like screens, wording or rules, it first shows a numbered "now ↔ mockup" list and builds only after you say "go with this." When done, it shows a table of whether each mockup item was met.
 - **Doesn't just take a report's word for it.** The parent session checks four things on each PR (summary, tests, scope, conflicts) before asking you to merge.
