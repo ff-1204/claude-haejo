@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>claude-haejo —「Claude、〜して。」</title>
-<meta name="description" content="開発を知らなくても、言葉で頼めば AI チームが計画から完成までやってくれます">
+<meta name="description" content="開発を知らなくても、ひと言頼めば合った段階から最後までやり切ります">
 <meta property="og:title" content="claude-haejo —「Claude、〜して。」">
-<meta property="og:description" content="開発を知らなくても、言葉で頼めば AI チームが計画から完成までやってくれます">
+<meta property="og:description" content="開発を知らなくても、ひと言頼めば合った段階から最後までやり切ります">
 <meta property="og:image" content="https://ff-1204.github.io/claude-haejo/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -118,6 +118,15 @@ a.star .stars { margin-left: 6px; padding-left: 7px; border-left: 1px solid curr
 .path li.you { background: #cc8636; color: #1f2a22; font-weight: 600; }
 .path li.you::before { background: #1f2a22; color: #f6d9b8; }
 .path li span { display: block; font: 12.5px var(--mono); opacity: .75; }
+.grow { list-style: none; padding: 0; margin: 44px 0 0; max-width: 760px; counter-reset: g; }
+.grow li { counter-increment: g; display: grid; grid-template-columns: 72px minmax(0, 1fr); column-gap: 20px; padding: 20px 0; border-top: 1px solid #33423a; }
+.grow li:first-child { border-top: none; padding-top: 0; }
+.grow .pix { grid-row: 1 / span 3; display: grid; place-items: end center; min-height: 64px; padding-bottom: 4px; border-bottom: 6px solid #8a6a44; align-self: start; }
+.grow h3 { font-size: 26px; color: #f6fbf7; line-height: 1.25; }
+.grow h3::before { content: counter(g); font: 600 13px var(--mono); color: #8fc4a3; margin-right: 10px; vertical-align: 4px; }
+.grow p { color: #a8b5aa; font-size: 16px; margin-top: 2px; }
+.grow .from { justify-self: start; margin-top: 10px; background: #cc8636; color: #1f2a22; font-weight: 600; font-size: 14.5px; line-height: 1.4; padding: 6px 14px; border-radius: 999px; }
+@media (max-width: 600px) { .grow li { grid-template-columns: 56px minmax(0, 1fr); column-gap: 14px; } .grow h3 { font-size: 22px; } }
 
 /* 확인 */
 .checks-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 36px; align-items: center; margin-top: 40px; }
@@ -216,7 +225,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <span class="chip"><i></i>AI 開発アシスタント Claude Code に足す機能</span>
     <h1>Claude、<br><em>〜して。</em></h1>
     <p class="typing" aria-live="polite"><b id="typed">最初から企画して</b><span class="caret"></span></p>
-    <p class="lead">作りたいアプリやゲームがあるのに、開発はわからない？<br>言葉で頼めば、AI が小さなチームを組んで計画から完成まで進めます。</p>
+    <p class="lead">作りたいアプリやゲームがあるのに、開発はわからない？<br>言葉で頼めば、合った段階から最後までやり切ります。</p>
     <div class="flowerbed" aria-hidden="true">
       <span data-pix="tulip" data-s="5"></span>
       <span data-pix="daisy" data-s="6"></span>
@@ -237,8 +246,8 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <p class="eyebrow">こんな方に</p>
     <h2 class="sec-title">コードを知らなくても<br>大丈夫。</h2>
     <div class="talk">
-      <div class="pair"><p class="bubble q">「アイデアはあるけど、コードはまったくわからない」</p><p class="bubble a">言葉で言うだけ。あとは AI チームがやります。</p></div>
-      <div class="pair"><p class="bubble q">「AI が『できました』と言うけど、本当かわからない」</p><p class="bubble a">リーダー役の AI がもう一度チェックします。</p></div>
+      <div class="pair"><p class="bubble q">「アイデアはあるけど、コードはまったくわからない」</p><p class="bubble a">言葉で言うだけ。あとは AI がやります。</p></div>
+      <div class="pair"><p class="bubble q">「AI が『できました』と言うけど、本当かわからない」</p><p class="bubble a">テストの結果を残し、危ない変更は別の AI がもう一度見ます。</p></div>
       <div class="pair"><p class="bubble q">「何から作ればいいのかわからない」</p><p class="bubble a">使う人の目線で順番を決めます。</p></div>
       <div class="pair"><p class="bubble q">「難しい用語が出てくると怖い」</p><p class="bubble a">ボタンで「はい」「いいえ」を選ぶだけ。</p></div>
       <div class="pair"><p class="bubble q">「夜のあいだ任せて寝たい」</p><p class="bubble a">朝には決めることだけまとめておきます。</p></div>
@@ -253,8 +262,8 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <h2 class="sec-title">お願いは一行、<br>仕事は最後まで。</h2>
     <div class="cards">
       <div class="card"><div class="ico"><span data-pix="seed" data-s="4"></span></div><h3>計画を立てる</h3><span class="say">「最初から企画して」</span><p>使う人を5人想像して、その人たちの一日を描きます。すると本当に必要な機能と作る順番が見えてきます。</p></div>
-      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>分けて作る</h3><span class="say">「ロードマップどおり開発して」</span><p>仕事を細かく分けて、複数の AI メンバーに任せます。同時に動いてもぶつかりません。</p></div>
-      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>大事なことだけ聞く</h3><span class="say">選択ボタン</span><p>それ以外は AI が決めます。デザインの好み、お金がかかること、取り消しにくいことだけボタンで聞きます。</p></div>
+      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>先に絵で見せる</h3><span class="say">「この機能を入れて」</span><p>作る前に、どうなるかを絵で見せます。「これで」と言われてから作り、終わったら絵のとおりにできたか照らし合わせます。</p></div>
+      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>最初に一度だけ聞く</h3><span class="say">選択ボタン</span><p>今回の作業に必要なことだけを1画面で聞きます。そのあとは、絵の確認と取り消しにくいこと以外では止まりません。</p></div>
     </div>
   </div>
 </section>
@@ -262,23 +271,16 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
 <section class="team" id="how">
   <div class="wrap">
     <p class="eyebrow">どう動くか</p>
-    <h2 class="sec-title">小さな会社のように働きます。</h2>
-    <p class="sec-lead">あなたは社長。AI がリーダーとメンバーになって働き、社長には決裁だけを上げます。</p>
-    <div class="roles">
-      <div class="role"><small>あなた</small><h3>社長</h3><p>やりたいことを言って、決裁するだけ。</p></div>
-      <div class="role"><small>いま話している AI</small><h3>リーダー</h3><p>仕事を割り振り、結果をチェックして報告します。</p></div>
-      <div class="role"><small>別々に動く複数の AI</small><h3>メンバー</h3><p>任された仕事ひとつを最初から最後まで。</p></div>
-      <div class="role"><small>メンバーが上げるもの</small><h3>決裁書類</h3><p>「こう作りました。反映しますか？」</p></div>
-    </div>
-    <ol class="path">
-      <li class="you"><p>「ロードマップどおり開発して」<span>社長</span></p></li>
-      <li><p>どこまで任せるかボタンで聞く<span>リーダー</span></p></li>
-      <li><p>仕事ごとにメンバー1人<span>リーダー</span></p></li>
-      <li><p>それぞれ別に作ってテスト<span>メンバー</span></p></li>
-      <li><p>決裁書類を上げる<span>メンバー</span></p></li>
-      <li><p>4つのチェック、足りなければやり直し<span>リーダー</span></p></li>
-      <li><p>「反映しますか？」<span>リーダー</span></p></li>
-      <li class="you"><p>「はい」→ 完成版に反映<span>社長</span></p></li>
+    <h2 class="sec-title">種から花まで7つの歩み、<br>言葉に合ったところから。</h2>
+    <p class="sec-lead">いつも最初からは始めません。計画が要るなら計画から、直すものがひとつなら、すぐ作るところから始めます。</p>
+    <ol class="grow">
+      <li><span class="pix" aria-hidden="true"><span data-pix="seed" data-s="4"></span></span><h3>お願い</h3><p>言葉を聞いて、どこから始めるかを決めます。必要なことだけを1画面で聞きます。</p></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="sprout" data-s="4"></span></span><h3>計画</h3><p>使う人を想像して、何から作るかの順番を決めます。</p><span class="from">「最初から企画して」ならここから</span></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="sprout" data-s="5"></span></span><h3>絵を見る</h3><p>作る前に、どうなるかを絵で見せます。気に入るまで直します。</p><span class="from">「この機能を入れて」ならここから</span></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="tulip2" data-s="4"></span></span><h3>「これで」</h3><p>このひと言が基準になります。それまでは作りません。</p></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="lavender" data-s="4"></span></span><h3>作る</h3><p>決めた絵のとおりに作ります。絵にないものは足しません。</p><span class="from">「このバグを直して」ならここから</span></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="daisy" data-s="4"></span></span><h3>試す</h3><p>動かして、絵と照らし合わせます。足りなければ作るところへ戻ります。</p><span class="from">「テストを回して」ならここから</span></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="tulip" data-s="4"></span></span><h3>反映</h3><p>最初に選んだ分だけ保存して反映します。</p><span class="from">「反映して」ならここだけ</span></li>
     </ol>
   </div>
 </section>
@@ -286,25 +288,25 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
 <section id="safe">
   <div class="wrap">
     <p class="eyebrow">安心して任せて</p>
-    <h2 class="sec-title">AI の言葉だけを信じません。<br>チェックを全部通ってから決裁が来ます。</h2>
+    <h2 class="sec-title">AI の言葉だけを信じません。<br>証拠を残して、絵と照らし合わせます。</h2>
     <div class="checks-grid">
       <div class="four">
-        <div><span class="ok">✓ 合格</span><b>説明</b><p>何を変えて何が残ったか書いてあるか</p></div>
-        <div><span class="ok">✓ 合格</span><b>テスト</b><p>リーダーが自分でもう一度動かしたか</p></div>
+        <div><span class="ok">✓ 先に</span><b>絵</b><p>「これで」と言われるまでは作りません</p></div>
+        <div><span class="ok">✓ 合格</span><b>テスト</b><p>動かした結果をそのまま残します</p></div>
         <div><span class="ok">✓ 合格</span><b>範囲</b><p>頼んでいないところに触れていないか</p></div>
-        <div><span class="ok">✓ 合格</span><b>衝突</b><p>ほかのメンバーの作業とぶつからないか</p></div>
+        <div><span class="ok">✓ もう一度</span><b>別の目</b><p>危ない変更は別の AI が改めて見ます</p></div>
       </div>
-      <div class="report" aria-label="決裁報告の例">
+      <div class="report" aria-label="最後の報告の例">
         <div class="bar"><i></i><i></i><i></i></div>
         <p><b>何を</b>ログイン画面を作る</p>
-        <p><b>チェック</b>説明 ✓ · テスト ✓ · 範囲 ✓ · 衝突なし</p>
+        <p><b>テスト</b>12件すべて合格</p>
+        <p><b>絵との照合</b>① できた · ② できた · ③ ボタンを下へ移動</p>
         <p><b>未確認</b>スマホで実際に触ってみる</p>
-        <p><b>反映すると</b>サイトにすぐ表示されます</p>
         <hr>
-        <ol><li class="pick">反映して片付け（おすすめ）</li><li>反映だけ</li><li>まだしない</li></ol>
+        <ol><li class="pick">次の機能を作る（おすすめ）</li><li>記録を残す</li><li>完成版に反映する</li></ol>
       </div>
     </div>
-    <p class="sec-lead">決裁はこれだけ短く届きます。社長は番号をひとつ選ぶだけ。</p>
+    <p class="sec-lead">報告はこれだけ短く届きます。番号をひとつ選ぶだけ。</p>
   </div>
 </section>
 
@@ -333,7 +335,10 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <div class="says">
       <div><code>「最初から企画して」</code><span>何を作るか一緒に決めて、計画表まで書きます。</span></div>
       <div><code>「こんなユーザーも入れて：週末だけ遊ぶ会社員」</code><span>その人を計画に足して、変わるところだけ直します。</span></div>
-      <div><code>「ロードマップどおり開発して」</code><span>計画表に残った仕事をメンバーに任せ、終わったら反映するか聞きます。</span></div>
+      <div><code>「この機能を入れて」</code><span>どうなるかを絵で見せ、「これで」と言われたら作ります。</span></div>
+      <div><code>「ロードマップどおり開発して」</code><span>計画表に残った仕事を順に作ってテストします。</span></div>
+      <div><code>「このバグを直して」</code><span>絵なしですぐ直してテストします。</span></div>
+      <div><code>「反映して」</code><span>言われた分だけ保存して反映します。</span></div>
       <div><code>「寝るね」</code><span>離れる前に一度だけ聞いて作業を続けます。朝には決めることだけまとめておきます。</span></div>
       <div><code>「ロードマップはどこまで進んだ？」</code><span>終わったことと次にすることだけ短く伝えます。</span></div>
     </div>
@@ -343,16 +348,16 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
 <section style="padding-top: 24px;">
   <div class="wrap">
     <p class="eyebrow">必ず聞くこと</p>
-    <h2 class="sec-title">取り消しにくいことは<br>必ず社長に聞きます。</h2>
-    <p class="sec-lead">「おまかせ」と言っても、始めるときにどこまで任せるかをボタンひとつで選びます。</p>
+    <h2 class="sec-title">取り消しにくいことは<br>選んだ分だけ行います。</h2>
+    <p class="sec-lead">「おまかせ」と言っても、始めるときにどこまで行うかをボタンひとつで選びます。選ばなかったことは行いません。</p>
     <div class="words">
-      <div><b>デザイン・文言</b><p>見て感じるものは社長の好みで</p></div>
-      <div><b>お金・アカウント</b><p>支払いとログインは社長だけ</p></div>
+      <div><b>デザイン・文言</b><p>見て感じるものはあなたの好みで</p></div>
+      <div><b>お金・アカウント</b><p>支払いとログインはあなただけ</p></div>
       <div><b>記録を残す</b><p>作ったものを保存しておくこと</p></div>
       <div><b>公開する</b><p>ネット上の保管場所に上げること</p></div>
       <div><b>反映する</b><p>完成版に取り込むこと</p></div>
     </div>
-    <div class="options"><span class="rec">決裁の直前まで任せる（おすすめ）</span><span>今回だけ反映まで</span><span>毎回聞く</span></div>
+    <div class="options"><span class="rec">ファイルだけ直す（おすすめ）</span><span>記録を残すまで</span><span>公開するまで</span><span>反映するまで</span></div>
   </div>
 </section>
 
@@ -390,7 +395,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
 
 <footer>
   <div class="wrap">
-    <span>claude-haejo · 言葉で任せる AI 開発チーム</span>
+    <span>claude-haejo · ひと言で、最後まで</span>
     <span>新しい版は「claude-haejo をアップデートして」 · <a href="https://github.com/ff-1204/claude-haejo">github.com/ff-1204/claude-haejo</a></span>
   </div>
 </footer>

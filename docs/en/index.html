@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>claude-haejo — “Claude, do this for me.”</title>
-<meta name="description" content="No coding needed. Just ask, and an AI team takes it from plan to finished product.">
+<meta name="description" content="No coding needed. Just ask, and it starts from the right step and sees it through.">
 <meta property="og:title" content="claude-haejo — “Claude, do this for me.”">
-<meta property="og:description" content="No coding needed. Just ask, and an AI team takes it from plan to finished product.">
+<meta property="og:description" content="No coding needed. Just ask, and it starts from the right step and sees it through.">
 <meta property="og:image" content="https://ff-1204.github.io/claude-haejo/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -118,6 +118,15 @@ a.star .stars { margin-left: 6px; padding-left: 7px; border-left: 1px solid curr
 .path li.you { background: #cc8636; color: #1f2a22; font-weight: 600; }
 .path li.you::before { background: #1f2a22; color: #f6d9b8; }
 .path li span { display: block; font: 12.5px var(--mono); opacity: .75; }
+.grow { list-style: none; padding: 0; margin: 44px 0 0; max-width: 760px; counter-reset: g; }
+.grow li { counter-increment: g; display: grid; grid-template-columns: 72px minmax(0, 1fr); column-gap: 20px; padding: 20px 0; border-top: 1px solid #33423a; }
+.grow li:first-child { border-top: none; padding-top: 0; }
+.grow .pix { grid-row: 1 / span 3; display: grid; place-items: end center; min-height: 64px; padding-bottom: 4px; border-bottom: 6px solid #8a6a44; align-self: start; }
+.grow h3 { font-size: 26px; color: #f6fbf7; line-height: 1.25; }
+.grow h3::before { content: counter(g); font: 600 13px var(--mono); color: #8fc4a3; margin-right: 10px; vertical-align: 4px; }
+.grow p { color: #a8b5aa; font-size: 16px; margin-top: 2px; }
+.grow .from { justify-self: start; margin-top: 10px; background: #cc8636; color: #1f2a22; font-weight: 600; font-size: 14.5px; line-height: 1.4; padding: 6px 14px; border-radius: 999px; }
+@media (max-width: 600px) { .grow li { grid-template-columns: 56px minmax(0, 1fr); column-gap: 14px; } .grow h3 { font-size: 22px; } }
 
 /* 확인 */
 .checks-grid { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 36px; align-items: center; margin-top: 40px; }
@@ -216,7 +225,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <span class="chip"><i></i>An add-on for Claude Code, the AI coding assistant</span>
     <h1>“Claude,<br><em>do this.</em>”</h1>
     <p class="typing" aria-live="polite"><b id="typed">Plan this from scratch</b><span class="caret"></span></p>
-    <p class="lead">Have an app or game in mind, but don’t know how to code?<br>Just ask. The AI forms a small team and takes it from plan to finished product.</p>
+    <p class="lead">Have an app or game in mind, but don’t know how to code?<br>Just ask. It starts from the right step and sees it through.</p>
     <div class="flowerbed" aria-hidden="true">
       <span data-pix="tulip" data-s="5"></span>
       <span data-pix="daisy" data-s="6"></span>
@@ -237,8 +246,8 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <p class="eyebrow">Who it’s for</p>
     <h2 class="sec-title">You don’t need<br>to know how to code.</h2>
     <div class="talk">
-      <div class="pair"><p class="bubble q">“I have ideas, but I can’t code at all.”</p><p class="bubble a">Just say it. The AI team does the rest.</p></div>
-      <div class="pair"><p class="bubble q">“The AI says ‘done’, but is it really?”</p><p class="bubble a">A lead AI checks it again.</p></div>
+      <div class="pair"><p class="bubble q">“I have ideas, but I can’t code at all.”</p><p class="bubble a">Just say it. The AI does the rest.</p></div>
+      <div class="pair"><p class="bubble q">“The AI says ‘done’, but is it really?”</p><p class="bubble a">It keeps the test results, and a second AI reviews anything risky.</p></div>
       <div class="pair"><p class="bubble q">“I don’t know where to start.”</p><p class="bubble a">It orders the work around the people who’ll use it.</p></div>
       <div class="pair"><p class="bubble q">“Technical jargon scares me.”</p><p class="bubble a">You just tap “yes” or “no”.</p></div>
       <div class="pair"><p class="bubble q">“I want to leave it running overnight.”</p><p class="bubble a">In the morning, only your decisions are waiting.</p></div>
@@ -253,8 +262,8 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <h2 class="sec-title">One line from you,<br>done all the way.</h2>
     <div class="cards">
       <div class="card"><div class="ico"><span data-pix="seed" data-s="4"></span></div><h3>Plan</h3><span class="say">“Plan this from scratch”</span><p>It imagines five people who’d use it and sketches their day. The must-have features and their order fall out of that.</p></div>
-      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>Build in parallel</h3><span class="say">“Build it by the roadmap”</span><p>The work is split into small pieces for several AI teammates. They work at once without tripping over each other.</p></div>
-      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>Asks only what matters</h3><span class="say">Choice buttons</span><p>The AI decides the rest. Only taste, money, and things that are hard to undo come to you as buttons.</p></div>
+      <div class="card"><div class="ico"><span data-pix="sprout" data-s="4"></span></div><h3>Shows a picture first</h3><span class="say">“Add this feature”</span><p>Before building, it shows you a picture of how it will turn out. It builds once you say “go with this”, then checks the result against the picture.</p></div>
+      <div class="card"><div class="ico"><span data-pix="daisy" data-s="4"></span></div><h3>Asks once, up front</h3><span class="say">Choice buttons</span><p>It asks only what this job needs, on one screen. After that it stops only to confirm a picture or before something hard to undo.</p></div>
     </div>
   </div>
 </section>
@@ -262,23 +271,16 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
 <section class="team" id="how">
   <div class="wrap">
     <p class="eyebrow">How it works</p>
-    <h2 class="sec-title">It works like a small company.</h2>
-    <p class="sec-lead">You’re the boss. The AI plays team lead and teammates, and only brings you sign-offs.</p>
-    <div class="roles">
-      <div class="role"><small>You</small><h3>The boss</h3><p>Say what you want, then just sign off.</p></div>
-      <div class="role"><small>The AI you’re chatting with</small><h3>Team lead</h3><p>Hands out work, checks the results, reports back.</p></div>
-      <div class="role"><small>Several AIs working separately</small><h3>Teammates</h3><p>Each takes one task from start to finish.</p></div>
-      <div class="role"><small>What teammates hand in</small><h3>Sign-off request</h3><p>“Here’s what I built. Shall we add it?”</p></div>
-    </div>
-    <ol class="path">
-      <li class="you"><p>“Build it by the roadmap”<span>Boss</span></p></li>
-      <li><p>Asks how much to hand off<span>Lead</span></p></li>
-      <li><p>One teammate per task<span>Lead</span></p></li>
-      <li><p>Each builds and tests separately<span>Teammate</span></p></li>
-      <li><p>Hands in a sign-off request<span>Teammate</span></p></li>
-      <li><p>Four checks, redo if anything fails<span>Lead</span></p></li>
-      <li><p>“Shall we add it?”<span>Lead</span></p></li>
-      <li class="you"><p>“Yes” → added to the real thing<span>Boss</span></p></li>
+    <h2 class="sec-title">Seven steps from seed to flower,<br>starting where your request starts.</h2>
+    <p class="sec-lead">It doesn’t always begin at the beginning. If you need a plan it starts at the plan; if there’s one thing to fix it goes straight to building.</p>
+    <ol class="grow">
+      <li><span class="pix" aria-hidden="true"><span data-pix="seed" data-s="4"></span></span><h3>Ask</h3><p>It hears your request and picks where to start. It asks only what it needs, on one screen.</p></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="sprout" data-s="4"></span></span><h3>Plan</h3><p>It imagines who will use it and sets the order of what to build.</p><span class="from">“Plan this from scratch” starts here</span></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="sprout" data-s="5"></span></span><h3>See a picture</h3><p>Before building, it shows you how it will turn out. It revises until you like it.</p><span class="from">“Add this feature” starts here</span></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="tulip2" data-s="4"></span></span><h3>“Go with this”</h3><p>Those words set the bar. Nothing gets built before them.</p></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="lavender" data-s="4"></span></span><h3>Build</h3><p>It builds what the picture shows, and adds nothing that isn’t in it.</p><span class="from">“Fix this bug” starts here</span></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="daisy" data-s="4"></span></span><h3>Test</h3><p>It runs it and checks it against the picture. If something’s off, it goes back to building.</p><span class="from">“Run the tests” starts here</span></li>
+      <li><span class="pix" aria-hidden="true"><span data-pix="tulip" data-s="4"></span></span><h3>Add it in</h3><p>It saves and merges only as far as you chose at the start.</p><span class="from">“Merge it” does only this</span></li>
     </ol>
   </div>
 </section>
@@ -286,25 +288,25 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
 <section id="safe">
   <div class="wrap">
     <p class="eyebrow">Hand it off with confidence</p>
-    <h2 class="sec-title">It doesn’t just take the AI’s word.<br>You only get asked after every check passes.</h2>
+    <h2 class="sec-title">It doesn’t just take the AI’s word.<br>It keeps evidence and checks against the picture.</h2>
     <div class="checks-grid">
       <div class="four">
-        <div><span class="ok">✓ Pass</span><b>Summary</b><p>Did it write down what changed and what’s left?</p></div>
-        <div><span class="ok">✓ Pass</span><b>Tests</b><p>Did the lead run it once more itself?</p></div>
+        <div><span class="ok">✓ First</span><b>Picture</b><p>Nothing is built before you say “go with this”</p></div>
+        <div><span class="ok">✓ Pass</span><b>Tests</b><p>The results it ran are kept as they are</p></div>
         <div><span class="ok">✓ Pass</span><b>Scope</b><p>Did it stay out of things nobody asked for?</p></div>
-        <div><span class="ok">✓ Pass</span><b>Conflicts</b><p>Does it clash with another teammate’s work?</p></div>
+        <div><span class="ok">✓ Once more</span><b>Second look</b><p>Another AI reviews risky changes on its own</p></div>
       </div>
-      <div class="report" aria-label="Sample sign-off report">
+      <div class="report" aria-label="Sample final report">
         <div class="bar"><i></i><i></i><i></i></div>
         <p><b>What</b>Build the login screen</p>
-        <p><b>Checks</b>Summary ✓ · Tests ✓ · Scope ✓ · No conflicts</p>
+        <p><b>Tests</b>All 12 passed</p>
+        <p><b>Against the picture</b>① done · ② done · ③ button moved lower</p>
         <p><b>Not done</b>Tapping through it on a real phone</p>
-        <p><b>If added</b>It shows up on the site right away</p>
         <hr>
-        <ol><li class="pick">Add it and tidy up (recommended)</li><li>Just add it</li><li>Not yet</li></ol>
+        <ol><li class="pick">Build the next feature (recommended)</li><li>Save a record</li><li>Add it to the real thing</li></ol>
       </div>
     </div>
-    <p class="sec-lead">Sign-offs arrive this short. You just pick a number.</p>
+    <p class="sec-lead">Reports arrive this short. You just pick a number.</p>
   </div>
 </section>
 
@@ -333,7 +335,10 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
     <div class="says">
       <div><code>“Plan this from scratch”</code><span>Decides with you what to build, then writes the roadmap.</span></div>
       <div><code>“Add this kind of user: an office worker who only plays on weekends”</code><span>Adds them to the plan and only updates what changes.</span></div>
-      <div><code>“Build it by the roadmap”</code><span>Hands the remaining work to teammates and asks before adding it.</span></div>
+      <div><code>“Add this feature”</code><span>Shows a picture of how it will turn out, then builds once you say “go with this”.</span></div>
+      <div><code>“Build it by the roadmap”</code><span>Builds and tests the remaining work in order.</span></div>
+      <div><code>“Fix this bug”</code><span>Fixes and tests it right away, no picture needed.</span></div>
+      <div><code>“Merge it”</code><span>Saves and merges exactly that much.</span></div>
       <div><code>“I’m going to bed”</code><span>Asks once before you leave, then keeps working. Your decisions wait for the morning.</span></div>
       <div><code>“How far along is the roadmap?”</code><span>Briefly tells you what’s done and what’s next.</span></div>
     </div>
@@ -343,8 +348,8 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
 <section style="padding-top: 24px;">
   <div class="wrap">
     <p class="eyebrow">Always asks</p>
-    <h2 class="sec-title">Anything hard to undo<br>always comes to you.</h2>
-    <p class="sec-lead">Even if you say “handle it,” you pick how much to hand off with one button at the start.</p>
+    <h2 class="sec-title">Anything hard to undo<br>goes only as far as you choose.</h2>
+    <p class="sec-lead">Even if you say “handle it,” you pick how far it goes with one button at the start. What you didn’t pick doesn’t happen.</p>
     <div class="words">
       <div><b>Design & wording</b><p>What people see is your call</p></div>
       <div><b>Money & accounts</b><p>Payments and logins are yours alone</p></div>
@@ -352,7 +357,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
       <div><b>Publishing</b><p>Uploading it to an online repository</p></div>
       <div><b>Adding it in</b><p>Merging it into the real thing</p></div>
     </div>
-    <div class="options"><span class="rec">Up to the sign-off (recommended)</span><span>Including adding it, this time only</span><span>Ask me every time</span></div>
+    <div class="options"><span class="rec">Change files only (recommended)</span><span>Up to saving a record</span><span>Up to publishing</span><span>Up to adding it in</span></div>
   </div>
 </section>
 
@@ -390,7 +395,7 @@ nav a.lang.on { color: var(--ink); font-weight: 600; text-decoration: underline;
 
 <footer>
   <div class="wrap">
-    <span>claude-haejo · an AI dev team you direct in plain words</span>
+    <span>claude-haejo · one request, seen through to the end</span>
     <span>To update: “Update claude-haejo” · <a href="https://github.com/ff-1204/claude-haejo">github.com/ff-1204/claude-haejo</a></span>
   </div>
 </footer>
