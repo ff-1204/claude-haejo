@@ -52,6 +52,7 @@ const badCases = [
   { name: '--grades 2개', args: ['--grades', '8,5'] },
   { name: '--prefix 값 없음', args: ['--prefix', '--depth', '2'] },
   { name: '모르는 옵션', args: ['--deep', '2'] },
+  { name: '파일 두 개', args: ['other.md'] },
 ];
 for (const c of badCases) {
   const r = spawnSync(process.execPath, [script, input, ...c.args], { encoding: 'utf8' });

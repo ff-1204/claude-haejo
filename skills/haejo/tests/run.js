@@ -60,7 +60,7 @@ check('--prefix 없는 절', p.status === 0 && p.stdout.includes('최신 (순서
     && /\| milestones \|.*\| 낡음\(시각만\) \|/.test(c.stdout), c.stdout + c.stderr);
 }
 
-// 4) "일부만"은 " / "로 나눈 조각에 표시가 섞인 단계만 (score.js pieces()와 같은 규칙)
+// 4) "일부만"은 " / "로 나눈 조각에 표시가 섞인 단계만 (score.js와 같이 쓰는 marks.js splitPieces() 규칙)
 //    1단계: 조각 하나에 ✅와 🔜가 같이 있다 → score.js는 ✅ 한 표시로 센다 → 일부만이 아니다
 //    2단계: 조각마다 ✅ / 🔜 → 일부만
 {
