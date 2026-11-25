@@ -2,7 +2,7 @@
 
 > 갱신: YYYY-MM-DD HH:MM (<무엇을 했는지>)
 > 근거: <콘셉트 문서>, 사용자 말
-> 문서: personas.md · persona-scenarios.md · persona-checklist-map.md · <체크리스트> · roadmap.md
+> 문서: personas.md · persona-scenarios.md · persona-checklist-map.md · <체크리스트> · roadmap.md · concept.md
 > 범위: <기기> · <온라인 여부> · <뺄 것>
 >
 > 핵심 경험: **① <사용자가 하는 일>** · **② …** · **③ …**
