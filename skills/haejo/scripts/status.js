@@ -60,7 +60,8 @@ function sectionTime(text, n, name) {
   return null;
 }
 
-const PLAN_DOCS = ['personas.md', 'persona-scenarios.md', 'persona-checklist-map.md', 'roadmap.md'];
+// concept.md(조사·기본 요소·규칙)는 시각을 비교하지 않지만, "> 문서:" 줄에 있어도 체크리스트로 잡히면 안 된다
+const PLAN_DOCS = ['personas.md', 'persona-scenarios.md', 'persona-checklist-map.md', 'roadmap.md', 'concept.md'];
 
 function findChecklist(dir, personas, given) {
   if (given) return path.resolve(given);
