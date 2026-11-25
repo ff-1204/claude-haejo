@@ -121,7 +121,7 @@ description: 한마디("~해줘")를 듣고 요청 → 기획 → 시안 검토 
 커밋·PR·머지를 하게 되면 [references/git.md](references/git.md)를 읽는다(커밋 메시지 꼴, PR 본문 네 칸, squash 머지, CI, 예외).
 
 - 커밋 제목은 `<타입>: <결과 한 줄>`, 한 커밋 = 목적 하나.
-- PR을 만들었으면 CI 결과를 기다려 확인한다. 머지는 6절 확인과 CI를 통과한 뒤에만 한다.
+- PR을 만들었으면 CI 결과를 기다려 확인한다. 머지는 6절 확인과 CI를 통과한 뒤에만 한다(잡이 대기 중이라 CI가 끝나지 않을 때는 git.md "CI 시간").
 - main push가 곧 배포인 저장소는 "머지까지"를 받았어도 머지 직전에 한 번 확인받는다.
 - 태그 꼴은 [references/rules.md](references/rules.md) "태그".
 
