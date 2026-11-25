@@ -37,7 +37,7 @@ The skill text is written in Korean. Claude follows it and answers in your langu
 
 | Say this | Starts at | What happens |
 |---|---|---|
-| "Plan this from scratch" | Plan | Researches similar products and the basics the genre needs, confirms the core experiences with you, then writes 5 personas → scenarios → scores → priorities → rule mockups → milestones |
+| "Plan this from scratch" | Plan | Researches similar products and the basics its field expects, confirms the core experiences with you, then writes 5 personas → scenarios → scores → priorities → rule mockups → milestones |
 | "Add one more persona: an office worker who only plays on weekends" | Plan | Adds that person and their scenario, and updates only what changed downstream |
 | "Add this feature" | Mockup review | Shows a picture mockup, then builds and tests once you say "go with this" |
 | "Work on M2" | Build | Builds and tests M2's remaining items in order. Each item's "done when" is the bar |
