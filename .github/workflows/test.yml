@@ -80,6 +80,18 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit 1 }
           ./install.ps1 -HomeDir $h -Check
 
+      # 빈 CLAUDE.md가 있어도 멈추지 않고 버전 기록까지 써야 한다
+      - name: install.ps1 빈 CLAUDE.md (PowerShell 7)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $h = Join-Path $env:RUNNER_TEMP 'home-pwsh-empty'
+          New-Item -ItemType Directory -Force (Join-Path $h '.claude') | Out-Null
+          New-Item -ItemType File -Force (Join-Path $h '.claude/CLAUDE.md') | Out-Null
+          ./install.ps1 -HomeDir $h
+          if (-not (Test-Path (Join-Path $h '.claude/claude-haejo.json'))) { throw 'claude-haejo.json 없음' }
+          if ((Get-Item (Join-Path $h '.claude/CLAUDE.md')).Length -ne 0) { throw '빈 CLAUDE.md를 덮었다' }
+
       - name: install.ps1 옛 하위 스킬 폴더 알림과 -Prune (PowerShell 7)
         if: runner.os == 'Windows'
         shell: pwsh
@@ -104,6 +116,18 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit 1 }
           powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h -Check
           if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: install.ps1 빈 CLAUDE.md (Windows PowerShell 5.1)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          $h = Join-Path $env:RUNNER_TEMP 'home-ps51-empty'
+          New-Item -ItemType Directory -Force (Join-Path $h '.claude') | Out-Null
+          New-Item -ItemType File -Force (Join-Path $h '.claude\CLAUDE.md') | Out-Null
+          powershell -ExecutionPolicy Bypass -File .\install.ps1 -HomeDir $h
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          if (-not (Test-Path (Join-Path $h '.claude\claude-haejo.json'))) { throw 'claude-haejo.json 없음' }
+          if ((Get-Item (Join-Path $h '.claude\CLAUDE.md')).Length -ne 0) { throw '빈 CLAUDE.md를 덮었다' }
 
       - name: install.ps1 옛 하위 스킬 폴더 알림과 -Prune (Windows PowerShell 5.1)
         if: runner.os == 'Windows'

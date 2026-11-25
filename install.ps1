@@ -165,8 +165,15 @@ if (-not (Test-Path -LiteralPath $t)) {
   if ($Check) { Write-Output '다름: CLAUDE.md'; $script:diffs++ }
   else {
     Write-Output 'CLAUDE.md가 이미 있고 다르다. 덮지 않는다. 필요한 줄은 손으로 합친다 (- 지금 파일, + 저장소):'
-    Compare-Object (Get-Content -LiteralPath $t -Encoding UTF8) (Get-Content -LiteralPath $src -Encoding UTF8) |
-      ForEach-Object { if ($_.SideIndicator -eq '<=') { "- $($_.InputObject)" } else { "+ $($_.InputObject)" } }
+    $mine = @(Get-Content -LiteralPath $t -Encoding UTF8)
+    $theirs = @(Get-Content -LiteralPath $src -Encoding UTF8)
+    # 한쪽이 빈 파일이면 Compare-Object가 오류로 멈춘다(빈 값을 받지 않는다). 그때는 다른 쪽 줄을 그대로 보인다
+    if ($mine.Count -eq 0) { $theirs | ForEach-Object { "+ $_" } }
+    elseif ($theirs.Count -eq 0) { $mine | ForEach-Object { "- $_" } }
+    else {
+      Compare-Object $mine $theirs |
+        ForEach-Object { if ($_.SideIndicator -eq '<=') { "- $($_.InputObject)" } else { "+ $($_.InputObject)" } }
+    }
   }
 }
 
