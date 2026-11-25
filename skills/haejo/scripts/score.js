@@ -3,6 +3,7 @@
 // 사용법: node score.js scenarios.md [--depth 2] [--people-weight 2] [--grades a,b,c] [--prefix F,I]
 // --grades가 없으면 페르소나 수 P로 정한다: P×1.5, P, P×0.5 (상한 15,9,5)
 const fs = require('fs');
+const { refsIn, splitPieces } = require('./marks.js');
 
 function fail(msg) {
   console.error(`오류: ${msg}`);
@@ -40,6 +41,7 @@ function parseArgs(argv) {
     }
     else if (a.startsWith('--')) fail(`모르는 옵션이에요: ${a}`);
     else if (!opts.file) opts.file = a;
+    else fail(`파일은 하나만 줄 수 있어요: ${a}`);
   }
   if (!opts.file) {
     console.error('사용법: node score.js <시나리오 파일> [--depth 2] [--people-weight 2] [--grades a,b,c] [--prefix F,I]');
@@ -52,26 +54,18 @@ function parseArgs(argv) {
 const PERSONA = /^###\s+(\d{2,})\s+([^\s—–-]+)/;
 // "1. …" 번호 단계
 const STEP = /^\s*\d+\.\s+/;
-// F01-02-03, D05-12-01, I20-10 같은 체크리스트 번호
-const REF = /\b([A-Z]{1,3}\d{2}(?:-\d{2})+)/g;
 
 function groupOf(ref, depth) {
   const parts = ref.split('-');
   return parts.slice(0, Math.min(depth, parts.length)).join('-');
 }
 
-const MARKS = ['🔜', '✅', '❌'];
-const marksIn = s => MARKS.filter(m => s.includes(m));
-
-// 한 단계 줄을 " / "로 나눠 조각마다 자기 표시로 센다.
-// 조각이 하나뿐이면(" / " 없음) 줄의 표시를 따른다. 여러 조각이면 표시 없는 조각은 "표시 없음"으로 둔다.
+// 한 단계 줄을 조각마다 자기 표시로 센다. 나누는 법과 표시 고르는 법은 marks.js의 splitPieces()에 있다.
+// 여러 조각이면 표시 없는 조각은 "표시 없음"으로 둔다.
 // ❌ 조각에 번호가 있으면 계획된 것(🔜)으로 센다(매핑이 ❌를 🔜로 바꾸기 전 상태).
 function pieces(line, opts) {
-  const segs = line.split(' / ');
-  return segs.map(seg => {
-    const own = marksIn(segs.length === 1 ? line : seg);
-    const mark = own.length ? own[own.length - 1] : null;
-    const all = [...seg.matchAll(REF)].map(m => m[1]);
+  return splitPieces(line).map(({ seg, mark }) => {
+    const all = refsIn(seg);
     const refs = all.filter(r => !opts.prefix || opts.prefix.some(x => r.startsWith(x)));
     return { mark, all, refs };
   });

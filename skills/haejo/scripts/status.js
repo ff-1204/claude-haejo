@@ -11,6 +11,7 @@
 const { spawnSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const { refsIn, splitPieces } = require('./marks.js');
 
 function fail(msg) {
   console.error(`오류: ${msg}`);
@@ -91,17 +92,8 @@ function orderTime(checklist, prefix) {
   return pick ? { prefix: pick[1], time: pick[2], line: pick[0] } : { prefix: prefix || null, time: null, line: null };
 }
 
-// 한 단계 줄의 조각별 표시. 같은 폴더 score.js의 pieces()와 같은 규칙이다(그쪽을 바꾸면 여기도 같이):
-// " / "로 나눈 조각마다 든 표시를 MARKS 순서로 모아 마지막 것을 그 조각의 표시로 본다.
-// 조각이 하나뿐이면 줄 전체의 표시를 본다. 그래서 " / " 없이 ✅와 🔜가 같이 있는 줄은 ✅ 한 표시다.
-const MARKS = ['🔜', '✅', '❌'];
-function pieceMarks(line) {
-  const segs = line.split(' / ');
-  return segs.map((seg) => {
-    const own = MARKS.filter((m) => (segs.length === 1 ? line : seg).includes(m));
-    return own.length ? own[own.length - 1] : null;
-  });
-}
+// 한 단계 줄의 조각별 표시. 규칙은 marks.js의 splitPieces()에 있고 score.js도 같은 것을 쓴다.
+const pieceMarks = (line) => splitPieces(line).map((p) => p.mark);
 
 // 시나리오 단계 수: 첫 페르소나 제목 뒤의 "1. …" 줄만
 // 일부만 = " / "로 나눈 조각에 ✅와 다른 표시(🔜·❌)가 섞인 단계 (rules.md "번호와 표시")
@@ -185,9 +177,7 @@ function handEdits(dir, stamps) {
 
 // ---- 내용 검사: 시각을 빠뜨려도 낡은 문서를 잡는다 ----
 // 단계마다 { stale: [걸린 것], skip: 못 본 이유 } 를 낸다. 꼴이 달라 판단할 수 없으면 낡음을 만들지 않고 skip만 적는다.
-// 번호 꼴은 score.js의 REF와 같다(F01-02-03, I20-10 …).
-const REF = /\b([A-Z]{1,3}\d{2}(?:-\d{2})+)/g;
-const refsIn = (s) => [...s.matchAll(REF)].map((m) => m[1]);
+// 번호 꼴(F01-02-03, I20-10 …)은 marks.js의 refsIn()이 읽는다.
 const groupOf = (ref, depth) => ref.split('-').slice(0, depth).join('-');
 // 번호 r이 묶음 g에 드나: 같거나, g의 아래 조각(쪼갠 조각 F03-02-03-01 포함)이거나, g를 감싸는 위 번호
 const inGroup = (r, g) => r === g || r.startsWith(`${g}-`) || g.startsWith(`${r}-`);
